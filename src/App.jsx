@@ -360,9 +360,9 @@ function SpatialWorkspace() {
       { id: 'flipclock1', type: 'flipclock', position: { x: 800, y: 300 }, parentNode: 'd-studio' },
       
       // Winamp (Bottom Left)
-      { 
+      {
         id: 'winamp1', type: 'winamp', position: { x: 50, y: 550 }, parentNode: 'd-studio',
-        data: { tracks: [{ url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", metaData: { artist: "SoundHelix", title: "Song 1" } }], skinUrl: "https://cdn.webampskins.org/skins/5e4f10275dcb1fb211d4a8b4f1bda236.wsz", enableButterchurn: true }
+        data: { tracks: [], skinUrl: "/skins/Nucleo-NLog-2G1.wsz", enableButterchurn: true }
       },
       
       // Visualizer (Center Bottom)

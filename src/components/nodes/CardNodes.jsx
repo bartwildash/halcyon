@@ -73,7 +73,6 @@ export const ContactNode = ({ data }) => {
   return (
     <SwayWrapper>
     <motion.div
-      className="nodrag"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       whileHover={{ scale: 1.05, y: -4 }}
@@ -81,13 +80,19 @@ export const ContactNode = ({ data }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        cursor: 'pointer',
+        cursor: 'grab',
         position: 'relative'
       }}
     >
+      {/* Connection Handles */}
+      <SmartHandle type="target" position={Position.Top} />
+      <SmartHandle type="source" position={Position.Bottom} />
+      <SmartHandle type="source" position={Position.Left} />
+      <SmartHandle type="source" position={Position.Right} />
+
       {/* Status Indicator (if online) */}
       {data.online && (
-        <div style={{
+        <div className="nodrag" style={{
           position: 'absolute',
           top: -2, right: 4,
           width: 12, height: 12,
@@ -156,6 +161,7 @@ export const ContactNode = ({ data }) => {
       <AnimatePresence>
         {hovered && data.showActions !== false && (
           <motion.div
+            className="nodrag"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -172,6 +178,7 @@ export const ContactNode = ({ data }) => {
           >
             {/* FaceTime */}
             <motion.button
+              className="nodrag"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               style={{
@@ -191,6 +198,7 @@ export const ContactNode = ({ data }) => {
 
             {/* Phone */}
             <motion.button
+              className="nodrag"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               style={{
@@ -210,6 +218,7 @@ export const ContactNode = ({ data }) => {
 
             {/* Message */}
             <motion.button
+              className="nodrag"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               style={{

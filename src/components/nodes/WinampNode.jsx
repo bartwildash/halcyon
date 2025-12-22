@@ -183,89 +183,96 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   return (
     <SwayWrapper>
       <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        borderRadius: 16,
+        padding: 16,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+        border: '1px solid #334155',
       }}>
-        {/* Webamp Player */}
-        <div
-          ref={containerRef}
-          style={{
-            width: 275,
-            minHeight: 116,
-            position: 'relative',
-            pointerEvents: 'auto', // Ensure Webamp UI is interactive
-          }}
-          data-type="winamp"
-          className="webamp-container"
-        />
-
-        {/* Controls */}
         <div style={{
           display: 'flex',
+          flexDirection: 'column',
           gap: 8,
-          padding: '0 8px',
         }}>
-          <button
-            className="nodrag"
-            onClick={() => setShowPlaylist(!showPlaylist)}
+          {/* Webamp Player */}
+          <div
+            ref={containerRef}
             style={{
-              flex: 1,
-              padding: '6px 12px',
-              borderRadius: 6,
-              background: showPlaylist ? '#3b82f6' : '#f3f4f6',
-              color: showPlaylist ? '#fff' : '#374151',
-              border: '1px solid #e5e7eb',
-              cursor: 'pointer',
-              fontSize: 12,
-              fontWeight: 600,
+              width: 275,
+              minHeight: 116,
+              position: 'relative',
+              pointerEvents: 'auto', // Ensure Webamp UI is interactive
             }}
-          >
-            {showPlaylist ? 'Hide' : 'Show'} Playlist
-          </button>
-          {data.enableButterchurn && (
+            data-type="winamp"
+            className="webamp-container"
+          />
+
+          {/* Controls */}
+          <div style={{
+            display: 'flex',
+            gap: 8,
+          }}>
             <button
               className="nodrag"
-              onClick={() => {
-                setShowVisualizer(!showVisualizer);
-                if (webampRef.current) {
-                  // Toggle visualizer in Webamp
-                  webampRef.current.toggleButterchurn();
-                }
-              }}
+              onClick={() => setShowPlaylist(!showPlaylist)}
               style={{
                 flex: 1,
                 padding: '6px 12px',
                 borderRadius: 6,
-                background: showVisualizer ? '#3b82f6' : '#f3f4f6',
-                color: showVisualizer ? '#fff' : '#374151',
-                border: '1px solid #e5e7eb',
+                background: showPlaylist ? '#3b82f6' : '#334155',
+                color: '#fff',
+                border: '1px solid #475569',
                 cursor: 'pointer',
                 fontSize: 12,
                 fontWeight: 600,
               }}
             >
-              {showVisualizer ? 'Hide' : 'Show'} Visualizer
+              {showPlaylist ? 'Hide' : 'Show'} Playlist
             </button>
+            {data.enableButterchurn && (
+              <button
+                className="nodrag"
+                onClick={() => {
+                  setShowVisualizer(!showVisualizer);
+                  if (webampRef.current) {
+                    // Toggle visualizer in Webamp
+                    webampRef.current.toggleButterchurn();
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: '6px 12px',
+                  borderRadius: 6,
+                  background: showVisualizer ? '#3b82f6' : '#334155',
+                  color: '#fff',
+                  border: '1px solid #475569',
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {showVisualizer ? 'Hide' : 'Show'} Visualizer
+              </button>
+            )}
+          </div>
+
+          {/* Playlist Manager */}
+          {showPlaylist && (
+            <div style={{ width: 275 }}>
+              <PlaylistManager
+                tracks={tracks}
+                onTracksChange={handleTracksChange}
+                onTrackSelect={(index) => {
+                  if (webampRef.current) {
+                    webampRef.current.setTracksToPlay(tracks);
+                    // Seek to track
+                    // webampRef.current.seekToTime(0);
+                  }
+                }}
+              />
+            </div>
           )}
         </div>
-
-        {/* Playlist Manager */}
-        {showPlaylist && (
-          <div style={{ width: 275 }}>
-            <PlaylistManager
-              tracks={tracks}
-              onTracksChange={handleTracksChange}
-              onTrackSelect={(index) => {
-                if (webampRef.current) {
-                  webampRef.current.setTracksToPlay(tracks);
-                  // Seek to track
-                  // webampRef.current.seekToTime(0);
-                }
-              }}
-            />
-          </div>
-        )}
       </div>
     </SwayWrapper>
   );
