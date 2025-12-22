@@ -2,8 +2,8 @@
 import { useEffect, useRef } from 'react';
 
 export const usePersistence = (nodes, setNodes, edges, setEdges) => {
-  // Bump version to v2 to force layout reset for user
-  const STORAGE_KEY = 'spatialos-state-v3'; // Updated for improved layout
+  // Bump version to v4 to force layout reset for user
+  const STORAGE_KEY = 'spatialos-state-v4'; // Updated for improved layout
   const loadedRef = useRef(false);
 
   // Load persistence ONLY after nodes have been initialized with their structure

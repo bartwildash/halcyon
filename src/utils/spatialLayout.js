@@ -97,28 +97,125 @@ export const calculateAvailableArea = (district, padding = 40) => {
 };
 
 /**
+ * Occupancy Layout: Uses a virtual grid to prevent overlaps
+ */
+export function layoutOccupancy(nodes, district, options = {}) {
+  const { 
+    spacing = 80, 
+    startX = 50, 
+    startY = 50,
+    gridSize = 10 
+  } = options;
+  
+  const bounds = getDistrictBounds(district);
+  const districtWidth = bounds.width;
+  const districtHeight = bounds.height;
+  
+  // Calculate grid dimensions
+  const gridCols = Math.ceil(districtWidth / gridSize);
+  const gridRows = Math.ceil(districtHeight / gridSize);
+  
+  // Create occupancy grid (2D array of booleans)
+  const grid = new Array(gridRows).fill(null).map(() => new Array(gridCols).fill(false));
+  
+  // Sort nodes by height (descending) to place large items first
+  const sortedNodes = [...nodes].sort((a, b) => {
+    const aBounds = getNodeBounds({ ...a, position: { x: 0, y: 0 } });
+    const bBounds = getNodeBounds({ ...b, position: { x: 0, y: 0 } });
+    return bBounds.height - aBounds.height;
+  });
+  
+  return sortedNodes.map(node => {
+    const tempNode = { ...node, position: { x: 0, y: 0 } };
+    const nodeBounds = getNodeBounds(tempNode);
+    
+    // Add spacing to node dimensions for clearance
+    const widthCells = Math.ceil((nodeBounds.width + spacing) / gridSize);
+    const heightCells = Math.ceil((nodeBounds.height + spacing) / gridSize);
+    
+    // Start search from padding
+    const startCol = Math.ceil(startX / gridSize);
+    const startRow = Math.ceil(startY / gridSize);
+    
+    let bestCol = -1;
+    let bestRow = -1;
+    
+    // Scan grid for free space
+    // Prefer top-left, scan row by row
+    searchLoop:
+    for (let r = startRow; r < gridRows - heightCells; r++) {
+      for (let c = startCol; c < gridCols - widthCells; c++) {
+        // Check if this position is free
+        let fits = true;
+        
+        // Check all cells this node would occupy
+        for (let ir = 0; ir < heightCells; ir++) {
+          for (let ic = 0; ir < widthCells; ic++) {
+            if (grid[r + ir][c + ic]) {
+              fits = false;
+              break;
+            }
+          }
+          if (!fits) break;
+        }
+        
+        if (fits) {
+          bestCol = c;
+          bestRow = r;
+          break searchLoop;
+        }
+      }
+    }
+    
+    // If no space found, place at next available vertical slot (fallback)
+    if (bestCol === -1) {
+      bestCol = startCol;
+      // Find the lowest occupied row
+      let maxRow = startRow;
+      for (let r = 0; r < gridRows; r++) {
+        for (let c = 0; c < gridCols; c++) {
+          if (grid[r][c]) maxRow = Math.max(maxRow, r);
+        }
+      }
+      bestRow = maxRow + 1;
+      console.warn(`Could not fit node ${node.id} in ${district.id}, placing at bottom`);
+    }
+    
+    // Mark grid cells as occupied
+    for (let r = bestRow; r < Math.min(gridRows, bestRow + heightCells); r++) {
+      for (let c = bestCol; c < Math.min(gridCols, bestCol + widthCells); c++) {
+        grid[r][c] = true;
+      }
+    }
+    
+    return {
+      ...node,
+      position: {
+        x: bestCol * gridSize,
+        y: bestRow * gridSize
+      }
+    };
+  });
+}
+
+/**
  * Layout nodes in a district using grid algorithm
  */
 export const layoutNodesInDistrict = (nodes, district, options = {}) => {
   const {
-    mode = 'flow',
-    spacing = 60,
-    startX = 40,
-    startY = 40
+    mode = 'occupancy', // Default to occupancy layout
+    spacing = 80,
+    startX = 50,
+    startY = 50
   } = options;
   
-  const bounds = getDistrictBounds(district);
-  const availableWidth = bounds.width - (startX * 2);
-  
   if (mode === 'grid') {
-    // Grid mode: Arrange in rows/columns with consistent spacing
     return layoutGrid(nodes, district, { spacing, startX, startY });
   } else if (mode === 'flow') {
-    // Flow mode: Left-to-right, wrap to next row
     return layoutFlow(nodes, district, { spacing, startX, startY });
   } else {
-    // Organic mode: Use collision detection (fallback to flow)
-    return layoutFlow(nodes, district, { spacing, startX, startY });
+    // Occupancy mode (default)
+    return layoutOccupancy(nodes, district, { spacing, startX, startY });
   }
 };
 

@@ -177,7 +177,7 @@ const PlacesDock = () => {
     }
   };
 
-  // When collapsed, show only trifold icon
+  // When collapsed, show only trifold map icon
   if (collapsed) {
   return (
       <Panel position="bottom-center" style={{ marginBottom: 80 }}>
@@ -200,7 +200,7 @@ const PlacesDock = () => {
             color: '#64748b'
           }}
         >
-          <Menu size={20} />
+          <Map size={20} />
         </motion.button>
       </Panel>
     );
@@ -224,7 +224,7 @@ const PlacesDock = () => {
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >
-        {/* Trifold icon button to collapse */}
+        {/* Trifold map icon button to collapse */}
         <motion.button
           onClick={handleToggle}
           whileHover={{ scale: 1.1 }}
@@ -243,27 +243,27 @@ const PlacesDock = () => {
             padding: 0
           }}
         >
-          <Menu size={18} />
+          <Map size={18} />
         </motion.button>
 
         {/* Places label - only show on desktop when expanded */}
-        {!isMobile && (
+        {!isMobile && expanded && (
           <>
-    <div style={{
-              display: 'flex', alignItems: 'center', gap: 8, 
-              padding: '0 12px', cursor: 'default', color: '#64748b' 
-            }}>
-              <Map size={18} />
-      {expanded && (
-                <motion.span 
-                  initial={{ opacity: 0, width: 0 }} 
-                  animate={{ opacity: 1, width: 'auto' }}
-                  style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}
-                >
-                  Places
-                </motion.span>
-              )}
-            </div>
+            <motion.span 
+              initial={{ opacity: 0, width: 0 }} 
+              animate={{ opacity: 1, width: 'auto' }}
+              style={{ 
+                fontSize: 13, 
+                fontWeight: 600, 
+                whiteSpace: 'nowrap',
+                padding: '0 8px',
+                color: '#64748b',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              Places
+            </motion.span>
 
             <div style={{ width: 1, height: 24, background: '#e2e8f0' }} />
           </>
@@ -343,16 +343,18 @@ const UniverseLayer = () => {
     ? (universe.audio.source === 'playing-audio' ? 'element' : 'none')
     : 'none';
 
+  return null; // Disabled temporarily - causing WebGL context loss on mobile
+  /*
   return (
     <Panel position="top-left" style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-    <div style={{ 
+    <div style={{
         width: '100vw',
         height: '100vh',
         mixBlendMode: 'overlay',
         opacity: 0.5
       }}>
-        <Canvas 
-          orthographic 
+        <Canvas
+          orthographic
           camera={{ position: [0, 0, 1], zoom: 1, left: -1, right: 1, top: 1, bottom: -1, near: 0.1, far: 10 }}
           style={{ width: '100%', height: '100%' }}
         >
@@ -368,6 +370,7 @@ const UniverseLayer = () => {
       </div>
     </Panel>
   );
+  */
 };
 
 // ==========================================
@@ -613,9 +616,10 @@ function SpatialWorkspace() {
           id: 'app1', type: 'app', position: { x: 0, y: 0 }, parentNode: 'd-studio', style: { width: 600, height: 400 },
           data: { title: 'Arc Browser', type: 'browser', url: 'skins.webamp.org', contentTitle: 'Winamp Skins', image: 'https://placehold.co/600x200/EEE/31343C?text=Winamp+Skins', constraints: { allowNavigation: false } } 
         },
-        { id: 'shader1', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'synthwave-pulse' } },
-        { id: 'shader2', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'focus-rain' } },
-        { id: 'shader3', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'organic-flow' } },
+        // Shader nodes disabled temporarily - causing WebGL issues on mobile
+        // { id: 'shader1', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'synthwave-pulse' } },
+        // { id: 'shader2', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'focus-rain' } },
+        // { id: 'shader3', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'organic-flow' } },
         { id: 'image1', type: 'image', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { url: 'https://placehold.co/400x300/EEE/31343C?text=Creative+Work', title: 'Inspiration' } },
         
         // SYSTEM NODES (Studio)
@@ -656,7 +660,7 @@ function SpatialWorkspace() {
           id: 'skinbrowser1', type: 'skinbrowser', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
           data: { onSkinSelect: (skin) => { setNodes((nds) => nds.map((n) => n.id === 'winamp1' ? { ...n, data: { ...n.data, skinUrl: skin.url } } : n)); } }
         },
-        { id: 'shader4', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { presetId: 'synthwave-pulse' } },
+        // { id: 'shader4', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { presetId: 'synthwave-pulse' } },
       ];
       
       // --- STEP 3: Distribute nodes by category to districts ---
@@ -669,8 +673,8 @@ function SpatialWorkspace() {
         const districtNodes = distribution[district.id] || [];
         if (districtNodes.length > 0) {
           const laidOutNodes = layoutNodesInDistrict(districtNodes, district, { 
-            mode: 'flow', 
-            spacing: 80, 
+            mode: 'occupancy', 
+            spacing: 40, 
             startX: 50, 
             startY: 50 
           });
@@ -682,7 +686,8 @@ function SpatialWorkspace() {
   });
   }, [addLog, setNodes]);
 
-  // Fix initial overlaps after nodes are loaded (only once)
+  // Fix initial overlaps disabled - using robust occupancy layout instead
+  /*
   const [hasFixedOverlaps, setHasFixedOverlaps] = useState(false);
   useEffect(() => {
     if (nodes.length > 0 && !hasFixedOverlaps) {
@@ -694,6 +699,7 @@ function SpatialWorkspace() {
       return () => clearTimeout(timer);
     }
   }, [nodes.length, hasFixedOverlaps, fixInitialOverlaps]);
+  */
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#fdfbf7' }}>
