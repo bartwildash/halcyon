@@ -1,16 +1,16 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  ReactFlow,
-  Background,
+import { 
+  ReactFlow, 
+  Background, 
   Controls,
   MiniMap,
-  useNodesState,
-  useEdgesState,
+  useNodesState, 
+  useEdgesState, 
   addEdge,
   Panel,
   useReactFlow,
   ReactFlowProvider,
-  Handle,
+  Handle, 
   Position
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Terminal, Activity, Box, Database, Cpu, Wifi, Globe, 
   Layers, Lock, Unlock, Mail, Music, Play, Pause, 
-  BookOpen, Palette, Compass, Sprout, Map, Link as LinkIcon 
+  BookOpen, Palette, Compass, Sprout, Map, Link as LinkIcon, Menu 
 } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 
@@ -37,7 +37,6 @@ import { ButterchurnVisualizerNode } from './components/nodes/ButterchurnVisuali
 import { SkinBrowserNode } from './components/nodes/SkinBrowserNode';
 import { SwayWrapper, SmartHandle } from './components/SpatialCommon';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Toolbelt } from './components/toolbelt/Toolbelt';
 import { AudioReactiveBackground } from './components/shaders/AudioReactiveBackground';
 import { useMaterialStore } from './stores/materialStore';
 import { usePersistence } from './hooks/usePersistence';
@@ -48,6 +47,9 @@ import { usePeripheralCables } from './hooks/usePeripheralCables';
 
 // --- CABLES ---
 import { PeripheralCable } from './components/edges/PeripheralCable';
+
+// --- COLLISION DETECTION ---
+import { calculateRepulsionForce, findValidPosition, checkCollision, calculateAdaptivePadding } from './utils/collisionDetection';
 
 // ==========================================
 // 1. DATA & CONSTANTS
@@ -95,7 +97,7 @@ const TerminalDrawer = ({ logs }) => {
     <motion.div 
       initial={{ height: 40 }}
       animate={{ height: open ? 300 : 40 }}
-      style={{ 
+          style={{ 
         position: 'fixed', bottom: 0, left: 0, right: 0, 
         background: '#1e293b', color: '#33ff00', 
         fontFamily: 'monospace', zIndex: 9999,
@@ -118,7 +120,7 @@ const TerminalDrawer = ({ logs }) => {
           <div key={i} style={{ marginBottom: 4 }}>{log}</div>
         ))}
         <div style={{ marginTop: 10, color: '#fff' }}>_</div>
-      </div>
+    </div>
     </motion.div>
   );
 };
@@ -129,6 +131,23 @@ const TerminalDrawer = ({ logs }) => {
 const PlacesDock = () => {
   const { setCenter } = useReactFlow();
   const [expanded, setExpanded] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // 768px breakpoint
+      // On mobile, start collapsed
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const places = [
     { name: 'Study', x: 0, y: 0, color: '#f0f9ff', icon: <BookOpen size={16} /> },
@@ -138,11 +157,52 @@ const PlacesDock = () => {
     { name: 'Toy Room', x: 0, y: 2200, color: '#fef3c7', icon: <Box size={16} /> },
   ];
 
+  const handleToggle = () => {
+    setCollapsed(!collapsed);
+    if (collapsed) {
+      // When expanding, set expanded to true on desktop, false on mobile (icons only)
+      setExpanded(!isMobile);
+    } else {
+      // When collapsing, reset expanded state
+      setExpanded(false);
+    }
+  };
+
+  // When collapsed, show only trifold icon
+  if (collapsed) {
+  return (
+      <Panel position="bottom-center" style={{ marginBottom: 80 }}>
+        <motion.button
+          onClick={handleToggle}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            border: '1px solid rgba(255,255,255,0.5)',
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b'
+          }}
+        >
+          <Menu size={20} />
+        </motion.button>
+      </Panel>
+    );
+  }
+
+  // When expanded, show full toolbar
   return (
     <Panel position="bottom-center" style={{ marginBottom: 80 }}>
       <div 
-        onMouseEnter={() => setExpanded(true)}
-        onMouseLeave={() => setExpanded(false)}
+        onMouseEnter={() => !isMobile && setExpanded(true)}
+        onMouseLeave={() => !isMobile && setExpanded(false)}
         style={{
           display: 'flex',
           gap: 12,
@@ -155,16 +215,52 @@ const PlacesDock = () => {
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
         }}
       >
-        <div style={{ 
-          display: 'flex', alignItems: 'center', gap: 8, 
-          padding: '0 12px', cursor: 'default', color: '#64748b' 
-        }}>
-          <Map size={18} />
-          <span style={{ fontSize: 13, fontWeight: 600 }}>Places</span>
-        </div>
+        {/* Trifold icon button to collapse */}
+        <motion.button
+          onClick={handleToggle}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+      display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b',
+            padding: 0
+          }}
+        >
+          <Menu size={18} />
+        </motion.button>
 
-        <div style={{ width: 1, height: 24, background: '#e2e8f0' }} />
+        {/* Places label - only show on desktop when expanded */}
+        {!isMobile && (
+          <>
+    <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, 
+              padding: '0 12px', cursor: 'default', color: '#64748b' 
+            }}>
+              <Map size={18} />
+      {expanded && (
+                <motion.span 
+                  initial={{ opacity: 0, width: 0 }} 
+                  animate={{ opacity: 1, width: 'auto' }}
+                  style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}
+                >
+                  Places
+                </motion.span>
+              )}
+            </div>
 
+            <div style={{ width: 1, height: 24, background: '#e2e8f0' }} />
+          </>
+        )}
+
+        {/* Place buttons */}
         {places.map((place) => (
           <motion.button
             key={place.name}
@@ -172,7 +268,7 @@ const PlacesDock = () => {
             whileHover={{ scale: 1.1, y: -2 }}
             whileTap={{ scale: 0.95 }}
             style={{
-              width: expanded ? 100 : 40,
+              width: (expanded && !isMobile) ? 100 : 40,
               height: 40,
               borderRadius: 20,
               border: 'none',
@@ -183,14 +279,15 @@ const PlacesDock = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 8,
-              padding: expanded ? '0 16px' : '0',
+              padding: (expanded && !isMobile) ? '0 16px' : '0',
               overflow: 'hidden',
               boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
               transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
           >
             {place.icon}
-            {expanded && (
+            {/* Only show text on desktop when expanded, never on mobile */}
+            {expanded && !isMobile && (
               <motion.span 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }} 
@@ -236,10 +333,10 @@ const UniverseLayer = () => {
   const audioSource = universe.audio?.reactive 
     ? (universe.audio.source === 'playing-audio' ? 'element' : 'none')
     : 'none';
-  
+
   return (
     <Panel position="top-left" style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-      <div style={{
+    <div style={{ 
         width: '100vw',
         height: '100vh',
         mixBlendMode: 'overlay',
@@ -268,11 +365,12 @@ const UniverseLayer = () => {
 // 6. MAIN WORKSPACE COMPONENT
 // ==========================================
 function SpatialWorkspace() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChangeBase] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [logs, setLogs] = useState(["> Terra OS v1.0 initialized...", "> Waiting for agent authorization..."]);
-  const { setCenter } = useReactFlow();
-  
+  const { setCenter, getNodes } = useReactFlow();
+  const [draggingNodeId, setDraggingNodeId] = useState(null);
+
   // Helper to add logs from inside nodes
   const addLog = useCallback((msg) => setLogs(p => [...p, msg]), []);
 
@@ -295,9 +393,165 @@ function SpatialWorkspace() {
     }
   }, [setCenter, addLog]);
 
+  // Track when dragging starts
+  const onNodeDragStart = useCallback((event, node) => {
+    if (node.type !== 'district' && node.draggable !== false) {
+      setDraggingNodeId(node.id);
+    }
+  }, []);
+
+  // MAGNETIC REPULSION DURING DRAG
+  const onNodeDrag = useCallback((event, node) => {
+    // Skip districts and non-draggable nodes
+    if (node.type === 'district' || node.draggable === false) return;
+    
+    const allNodes = getNodes();
+    const otherNodes = allNodes.filter(n => 
+      n.id !== node.id && 
+      n.type !== 'district' && 
+      n.parentNode === node.parentNode
+    );
+    
+    let totalRepulsionX = 0;
+    let totalRepulsionY = 0;
+    
+    otherNodes.forEach(otherNode => {
+      const repulsion = calculateRepulsionForce(node, otherNode, allNodes);
+      if (repulsion.strength > 0.05) {
+        // Increased damping from 0.3 to 0.5 for stronger repulsion
+        totalRepulsionX += repulsion.deltaX * repulsion.strength * 0.5;
+        totalRepulsionY += repulsion.deltaY * repulsion.strength * 0.5;
+      }
+    });
+    
+    // Apply repulsion to node position (feels like magnetic resistance)
+    if (Math.abs(totalRepulsionX) > 0.1 || Math.abs(totalRepulsionY) > 0.1) {
+      // Use requestAnimationFrame to ensure smooth updates
+      requestAnimationFrame(() => {
+        setNodes((nds) => nds.map((n) => 
+          n.id === node.id 
+            ? { ...n, position: { 
+                x: n.position.x + totalRepulsionX, 
+                y: n.position.y + totalRepulsionY 
+              }}
+            : n
+        ));
+      });
+    }
+  }, [getNodes, setNodes]);
+
+  // SNAP TO VALID POSITION ON RELEASE
+  const onNodeDragStop = useCallback((event, node) => {
+    setDraggingNodeId(null);
+    if (node.type === 'district' || node.draggable === false) return;
+    
+    const allNodes = getNodes();
+    const validPos = findValidPosition(node, allNodes, node.position);
+    
+    // Snap to valid position if different (with small threshold to avoid jitter)
+    const threshold = 1;
+    if (Math.abs(validPos.x - node.position.x) > threshold || 
+        Math.abs(validPos.y - node.position.y) > threshold) {
+      setNodes((nds) => nds.map((n) => 
+        n.id === node.id 
+          ? { ...n, position: validPos }
+          : n
+      ));
+    }
+  }, [getNodes, setNodes]);
+
+  // Enhanced onNodesChange with collision handling during drag
+  const onNodesChange = useCallback((changes) => {
+    onNodesChangeBase(changes);
+    
+    // Apply repulsion if a node is being dragged
+    if (draggingNodeId) {
+      const allNodes = getNodes();
+      const draggedNode = allNodes.find(n => n.id === draggingNodeId);
+      
+      if (draggedNode && draggedNode.type !== 'district' && draggedNode.draggable !== false) {
+        const otherNodes = allNodes.filter(n => 
+          n.id !== draggedNode.id && 
+          n.type !== 'district' && 
+          n.parentNode === draggedNode.parentNode
+        );
+        
+        let totalRepulsionX = 0;
+        let totalRepulsionY = 0;
+        
+        otherNodes.forEach(otherNode => {
+          const repulsion = calculateRepulsionForce(draggedNode, otherNode, allNodes);
+          if (repulsion.strength > 0.05) {
+            totalRepulsionX += repulsion.deltaX * repulsion.strength * 0.4;
+            totalRepulsionY += repulsion.deltaY * repulsion.strength * 0.4;
+          }
+        });
+        
+        // Apply repulsion if significant
+        if (Math.abs(totalRepulsionX) > 0.5 || Math.abs(totalRepulsionY) > 0.5) {
+          requestAnimationFrame(() => {
+            setNodes((nds) => nds.map((n) => 
+              n.id === draggedNode.id 
+                ? { ...n, position: { 
+                    x: n.position.x + totalRepulsionX, 
+                    y: n.position.y + totalRepulsionY 
+                  }}
+                : n
+            ));
+          });
+        }
+      }
+    }
+  }, [onNodesChangeBase, draggingNodeId, getNodes, setNodes]);
+
+  // FIX INITIAL OVERLAPS ON LOAD
+  const fixInitialOverlaps = useCallback(() => {
+    const allNodes = getNodes();
+    const nodesToFix = allNodes.filter(n => 
+      n.type !== 'district' && 
+      n.draggable !== false
+    );
+    
+    let hasChanges = false;
+    const updatedNodes = nodesToFix.map(node => {
+      const otherNodes = allNodes.filter(n => 
+        n.id !== node.id && 
+        n.type !== 'district' && 
+        n.parentNode === node.parentNode
+      );
+      
+      // Check for collisions
+      let hasCollision = false;
+      for (const otherNode of otherNodes) {
+        const padding = calculateAdaptivePadding(node, otherNode);
+        const collision = checkCollision(node, otherNode, padding);
+        if (collision.colliding) {
+          hasCollision = true;
+          break;
+        }
+      }
+      
+      if (hasCollision) {
+        hasChanges = true;
+        const validPos = findValidPosition(node, allNodes, node.position);
+        return { ...node, position: validPos };
+      }
+      return node;
+    });
+    
+    if (hasChanges) {
+      setNodes((nds) => nds.map(n => {
+        const updated = updatedNodes.find(un => un.id === n.id);
+        return updated || n;
+      }));
+    }
+  }, [getNodes, setNodes]);
+
   // INITIAL STATE SETUP
   useEffect(() => {
     setNodes((prevNodes) => {
+      if (prevNodes.length > 0) return prevNodes; // Don't reset if nodes already exist
+      
       // Structure definition
       const initialStructure = [
       // --- DISTRICTS (The Containers) ---
@@ -323,7 +577,7 @@ function SpatialWorkspace() {
       // Graph View (Center)
       {
         id: 'graph1', type: 'graph', position: { x: 100, y: 350 }, parentNode: 'd-study', style: { width: 500, height: 400 },
-        data: {
+        data: { 
           nodes: [
             { id: 'n1', label: 'Payment Terminal', type: 'agent', x: 100, y: 100 },
             { id: 'n2', label: 'Sentiment Analysis', type: 'agent', x: 300, y: 100 },
@@ -359,23 +613,6 @@ function SpatialWorkspace() {
       { id: 'time1', type: 'pomodoro', position: { x: 800, y: 50 }, parentNode: 'd-studio' },
       { id: 'flipclock1', type: 'flipclock', position: { x: 800, y: 300 }, parentNode: 'd-studio' },
       
-      // Winamp (Bottom Left)
-      {
-        id: 'winamp1', type: 'winamp', position: { x: 50, y: 550 }, parentNode: 'd-studio',
-        data: { tracks: [], skinUrl: "/skins/Nucleo-NLog-2G1.wsz", enableButterchurn: true }
-      },
-      
-      // Visualizer (Center Bottom)
-      {
-        id: 'butterchurn1', type: 'butterchurn', position: { x: 400, y: 550 }, parentNode: 'd-studio',
-        data: { width: 400, height: 300, audioSource: 'webamp', presetName: 'Default' }
-      },
-      
-      // Skin Browser (Right Bottom)
-      {
-        id: 'skinbrowser1', type: 'skinbrowser', position: { x: 850, y: 550 }, parentNode: 'd-studio',
-        data: { onSkinSelect: (skin) => { setNodes((nds) => nds.map((n) => n.id === 'winamp1' ? { ...n, data: { ...n.data, skinUrl: skin.url } } : n)); } }
-      },
       
       // Shaders (Far Right Column)
       { id: 'shader1', type: 'shader', position: { x: 1100, y: 50 }, parentNode: 'd-studio', data: { presetId: 'synthwave-pulse' } },
@@ -412,6 +649,7 @@ function SpatialWorkspace() {
       { id: 'act-link', type: 'action', position: { x: 450, y: 450 }, parentNode: 'd-garden', data: { label: 'FaceTime Link', icon: <LinkIcon size={28} />, color: '#94a3b8' } },
 
       // --- TOY ROOM CONTENT (0, 2200) ---
+      // Row 1: Games & Instruments
       // Chess (Left)
       { id: 'toy-chess', type: 'chess', position: { x: 100, y: 100 }, parentNode: 'd-toyroom', data: { playerColor: 'white', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' } },
       // Synth (Left Center)
@@ -419,12 +657,42 @@ function SpatialWorkspace() {
       // Drum Machine (Right Center)
       { id: 'toy-drums', type: 'drummachine', position: { x: 900, y: 100 }, parentNode: 'd-toyroom', data: { bpm: 120 } },
       // Sticker Pack (Right)
-      { id: 'sticker-pack-1', type: 'stickerpack', position: { x: 1400, y: 100 }, parentNode: 'd-toyroom', data: { packName: 'Retro GIFs', stickers: [{ name: 'Nyan Cat', url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif' }, { name: 'Dancing Banana', url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif' }] } }
+      { id: 'sticker-pack-1', type: 'stickerpack', position: { x: 1400, y: 100 }, parentNode: 'd-toyroom', data: { packName: 'Retro GIFs', stickers: [{ name: 'Nyan Cat', url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif' }, { name: 'Dancing Banana', url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif' }] } },
+      
+      // Row 2: Music & Media
+      // Winamp (Left)
+      {
+        id: 'winamp1', type: 'winamp', position: { x: 100, y: 450 }, parentNode: 'd-toyroom',
+        data: { tracks: [], skinUrl: "/skins/Nucleo-NLog-2G1.wsz", enableButterchurn: true }
+      },
+      // Visualizer (Center Left)
+      {
+        id: 'butterchurn1', type: 'butterchurn', position: { x: 450, y: 450 }, parentNode: 'd-toyroom',
+        data: { width: 400, height: 300, audioSource: 'webamp', presetName: 'Default' }
+      },
+      // Skin Browser (Center Right)
+      {
+        id: 'skinbrowser1', type: 'skinbrowser', position: { x: 900, y: 450 }, parentNode: 'd-toyroom',
+        data: { onSkinSelect: (skin) => { setNodes((nds) => nds.map((n) => n.id === 'winamp1' ? { ...n, data: { ...n.data, skinUrl: skin.url } } : n)); } }
+      }
     ];
     
     return initialStructure;
   });
   }, [addLog, setNodes]);
+
+  // Fix initial overlaps after nodes are loaded (only once)
+  const [hasFixedOverlaps, setHasFixedOverlaps] = useState(false);
+  useEffect(() => {
+    if (nodes.length > 0 && !hasFixedOverlaps) {
+      // Small delay to ensure ReactFlow has processed the nodes
+      const timer = setTimeout(() => {
+        fixInitialOverlaps();
+        setHasFixedOverlaps(true);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [nodes.length, hasFixedOverlaps, fixInitialOverlaps]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#fdfbf7' }}>
@@ -432,9 +700,9 @@ function SpatialWorkspace() {
         <ReactFlow 
           nodes={nodes} edges={edges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
           onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
-          onNodeDragStop={(e, node) => {
-            // Optional: Snap logic could go here
-          }}
+          onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
+          onNodeDragStop={onNodeDragStop}
           onNodeDoubleClick={onNodeDoubleClick}
           fitView minZoom={0.2} maxZoom={2}
           style={{ background: 'transparent' }}
@@ -443,7 +711,6 @@ function SpatialWorkspace() {
           <PlacesDock />
         </ReactFlow>
         <TerminalDrawer logs={logs} />
-        <Toolbelt />
     </div>
   );
 }
@@ -465,7 +732,7 @@ export default function App() {
   return (
     <ReactFlowProvider>
       <ErrorBoundary>
-        <SpatialWorkspace />
+      <SpatialWorkspace />
       </ErrorBoundary>
     </ReactFlowProvider>
   );
