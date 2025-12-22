@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  background: #fdfbf7;
+  color: #374151;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* PERIPHERAL ANIMATIONS */
+@keyframes peripheral-bloom {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes ripple {
+  0% { box-shadow: 0 0 0 0 rgba(var(--p-color), 0.5); }
+  100% { box-shadow: 0 0 0 24px rgba(var(--p-color), 0); }
+}
+
+@keyframes type-in {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.peripheral-chip {
+  animation: peripheral-bloom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.peripheral-port:active {
+  transform: scale(0.9);
+}
+
+/* WINAMP INTEGRATION */
+/* Ensure Webamp's UI is interactive and doesn't interfere with ReactFlow */
+.react-flow__node[data-type="winamp"] {
+  pointer-events: auto;
+}
+
+.react-flow__node[data-type="winamp"] > * {
+  pointer-events: auto;
+}
+
+/* Webamp creates its own window structure - ensure it's clickable */
+.react-flow__node[data-type="winamp"] canvas,
+.react-flow__node[data-type="winamp"] button,
+.react-flow__node[data-type="winamp"] input {
+  pointer-events: auto;
+  cursor: default;
+}
+
+/* Force Webamp to render inline within its container instead of fixed positioning */
+.webamp-container #webamp {
+  position: relative !important;
+}
+
+.webamp-container #webamp > div {
+  position: absolute !important;
+  transform: none !important;
+}
