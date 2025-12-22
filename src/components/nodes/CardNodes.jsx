@@ -176,26 +176,6 @@ export const ContactNode = ({ data }) => {
               border: '1px solid rgba(0,0,0,0.05)'
             }}
           >
-            {/* FaceTime */}
-            <motion.button
-              className="nodrag"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                width: 32, height: 32,
-                borderRadius: '50%',
-                background: '#4ade80',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: '#fff'
-              }}
-            >
-              <Video size={16} />
-            </motion.button>
-
             {/* Phone */}
             <motion.button
               className="nodrag"

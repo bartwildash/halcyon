@@ -2,43 +2,55 @@
 import { useEffect, useRef } from 'react';
 
 export const usePersistence = (nodes, setNodes, edges, setEdges) => {
-  // Bump version to v4 to force layout reset for user
-  const STORAGE_KEY = 'spatialos-state-v4'; // Updated for improved layout
+  // Bump version to v6 to force layout reset with bounds enforcement
+  const STORAGE_KEY = 'spatialos-state-v6'; // Updated for bounds-enforced layout
   const loadedRef = useRef(false);
 
   // Load persistence ONLY after nodes have been initialized with their structure
+  // Delay loading to allow layout algorithm to run first
   useEffect(() => {
     if (nodes.length === 0 || loadedRef.current) return;
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const { nodes: savedNodes, edges: savedEdges } = JSON.parse(saved);
-        
-        setNodes((currentNodes) => {
-          return currentNodes.map(node => {
-            const savedNode = savedNodes.find(n => n.id === node.id);
-            if (savedNode) {
-              return { 
-                ...node, 
-                position: savedNode.position,
-                // We could restore other data here if needed
-              };
-            }
-            return node;
+    // Wait a bit to ensure layout has run
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const { nodes: savedNodes, edges: savedEdges } = JSON.parse(saved);
+          
+          // Only restore positions for nodes that were manually moved (not at default layout positions)
+          setNodes((currentNodes) => {
+            return currentNodes.map(node => {
+              const savedNode = savedNodes.find(n => n.id === node.id);
+              if (savedNode) {
+                // Only restore if position is significantly different from (0,0) or (50,50)
+                // This prevents restoring old (0,0) positions that override the layout
+                const isDefaultPos = savedNode.position.x < 10 && savedNode.position.y < 10;
+                if (!isDefaultPos) {
+                  return { 
+                    ...node, 
+                    position: savedNode.position,
+                  };
+                }
+              }
+              return node;
+            });
           });
-        });
 
-        // Edges logic could go here
-        
-        loadedRef.current = true;
-        console.log("SpatialOS: State restored from persistence (v2).");
-      } catch (e) {
-        console.error("Failed to load state", e);
+          // Edges logic could go here
+          
+          loadedRef.current = true;
+          console.log("SpatialOS: State restored from persistence (v6).");
+        } catch (e) {
+          console.error("Failed to load state", e);
+          loadedRef.current = true;
+        }
+      } else {
+        loadedRef.current = true; // No saved state, but we tried
       }
-    } else {
-      loadedRef.current = true; // No saved state, but we tried
-    }
+    }, 100); // Small delay to let layout run first
+
+    return () => clearTimeout(timer);
   }, [nodes.length, setNodes]);
 
   // Save on change

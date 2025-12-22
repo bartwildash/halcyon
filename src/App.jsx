@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { 
   ReactFlow, 
   Background, 
@@ -383,6 +383,10 @@ function SpatialWorkspace() {
   const { setCenter, getNodes } = useReactFlow();
   const [draggingNodeId, setDraggingNodeId] = useState(null);
 
+  // Memoize nodeTypes and edgeTypes to prevent React Flow warnings
+  const memoizedNodeTypes = useMemo(() => nodeTypes, []);
+  const memoizedEdgeTypes = useMemo(() => edgeTypes, []);
+
   // Helper to add logs from inside nodes
   const addLog = useCallback((msg) => setLogs(p => [...p, msg]), []);
 
@@ -519,19 +523,23 @@ function SpatialWorkspace() {
   // FIX INITIAL OVERLAPS ON LOAD
   const fixInitialOverlaps = useCallback(() => {
     const allNodes = getNodes();
-    const nodesToFix = allNodes.filter(n => 
-      n.type !== 'district' && 
+    const districts = allNodes.filter(n => n.type === 'district');
+    const nodesToFix = allNodes.filter(n =>
+      n.type !== 'district' &&
       n.draggable !== false
     );
-    
+
     let hasChanges = false;
     const updatedNodes = nodesToFix.map(node => {
-      const otherNodes = allNodes.filter(n => 
-        n.id !== node.id && 
-        n.type !== 'district' && 
+      const otherNodes = allNodes.filter(n =>
+        n.id !== node.id &&
+        n.type !== 'district' &&
         n.parentNode === node.parentNode
       );
-      
+
+      // Find the parent district for bounds checking
+      const parentDistrict = districts.find(d => d.id === node.parentNode);
+
       // Check for collisions
       let hasCollision = false;
       for (const otherNode of otherNodes) {
@@ -542,20 +550,43 @@ function SpatialWorkspace() {
           break;
         }
       }
-      
+
+      // Also check if node is outside district bounds
+      if (parentDistrict && !hasCollision) {
+        const nodeBounds = getNodeBounds(node);
+        const districtWidth = parentDistrict.style?.width || 1200;
+        const districtHeight = parentDistrict.style?.height || 1000;
+        const padding = 50;
+
+        const isOutOfBounds = (
+          node.position.x < padding ||
+          node.position.y < padding ||
+          node.position.x + nodeBounds.width > districtWidth - padding ||
+          node.position.y + nodeBounds.height > districtHeight - padding
+        );
+
+        if (isOutOfBounds) {
+          hasCollision = true;
+        }
+      }
+
       if (hasCollision) {
         hasChanges = true;
-        const validPos = findValidPosition(node, allNodes, node.position);
+        const validPos = findValidPosition(node, allNodes, node.position, parentDistrict, 50);
+        console.log(`Fixed overlap for ${node.id}: ${JSON.stringify(node.position)} -> ${JSON.stringify(validPos)}`);
         return { ...node, position: validPos };
       }
       return node;
     });
-    
+
     if (hasChanges) {
+      console.log(`fixInitialOverlaps: Fixed ${updatedNodes.filter(n => nodesToFix.find(nf => nf.id === n.id && (nf.position.x !== n.position.x || nf.position.y !== n.position.y))).length} nodes`);
       setNodes((nds) => nds.map(n => {
         const updated = updatedNodes.find(un => un.id === n.id);
         return updated || n;
       }));
+    } else {
+      console.log('fixInitialOverlaps: No overlaps detected');
     }
   }, [getNodes, setNodes]);
 
@@ -678,34 +709,38 @@ function SpatialWorkspace() {
             startX: 50, 
             startY: 50 
           });
+          console.log(`Layout for ${district.id}:`, laidOutNodes.map(n => ({ id: n.id, pos: n.position })));
           finalNodes.push(...laidOutNodes);
         }
       });
       
+      console.log('Total nodes after layout:', finalNodes.length);
       return finalNodes;
   });
   }, [addLog, setNodes]);
 
-  // Fix initial overlaps disabled - using robust occupancy layout instead
-  /*
+  // Fix initial overlaps after layout and persistence load
   const [hasFixedOverlaps, setHasFixedOverlaps] = useState(false);
   useEffect(() => {
     if (nodes.length > 0 && !hasFixedOverlaps) {
-      // Longer delay to ensure ReactFlow has fully processed and rendered nodes
+      // Delay to ensure:
+      // 1. ReactFlow has fully processed and rendered nodes
+      // 2. Persistence hook has loaded (100ms delay in usePersistence)
+      // 3. Layout algorithm has run
       const timer = setTimeout(() => {
+        console.log('Running fixInitialOverlaps after layout and persistence...');
         fixInitialOverlaps();
         setHasFixedOverlaps(true);
-      }, 800);
+      }, 1000); // 1 second delay to ensure everything is ready
       return () => clearTimeout(timer);
     }
   }, [nodes.length, hasFixedOverlaps, fixInitialOverlaps]);
-  */
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#fdfbf7' }}>
         <UniverseLayer />
         <ReactFlow 
-          nodes={nodes} edges={edges} nodeTypes={nodeTypes} edgeTypes={edgeTypes}
+          nodes={nodes} edges={edges} nodeTypes={memoizedNodeTypes} edgeTypes={memoizedEdgeTypes}
           onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
           onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}

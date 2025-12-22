@@ -6,16 +6,9 @@ import { SwayWrapper } from '../SpatialCommon';
 import { useMaterialStore } from '../../stores/materialStore';
 import { PlaylistManager } from '../PlaylistManager';
 
-// Default demo track
-const DEFAULT_TRACKS = [
-  {
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    metaData: {
-      artist: "SoundHelix",
-      title: "Song 1"
-    }
-  }
-];
+// Default demo track - empty array to avoid CORS issues
+// Users can add their own tracks via the playlist manager
+const DEFAULT_TRACKS = [];
 
 // Expose Webamp methods for external control
 export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {

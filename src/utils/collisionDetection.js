@@ -218,53 +218,86 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
 /**
  * Find a valid position for a node that doesn't collide with others
  * Uses spiral search pattern from preferred position
+ * @param {Object} node - The node to position
+ * @param {Array} allNodes - All nodes in the canvas
+ * @param {Object} preferredPosition - Preferred starting position {x, y}
+ * @param {Object} district - Optional parent district for bounds checking
+ * @param {number} padding - Optional padding from district edges (default: 50)
  */
-export const findValidPosition = (node, allNodes, preferredPosition) => {
+export const findValidPosition = (node, allNodes, preferredPosition, district = null, padding = 50) => {
   // Filter to only check nodes in same parent
-  const otherNodes = allNodes.filter(n => 
-    n.id !== node.id && 
-    n.type !== 'district' && 
+  const otherNodes = allNodes.filter(n =>
+    n.id !== node.id &&
+    n.type !== 'district' &&
     n.parentNode === node.parentNode
   );
-  
+
+  // Helper to check if position is within district bounds
+  const isWithinDistrictBounds = (pos, nodeBounds) => {
+    if (!district) return true; // No district constraint
+
+    const districtWidth = district.style?.width || 1200;
+    const districtHeight = district.style?.height || 1000;
+
+    // Check if node fits within district with padding
+    return (
+      pos.x >= padding &&
+      pos.y >= padding &&
+      pos.x + nodeBounds.width <= districtWidth - padding &&
+      pos.y + nodeBounds.height <= districtHeight - padding
+    );
+  };
+
   // Check if preferred position is valid
   const testNode = { ...node, position: preferredPosition };
+  const nodeBounds = getNodeBounds(testNode);
   let hasCollision = false;
   let minPadding = 0;
-  
-  for (const otherNode of otherNodes) {
-    const padding = calculateAdaptivePadding(testNode, otherNode);
-    minPadding = Math.max(minPadding, padding);
-    const collision = checkCollision(testNode, otherNode, padding);
-    if (collision.colliding) {
-      hasCollision = true;
-      break;
+
+  // Check bounds first
+  if (!isWithinDistrictBounds(preferredPosition, nodeBounds)) {
+    hasCollision = true; // Force search if out of bounds
+  } else {
+    // Check collisions
+    for (const otherNode of otherNodes) {
+      const padding = calculateAdaptivePadding(testNode, otherNode);
+      minPadding = Math.max(minPadding, padding);
+      const collision = checkCollision(testNode, otherNode, padding);
+      if (collision.colliding) {
+        hasCollision = true;
+        break;
+      }
     }
   }
-  
+
   if (!hasCollision) {
     return preferredPosition;
   }
-  
+
   // Spiral search pattern
-  const bounds = getNodeBounds(testNode);
-  const stepSize = Math.max(bounds.width, bounds.height) * 0.1;
+  const stepSize = Math.max(nodeBounds.width, nodeBounds.height) * 0.1;
   const maxRadius = 2000; // Max search radius
   const maxIterations = 100; // Prevent infinite loops
-  
+
   for (let radius = stepSize; radius < maxRadius; radius += stepSize) {
     // Try positions in a spiral
     const angleStep = Math.PI / 8; // 8 directions per radius
     const positionsPerRadius = Math.floor((2 * Math.PI) / angleStep);
-    
+
     for (let i = 0; i < positionsPerRadius && i < maxIterations; i++) {
       const angle = (i * angleStep) + (radius / stepSize) * 0.5; // Slight rotation per radius
       const testX = preferredPosition.x + Math.cos(angle) * radius;
       const testY = preferredPosition.y + Math.sin(angle) * radius;
-      
+
       const testPos = { x: testX, y: testY };
       const testNodePos = { ...node, position: testPos };
-      
+
+      // Check bounds first
+      if (!isWithinDistrictBounds(testPos, nodeBounds)) {
+        continue; // Skip positions outside district
+      }
+
+      // Check collisions
       let valid = true;
       for (const otherNode of otherNodes) {
         const padding = calculateAdaptivePadding(testNodePos, otherNode);
@@ -274,13 +307,24 @@ export const findValidPosition = (node, allNodes, preferredPosition) => {
           break;
         }
       }
-      
+
       if (valid) {
         return testPos;
       }
     }
   }
-  
+
+  // If no valid position found, clamp to district bounds if district provided
+  if (district) {
+    const districtWidth = district.style?.width || 1200;
+    const districtHeight = district.style?.height || 1000;
+
+    return {
+      x: Math.max(padding, Math.min(preferredPosition.x, districtWidth - nodeBounds.width - padding)),
+      y: Math.max(padding, Math.min(preferredPosition.y, districtHeight - nodeBounds.height - padding))
+    };
+  }
+
   // If no valid position found, return preferred (will have collision but better than nothing)
   return preferredPosition;
 };

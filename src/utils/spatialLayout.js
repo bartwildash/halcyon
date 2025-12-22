@@ -150,8 +150,8 @@ export function layoutOccupancy(nodes, district, options = {}) {
         
         // Check all cells this node would occupy
         for (let ir = 0; ir < heightCells; ir++) {
-          for (let ic = 0; ir < widthCells; ic++) {
-            if (grid[r + ir][c + ic]) {
+          for (let ic = 0; ic < widthCells; ic++) {
+            if (grid[r + ir] && grid[r + ir][c + ic]) {
               fits = false;
               break;
             }
@@ -167,32 +167,81 @@ export function layoutOccupancy(nodes, district, options = {}) {
       }
     }
     
-    // If no space found, place at next available vertical slot (fallback)
+    // If no space found, check if node is too large for district
     if (bestCol === -1) {
-      bestCol = startCol;
-      // Find the lowest occupied row
-      let maxRow = startRow;
-      for (let r = 0; r < gridRows; r++) {
-        for (let c = 0; c < gridCols; c++) {
-          if (grid[r][c]) maxRow = Math.max(maxRow, r);
+      // Check if node is too tall for the district
+      if (nodeBounds.height > bounds.height - (startY * 2)) {
+        console.warn(`Node ${node.id} (height: ${nodeBounds.height}px) exceeds district ${district.id} height (${bounds.height}px). Consider resizing the node or district.`);
+        // Place at top-left anyway, but it will overflow
+        bestCol = startCol;
+        bestRow = startRow;
+      } else {
+        // Node fits but no space found - use smarter fallback
+        console.warn(`Node ${node.id} could not find free space in ${district.id}. Using fallback placement.`);
+
+        // Try to find rightmost occupied column and place to its right
+        let maxCol = startCol;
+        let maxRow = startRow;
+        for (let r = 0; r < gridRows; r++) {
+          for (let c = 0; c < gridCols; c++) {
+            if (grid[r] && grid[r][c]) {
+              maxCol = Math.max(maxCol, c);
+              maxRow = Math.max(maxRow, r);
+            }
+          }
+        }
+
+        // Try placing to the right first
+        if (maxCol + widthCells + 1 < gridCols) {
+          bestCol = maxCol + 1;
+          bestRow = startRow;
+        } else {
+          // Otherwise place below
+          bestCol = startCol;
+          bestRow = Math.min(maxRow + 1, gridRows - heightCells);
+          if (bestRow < startRow) bestRow = startRow;
         }
       }
-      bestRow = maxRow + 1;
-      console.warn(`Could not fit node ${node.id} in ${district.id}, placing at bottom`);
     }
     
-    // Mark grid cells as occupied
+    // Mark grid cells as occupied (with bounds checking)
     for (let r = bestRow; r < Math.min(gridRows, bestRow + heightCells); r++) {
-      for (let c = bestCol; c < Math.min(gridCols, bestCol + widthCells); c++) {
-        grid[r][c] = true;
+      if (grid[r]) {
+        for (let c = bestCol; c < Math.min(gridCols, bestCol + widthCells); c++) {
+          grid[r][c] = true;
+        }
       }
     }
     
+    // Convert grid coordinates back to pixel positions
+    // bestCol and bestRow are grid cell indices, so multiply by gridSize
+    const pixelX = bestCol * gridSize;
+    const pixelY = bestRow * gridSize;
+    
+    // Ensure positions are at least at startX/startY (padding)
+    let finalX = Math.max(pixelX, startX);
+    let finalY = Math.max(pixelY, startY);
+
+    // BOUNDS ENFORCEMENT: Clamp position to keep node fully inside district
+    const maxX = bounds.width - nodeBounds.width - startX;
+    const maxY = bounds.height - nodeBounds.height - startY;
+
+    finalX = Math.min(finalX, Math.max(startX, maxX));
+    finalY = Math.min(finalY, Math.max(startY, maxY));
+
+    // If node is too large to fit, place at top-left with warning
+    if (nodeBounds.width > bounds.width - (startX * 2) ||
+        nodeBounds.height > bounds.height - (startY * 2)) {
+      console.warn(`Node ${node.id} (${nodeBounds.width}x${nodeBounds.height}) is too large for district ${district.id} (${bounds.width}x${bounds.height}). Clamping to top-left.`);
+      finalX = startX;
+      finalY = startY;
+    }
+
     return {
       ...node,
       position: {
-        x: bestCol * gridSize,
-        y: bestRow * gridSize
+        x: finalX,
+        y: finalY
       }
     };
   });
@@ -296,8 +345,12 @@ function layoutFlow(nodes, district, options) {
     
     // Ensure we don't go beyond district bounds
     if (currentY + nodeHeight > bounds.height - startY) {
-      // If we're out of vertical space, just place it (will be handled by collision detection)
-      console.warn(`Node ${node.id} exceeds district height`);
+      // If we're out of vertical space, clamp to district bounds
+      currentY = Math.max(startY, bounds.height - startY - nodeHeight);
+      // Only warn if node is actually too large for the district
+      if (nodeHeight > bounds.height - (startY * 2)) {
+        console.warn(`Node ${node.id} (height: ${nodeHeight}px) is too large for district ${district.id} (height: ${bounds.height}px)`);
+      }
     }
     
     const position = { x: currentX, y: currentY };

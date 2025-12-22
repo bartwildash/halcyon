@@ -18,6 +18,7 @@ export const ButterchurnVisualizerNode = ({ data }) => {
   const rafIdRef = useRef(null);
   
   const [presetName, setPresetName] = useState(data.presetName || 'Default');
+  const [webglError, setWebglError] = useState(null);
   const { universe, setUniverse, audioRef } = useMaterialStore();
   const isUniverse = universe?.type === 'butterchurn' && universe?.id === data.id;
 
@@ -29,23 +30,53 @@ export const ButterchurnVisualizerNode = ({ data }) => {
 
     // Initialize Butterchurn with Singleton AudioContext
     const initVisualizer = async () => {
-      const ctx = await getGlobalAudioContext();
-      audioContextRef.current = ctx;
-      
-      const canvas = canvasRef.current;
-      
-      // Set canvas size
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width || 400;
-      canvas.height = rect.height || 300;
+      try {
+        const ctx = await getGlobalAudioContext();
+        audioContextRef.current = ctx;
+        
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        // Set canvas size
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width || 400;
+        canvas.height = rect.height || 300;
 
-      const visualizer = butterchurn.createVisualizer(ctx, canvas, {
-        width: canvas.width,
-        height: canvas.height,
-        pixelRatio: window.devicePixelRatio || 1,
-      });
+        // Check WebGL support
+        const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+        if (!gl) {
+          throw new Error('WebGL not supported on this device');
+        }
 
-      visualizerRef.current = visualizer;
+        const visualizer = butterchurn.createVisualizer(ctx, canvas, {
+          width: canvas.width,
+          height: canvas.height,
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2), // Limit pixel ratio on mobile
+        });
+
+        visualizerRef.current = visualizer;
+        
+        // Handle WebGL context loss (common on mobile)
+        canvas.addEventListener('webglcontextlost', (e) => {
+          e.preventDefault();
+          console.warn('WebGL context lost - Butterchurn will pause');
+          setWebglError('WebGL context lost. Refresh to restore.');
+          if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+          }
+        });
+
+        canvas.addEventListener('webglcontextrestored', () => {
+          console.log('WebGL context restored - reinitializing Butterchurn');
+          setWebglError(null);
+          initVisualizer(); // Reinitialize
+        });
+      } catch (error) {
+        console.error('Butterchurn initialization failed:', error);
+        setWebglError(error.message || 'WebGL initialization failed');
+        return;
+      }
 
       // Load preset
       const presets = butterchurnPresets;
@@ -186,14 +217,34 @@ export const ButterchurnVisualizerNode = ({ data }) => {
       }}>
         {/* Visualizer Canvas */}
         <div style={{ flex: 1, position: 'relative', background: '#000' }}>
-          <canvas
-            ref={canvasRef}
-            style={{
+          {webglError ? (
+            <div style={{
               width: '100%',
               height: '100%',
-              display: 'block',
-            }}
-          />
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              color: '#fff',
+              padding: 20,
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: 14, marginBottom: 8 }}>⚠️ WebGL Error</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>{webglError}</div>
+              <div style={{ fontSize: 11, opacity: 0.5, marginTop: 8 }}>
+                WebGL may not be supported on this device
+              </div>
+            </div>
+          ) : (
+            <canvas
+              ref={canvasRef}
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'block',
+              }}
+            />
+          )}
         </div>
 
         {/* Controls */}
