@@ -671,7 +671,6 @@ function SpatialWorkspace() {
         { id: 'c-ashley', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Ashley Rice', image: 'https://i.pravatar.cc/150?u=ashley' } },
         { id: 'c-maya', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Dr. Maya Patel', initials: 'MP', color: '#fce7f3', role: 'Research Lead', online: true } },
         { id: 'c-james', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Prof. James Wu', initials: 'JW', color: '#dbeafe', role: 'Advisor' } },
-        { id: 'act-link', type: 'action', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { label: 'FaceTime Link', icon: <LinkIcon size={28} />, color: '#94a3b8' } },
         { id: 'p-to-studio', type: 'portal', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { destinationName: 'Studio District', targetX: 1600, targetY: 500, log: addLog } },
         
         // PLAY NODES (Toy Room)
