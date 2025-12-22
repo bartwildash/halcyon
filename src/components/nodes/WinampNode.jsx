@@ -182,13 +182,21 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        borderRadius: 16,
-        padding: 16,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-        border: '1px solid #334155',
-      }}>
+      <div
+        style={{
+          filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
+          perspective: '1000px',
+          cursor: 'grab',
+          userSelect: 'none',
+        }}
+      >
+        <div style={{
+          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          borderRadius: 16,
+          padding: 16,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          border: '1px solid #334155',
+        }}>
         <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -273,6 +281,7 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
             </div>
           )}
         </div>
+      </div>
       </div>
     </SwayWrapper>
   );
