@@ -7,29 +7,32 @@
  * Default node sizes by type
  */
 const DEFAULT_NODE_SIZES = {
-  agent: { width: 200, height: 120 },
-  contact: { width: 120, height: 140 },
-  chess: { width: 360, height: 360 },
-  app: { width: 400, height: 300 },
-  metric: { width: 160, height: 120 },
-  graph: { width: 500, height: 400 },
-  winamp: { width: 307, height: 400 }, // Account for controls, playlist, and padding (275 + 16*2, 116 + controls + playlist space)
+  agent: { width: 220, height: 140 }, // Increased for glass border
+  contact: { width: 140, height: 180 }, // Increased for floating label
+  chess: { width: 384, height: 420 }, // Mahogany frame + info bezel
+  app: { width: 600, height: 400 },
+  metric: { width: 200, height: 160 }, // Increased for blur/shadows
+  graph: { width: 600, height: 450 },
+  winamp: { width: 307, height: 400 },
   butterchurn: { width: 400, height: 300 },
-  pomodoro: { width: 228, height: 228 }, // Actual size from component
-  flipclock: { width: 300, height: 342 }, // Actual size from component
-  shader: { width: 200, height: 150 },
+  pomodoro: { width: 240, height: 240 }, // Frame allowance
+  flipclock: { width: 320, height: 360 }, // Frame allowance
+  shader: { width: 280, height: 220 },
   matrix: { width: 500, height: 500 },
-  portal: { width: 150, height: 100 },
-  note: { width: 200, height: 150 },
+  portal: { width: 100, height: 100 },
+  note: { width: 240, height: 180 }, // Texture/curl allowance
   task: { width: 200, height: 100 },
-  stack: { width: 200, height: 150 },
-  device: { width: 200, height: 150 },
-  synth: { width: 300, height: 200 },
-  drummachine: { width: 400, height: 300 },
-  sticker: { width: 200, height: 200 }, // Match actual sticker size from data.size
-  stickerpack: { width: 300, height: 200 },
-  contactsStack: { width: 280, height: 200 },
-  action: { width: 80, height: 80 },
+  stack: { width: 140, height: 140 },
+  device: { width: 300, height: 180 },
+  synth: { width: 300, height: 240 },
+  drummachine: { width: 420, height: 320 },
+  sticker: { width: 220, height: 220 }, 
+  contactsStack: { width: 120, height: 120 },
+  action: { width: 80, height: 100 },
+  mailbox: { width: 180, height: 140 },
+  letter: { width: 300, height: 150 },
+  zine: { width: 320, height: 420 },
+  // Phase 1-4 specific tools
   guitartuna: { width: 380, height: 200 },
   audiointerface: { width: 360, height: 220 },
   templatebrowser: { width: 400, height: 500 },

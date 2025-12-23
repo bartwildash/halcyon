@@ -10,8 +10,8 @@ import { getNodeBounds, getDefaultNodeSize } from './collisionDetection';
  */
 export const NODE_CATEGORIES = {
   productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph', 'projecthub', 'kanban', 'gtdinbox', 'mindmap', 'timeline'],
-  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack', 'sketch', 'photoeditor', 'audioeditor', 'publisher'],
-  social: ['contact', 'contactsStack', 'action', 'portal'],
+  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack', 'sketch', 'photoeditor', 'audioeditor', 'publisher', 'zine'],
+  social: ['contact', 'contactsStack', 'action', 'portal', 'mailbox', 'letter'],
   play: ['chess', 'synth', 'drummachine', 'winamp', 'butterchurn', 'guitartuna', 'audiointerface'],
   time: ['pomodoro', 'flipclock', 'temporalinbox'],
   system: ['device', 'stack', 'templatebrowser']
@@ -221,6 +221,12 @@ export function layoutOccupancy(nodes, district, options = {}) {
     // Ensure positions are at least at startX/startY (padding)
     let finalX = Math.max(pixelX, startX);
     let finalY = Math.max(pixelY, startY);
+
+    // Apply 10% overlap reduction if requested by user
+    // This makes nodes sit slightly tighter together
+    const overlapAdjustment = 0.9;
+    finalX = startX + (pixelX - startX) * overlapAdjustment;
+    finalY = startY + (pixelY - startY) * overlapAdjustment;
 
     // BOUNDS ENFORCEMENT: Clamp position to keep node fully inside district
     const maxX = bounds.width - nodeBounds.width - startX;
