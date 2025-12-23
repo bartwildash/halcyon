@@ -67,9 +67,9 @@ export const MindMapNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
-        border: '2px solid rgba(148, 163, 184, 0.2)',
+        border: '2px solid rgba(135, 133, 128, 0.2)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
         overflow: 'hidden',
         position: 'relative'
@@ -83,7 +83,7 @@ export const MindMapNode = ({ data }) => {
           padding: 12,
           background: 'rgba(0, 0, 0, 0.6)',
           backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -94,7 +94,7 @@ export const MindMapNode = ({ data }) => {
             <span style={{
               fontSize: 14,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {label}
@@ -107,7 +107,7 @@ export const MindMapNode = ({ data }) => {
               background: color,
               border: 'none',
               borderRadius: 6,
-              color: '#fff',
+              color: '#CECDC3',
               fontSize: 10,
               fontWeight: 600,
               cursor: 'pointer',
@@ -234,13 +234,13 @@ export const MindMapNode = ({ data }) => {
               padding: 16,
               background: '#1e293b',
               borderRadius: 12,
-              border: '1px solid rgba(148, 163, 184, 0.2)'
+              border: '1px solid rgba(135, 133, 128, 0.2)'
             }}>
               <h4 style={{
                 margin: '0 0 12px 0',
                 fontSize: 13,
                 fontWeight: 600,
-                color: '#f1f5f9'
+                color: '#CECDC3'
               }}>
                 New Branch
               </h4>
@@ -255,9 +255,9 @@ export const MindMapNode = ({ data }) => {
                   padding: 8,
                   marginBottom: 12,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -270,10 +270,10 @@ export const MindMapNode = ({ data }) => {
                   onClick={() => setShowAddDialog(false)}
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 6,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer'
@@ -289,7 +289,7 @@ export const MindMapNode = ({ data }) => {
                     background: newBranchText.trim() ? color : '#374151',
                     border: 'none',
                     borderRadius: 6,
-                    color: '#fff',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: newBranchText.trim() ? 'pointer' : 'not-allowed'
@@ -332,7 +332,7 @@ const MindMapBubble = ({ text, x, y, size, color, isCenter, isChild, isSelected,
         background: isCenter
           ? `radial-gradient(circle, ${color}, ${color}dd)`
           : `${color}${isChild ? '80' : 'cc'}`,
-        border: `2px solid ${isSelected ? '#fff' : `${color}40`}`,
+        border: `2px solid ${isSelected ? '#CECDC3' : `${color}40`}`,
         boxShadow: isCenter
           ? `0 0 20px ${color}60, 0 4px 12px rgba(0, 0, 0, 0.4)`
           : `0 2px 8px rgba(0, 0, 0, 0.3)`,
@@ -348,7 +348,7 @@ const MindMapBubble = ({ text, x, y, size, color, isCenter, isChild, isSelected,
       <span style={{
         fontSize: isCenter ? 11 : isChild ? 8 : 10,
         fontWeight: isCenter ? 700 : 600,
-        color: '#fff',
+        color: '#CECDC3',
         textAlign: 'center',
         fontFamily: 'system-ui',
         padding: 8,

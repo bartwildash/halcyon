@@ -121,7 +121,7 @@ export const GTDInboxNode = ({ data }) => {
       key: 'inbox',
       label: 'Inbox',
       icon: <Inbox size={16} />,
-      color: '#64748b',
+      color: '#878580',
       description: 'Unprocessed items'
     },
     {
@@ -149,7 +149,7 @@ export const GTDInboxNode = ({ data }) => {
       key: 'reference',
       label: 'Reference',
       icon: <Archive size={16} />,
-      color: '#64748b',
+      color: '#878580',
       description: 'Archive & reference'
     }
   ];
@@ -162,9 +162,9 @@ export const GTDInboxNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
-        border: '2px solid rgba(148, 163, 184, 0.2)',
+        border: '2px solid rgba(135, 133, 128, 0.2)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         flexDirection: 'column',
@@ -173,7 +173,7 @@ export const GTDInboxNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 16,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)'
         }}>
           <div style={{
@@ -188,7 +188,7 @@ export const GTDInboxNode = ({ data }) => {
                 margin: 0,
                 fontSize: 16,
                 fontWeight: 600,
-                color: '#f1f5f9',
+                color: '#CECDC3',
                 fontFamily: 'system-ui'
               }}>
                 {label}
@@ -201,7 +201,7 @@ export const GTDInboxNode = ({ data }) => {
                 background: color,
                 border: 'none',
                 borderRadius: 6,
-                color: '#fff',
+                color: '#CECDC3',
                 fontSize: 11,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -232,9 +232,9 @@ export const GTDInboxNode = ({ data }) => {
                   style={{
                     padding: '6px 10px',
                     background: isActive ? `${bucket.color}30` : 'transparent',
-                    border: `1px solid ${isActive ? `${bucket.color}60` : 'rgba(148, 163, 184, 0.1)'}`,
+                    border: `1px solid ${isActive ? `${bucket.color}60` : 'rgba(135, 133, 128, 0.15)'}`,
                     borderRadius: 6,
-                    color: isActive ? bucket.color : '#94a3b8',
+                    color: isActive ? bucket.color : '#878580',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -250,7 +250,7 @@ export const GTDInboxNode = ({ data }) => {
                   {count > 0 && (
                     <span style={{
                       background: bucket.color,
-                      color: '#fff',
+                      color: '#CECDC3',
                       padding: '2px 6px',
                       borderRadius: 10,
                       fontSize: 10
@@ -308,7 +308,7 @@ export const GTDInboxNode = ({ data }) => {
                 <div style={{
                   padding: 40,
                   textAlign: 'center',
-                  color: '#64748b',
+                  color: '#878580',
                   fontSize: 12,
                   fontFamily: 'system-ui'
                 }}>
@@ -349,13 +349,13 @@ export const GTDInboxNode = ({ data }) => {
               padding: 16,
               background: '#1e293b',
               borderRadius: 12,
-              border: '1px solid rgba(148, 163, 184, 0.2)'
+              border: '1px solid rgba(135, 133, 128, 0.2)'
             }}>
               <h4 style={{
                 margin: '0 0 12px 0',
                 fontSize: 13,
                 fontWeight: 600,
-                color: '#f1f5f9'
+                color: '#CECDC3'
               }}>
                 Capture to Inbox
               </h4>
@@ -370,9 +370,9 @@ export const GTDInboxNode = ({ data }) => {
                   padding: 8,
                   marginBottom: 12,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -385,10 +385,10 @@ export const GTDInboxNode = ({ data }) => {
                   onClick={() => setShowAddDialog(false)}
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 6,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer'
@@ -404,7 +404,7 @@ export const GTDInboxNode = ({ data }) => {
                     background: newItemText.trim() ? color : '#374151',
                     border: 'none',
                     borderRadius: 6,
-                    color: '#fff',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: newItemText.trim() ? 'pointer' : 'not-allowed'
@@ -446,7 +446,7 @@ const GTDItem = ({ item, index, currentBucket, bucketConfig, color, onMove }) =>
       style={{
         padding: 12,
         background: 'rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: '1px solid rgba(135, 133, 128, 0.15)',
         borderRadius: 8,
         position: 'relative'
       }}
@@ -461,7 +461,7 @@ const GTDItem = ({ item, index, currentBucket, bucketConfig, color, onMove }) =>
           <div style={{
             fontSize: 12,
             fontWeight: 500,
-            color: '#f1f5f9',
+            color: '#CECDC3',
             fontFamily: 'system-ui'
           }}>
             {item.data?.label || 'Untitled'}

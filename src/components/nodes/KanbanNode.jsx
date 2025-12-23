@@ -25,7 +25,7 @@ export const KanbanNode = ({ data }) => {
 
   // Column configuration
   const defaultColumns = [
-    { id: 'todo', label: 'To Do', color: '#64748b' },
+    { id: 'todo', label: 'To Do', color: '#878580' },
     { id: 'in-progress', label: 'In Progress', color: '#f59e0b' },
     { id: 'done', label: 'Done', color: '#10b981' }
   ];
@@ -176,9 +176,9 @@ export const KanbanNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
-        border: '2px solid rgba(148, 163, 184, 0.2)',
+        border: '2px solid rgba(135, 133, 128, 0.2)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         flexDirection: 'column',
@@ -187,7 +187,7 @@ export const KanbanNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 16,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)'
         }}>
           <div style={{
@@ -200,7 +200,7 @@ export const KanbanNode = ({ data }) => {
               margin: 0,
               fontSize: 16,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {boardName}
@@ -249,13 +249,13 @@ export const KanbanNode = ({ data }) => {
               padding: 16,
               background: '#1e293b',
               borderRadius: 12,
-              border: '1px solid rgba(148, 163, 184, 0.2)'
+              border: '1px solid rgba(135, 133, 128, 0.2)'
             }}>
               <h4 style={{
                 margin: '0 0 12px 0',
                 fontSize: 13,
                 fontWeight: 600,
-                color: '#f1f5f9'
+                color: '#CECDC3'
               }}>
                 Add Task
               </h4>
@@ -270,9 +270,9 @@ export const KanbanNode = ({ data }) => {
                   padding: 8,
                   marginBottom: 12,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -285,10 +285,10 @@ export const KanbanNode = ({ data }) => {
                   onClick={() => setShowAddDialog(null)}
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 6,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer'
@@ -304,7 +304,7 @@ export const KanbanNode = ({ data }) => {
                     background: newItemText.trim() ? color : '#374151',
                     border: 'none',
                     borderRadius: 6,
-                    color: '#fff',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: newItemText.trim() ? 'pointer' : 'not-allowed'
@@ -341,7 +341,7 @@ const KanbanColumn = ({
       background: isDraggedOver
         ? `${column.color}10`
         : 'rgba(0, 0, 0, 0.2)',
-      border: `1px solid ${isDraggedOver ? `${column.color}40` : 'rgba(148, 163, 184, 0.1)'}`,
+      border: `1px solid ${isDraggedOver ? `${column.color}40` : 'rgba(135, 133, 128, 0.15)'}`,
       borderRadius: 12,
       display: 'flex',
       flexDirection: 'column',
@@ -370,7 +370,7 @@ const KanbanColumn = ({
         <span style={{
           fontSize: 12,
           fontWeight: 600,
-          color: '#f1f5f9',
+          color: '#CECDC3',
           fontFamily: 'system-ui'
         }}>
           {column.label}
@@ -432,7 +432,7 @@ const KanbanColumn = ({
         <div style={{
           padding: 20,
           textAlign: 'center',
-          color: '#64748b',
+          color: '#878580',
           fontSize: 11,
           fontFamily: 'system-ui'
         }}>
@@ -460,7 +460,7 @@ const KanbanItem = ({ item, index, color, onDragStart, onRemove }) => {
       style={{
         padding: 10,
         background: 'rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(148, 163, 184, 0.1)',
+        border: '1px solid rgba(135, 133, 128, 0.15)',
         borderRadius: 8,
         cursor: 'grab',
         position: 'relative',
@@ -472,12 +472,12 @@ const KanbanItem = ({ item, index, color, onDragStart, onRemove }) => {
         alignItems: 'flex-start',
         gap: 8
       }}>
-        <GripVertical size={14} color="#64748b" style={{ flexShrink: 0, marginTop: 2 }} />
+        <GripVertical size={14} color="#878580" style={{ flexShrink: 0, marginTop: 2 }} />
         <div style={{ flex: 1 }}>
           <div style={{
             fontSize: 12,
             fontWeight: 500,
-            color: '#f1f5f9',
+            color: '#CECDC3',
             fontFamily: 'system-ui',
             marginBottom: 4
           }}>
@@ -489,7 +489,7 @@ const KanbanItem = ({ item, index, color, onDragStart, onRemove }) => {
               alignItems: 'center',
               gap: 4,
               fontSize: 10,
-              color: '#64748b'
+              color: '#878580'
             }}>
               <Clock size={10} />
               {new Date(item.data.temporalContext.dueDate).toLocaleDateString('en-US', {

@@ -132,7 +132,7 @@ export const PublisherNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
         border: '2px solid rgba(245, 158, 11, 0.3)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
@@ -143,7 +143,7 @@ export const PublisherNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 12,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
@@ -155,7 +155,7 @@ export const PublisherNode = ({ data }) => {
               margin: 0,
               fontSize: 14,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {label}
@@ -168,10 +168,10 @@ export const PublisherNode = ({ data }) => {
               title="Toggle Grid"
               style={{
                 padding: 6,
-                background: showGrid ? 'rgba(245, 158, 11, 0.2)' : 'rgba(148, 163, 184, 0.1)',
-                border: showGrid ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(148, 163, 184, 0.2)',
+                background: showGrid ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                border: showGrid ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(135, 133, 128, 0.2)',
                 borderRadius: 6,
-                color: showGrid ? '#fbbf24' : '#94a3b8',
+                color: showGrid ? '#fbbf24' : '#878580',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center'
@@ -206,7 +206,7 @@ export const PublisherNode = ({ data }) => {
         {/* Toolbar */}
         <div style={{
           padding: 10,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.1)',
           display: 'flex',
           gap: 6
@@ -270,7 +270,7 @@ export const PublisherNode = ({ data }) => {
               position: 'relative',
               width: pageSize.width,
               height: pageSize.height,
-              background: '#ffffff',
+              background: '#CECDC3',
               borderRadius: 4,
               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
               backgroundImage: showGrid
@@ -298,7 +298,7 @@ export const PublisherNode = ({ data }) => {
         {selectedElement && (
           <div style={{
             padding: 12,
-            borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+            borderTop: '1px solid rgba(135, 133, 128, 0.15)',
             background: 'rgba(0, 0, 0, 0.2)',
             display: 'flex',
             flexDirection: 'column',
@@ -309,7 +309,7 @@ export const PublisherNode = ({ data }) => {
             <div style={{
               fontSize: 11,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui',
               marginBottom: 4
             }}>
@@ -325,10 +325,10 @@ export const PublisherNode = ({ data }) => {
                   })}
                   style={{
                     padding: '4px 8px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontFamily: 'system-ui'
                   }}
@@ -349,10 +349,10 @@ export const PublisherNode = ({ data }) => {
                   })}
                   style={{
                     padding: '4px 8px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontFamily: 'system-ui'
                   }}
@@ -367,10 +367,10 @@ export const PublisherNode = ({ data }) => {
                   })}
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'left' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: selectedElement.style.textAlign === 'left' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     cursor: 'pointer'
                   }}
                 >
@@ -382,10 +382,10 @@ export const PublisherNode = ({ data }) => {
                   })}
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'center' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: selectedElement.style.textAlign === 'center' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     cursor: 'pointer'
                   }}
                 >
@@ -397,10 +397,10 @@ export const PublisherNode = ({ data }) => {
                   })}
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'right' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: selectedElement.style.textAlign === 'right' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     cursor: 'pointer'
                   }}
                 >
@@ -411,7 +411,7 @@ export const PublisherNode = ({ data }) => {
 
             {selectedElement.type === 'shape' && (
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <span style={{ fontSize: 11, color: '#94a3b8', fontFamily: 'system-ui' }}>
+                <span style={{ fontSize: 11, color: '#878580', fontFamily: 'system-ui' }}>
                   Fill:
                 </span>
                 <input
@@ -421,12 +421,12 @@ export const PublisherNode = ({ data }) => {
                   style={{
                     width: 40,
                     height: 24,
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
                     cursor: 'pointer'
                   }}
                 />
-                <span style={{ fontSize: 11, color: '#94a3b8', fontFamily: 'system-ui' }}>
+                <span style={{ fontSize: 11, color: '#878580', fontFamily: 'system-ui' }}>
                   Stroke:
                 </span>
                 <input
@@ -436,7 +436,7 @@ export const PublisherNode = ({ data }) => {
                   style={{
                     width: 40,
                     height: 24,
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
                     cursor: 'pointer'
                   }}
@@ -560,10 +560,10 @@ const ToolButton = ({ icon: Icon, label, onClick, tooltip }) => (
     title={tooltip}
     style={{
       padding: '6px 10px',
-      background: 'rgba(148, 163, 184, 0.1)',
-      border: '1px solid rgba(148, 163, 184, 0.2)',
+      background: 'rgba(135, 133, 128, 0.15)',
+      border: '1px solid rgba(135, 133, 128, 0.2)',
       borderRadius: 6,
-      color: '#94a3b8',
+      color: '#878580',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',

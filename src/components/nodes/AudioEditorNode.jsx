@@ -248,7 +248,7 @@ export const AudioEditorNode = ({ data }) => {
         <div style={{
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
           borderRadius: 16,
           border: '2px solid rgba(6, 182, 212, 0.3)',
           display: 'flex',
@@ -261,7 +261,7 @@ export const AudioEditorNode = ({ data }) => {
             <Volume2 size={48} color="#06b6d4" style={{ margin: '0 auto 16px' }} />
             <p style={{
               fontSize: 14,
-              color: '#94a3b8',
+              color: '#878580',
               fontFamily: 'system-ui',
               margin: 0
             }}>
@@ -279,7 +279,7 @@ export const AudioEditorNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
         border: '2px solid rgba(6, 182, 212, 0.3)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
@@ -292,7 +292,7 @@ export const AudioEditorNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 12,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
@@ -304,7 +304,7 @@ export const AudioEditorNode = ({ data }) => {
               margin: 0,
               fontSize: 14,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {label}
@@ -317,10 +317,10 @@ export const AudioEditorNode = ({ data }) => {
               title="Reset"
               style={{
                 padding: '6px 10px',
-                background: 'rgba(148, 163, 184, 0.1)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
+                background: 'rgba(135, 133, 128, 0.15)',
+                border: '1px solid rgba(135, 133, 128, 0.2)',
                 borderRadius: 6,
-                color: '#94a3b8',
+                color: '#878580',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -388,7 +388,7 @@ export const AudioEditorNode = ({ data }) => {
             justifyContent: 'space-between',
             fontSize: 11,
             fontWeight: 500,
-            color: '#94a3b8',
+            color: '#878580',
             fontFamily: 'system-ui'
           }}>
             <span>{formatTime(currentTime)}</span>
@@ -448,7 +448,7 @@ export const AudioEditorNode = ({ data }) => {
             <div style={{ flex: 1 }} />
 
             {/* Volume */}
-            <Volume2 size={14} color="#94a3b8" />
+            <Volume2 size={14} color="#878580" />
             <input
               type="range"
               min="0"
@@ -466,7 +466,7 @@ export const AudioEditorNode = ({ data }) => {
             <div style={{
               fontSize: 11,
               fontWeight: 500,
-              color: '#94a3b8',
+              color: '#878580',
               fontFamily: 'system-ui'
             }}>
               Speed:
@@ -486,7 +486,7 @@ export const AudioEditorNode = ({ data }) => {
             <span style={{
               fontSize: 11,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui',
               minWidth: 30
             }}>

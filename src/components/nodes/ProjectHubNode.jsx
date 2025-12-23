@@ -79,11 +79,11 @@ export const ProjectHubNode = ({ data }) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'planning': return '#94a3b8';
+      case 'planning': return '#878580';
       case 'active': return '#10b981';
       case 'on-hold': return '#f59e0b';
       case 'complete': return '#3b82f6';
-      default: return '#64748b';
+      default: return '#878580';
     }
   };
 
@@ -127,7 +127,7 @@ export const ProjectHubNode = ({ data }) => {
               margin: 0,
               fontSize: 16,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui',
               flex: 1
             }}>
@@ -140,7 +140,7 @@ export const ProjectHubNode = ({ data }) => {
                 background: isFilterActive ? color : `${color}30`,
                 border: 'none',
                 borderRadius: 6,
-                color: '#fff',
+                color: '#CECDC3',
                 fontSize: 10,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -252,7 +252,7 @@ export const ProjectHubNode = ({ data }) => {
           <div style={{ flex: 1 }} />
           <span style={{
             fontSize: 10,
-            color: '#64748b',
+            color: '#878580',
             fontFamily: 'system-ui'
           }}>
             Tag nodes with this to add to project
@@ -276,13 +276,13 @@ export const ProjectHubNode = ({ data }) => {
               padding: 16,
               background: '#1e293b',
               borderRadius: 12,
-              border: '1px solid rgba(148, 163, 184, 0.2)'
+              border: '1px solid rgba(135, 133, 128, 0.2)'
             }}>
               <h4 style={{
                 margin: '0 0 12px 0',
                 fontSize: 13,
                 fontWeight: 600,
-                color: '#f1f5f9'
+                color: '#CECDC3'
               }}>
                 Add Related Tag
               </h4>
@@ -297,9 +297,9 @@ export const ProjectHubNode = ({ data }) => {
                   padding: 8,
                   marginBottom: 12,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -312,10 +312,10 @@ export const ProjectHubNode = ({ data }) => {
                   onClick={() => setShowTagDialog(false)}
                   style={{
                     padding: '6px 12px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 6,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer'
@@ -331,7 +331,7 @@ export const ProjectHubNode = ({ data }) => {
                     background: newTag.trim() ? color : '#374151',
                     border: 'none',
                     borderRadius: 6,
-                    color: '#fff',
+                    color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: newTag.trim() ? 'pointer' : 'not-allowed'
@@ -353,7 +353,7 @@ const StatCard = ({ icon, label, value, color, subtitle }) => (
   <div style={{
     padding: 10,
     background: 'rgba(0, 0, 0, 0.3)',
-    border: '1px solid rgba(148, 163, 184, 0.1)',
+    border: '1px solid rgba(135, 133, 128, 0.15)',
     borderRadius: 8,
     display: 'flex',
     flexDirection: 'column',
@@ -369,7 +369,7 @@ const StatCard = ({ icon, label, value, color, subtitle }) => (
       <span style={{
         fontSize: 10,
         fontWeight: 600,
-        color: '#94a3b8',
+        color: '#878580',
         textTransform: 'uppercase',
         fontFamily: 'system-ui'
       }}>
@@ -379,14 +379,14 @@ const StatCard = ({ icon, label, value, color, subtitle }) => (
     <div style={{
       fontSize: 18,
       fontWeight: 700,
-      color: '#f1f5f9',
+      color: '#CECDC3',
       fontFamily: 'system-ui'
     }}>
       {value}
     </div>
     <div style={{
       fontSize: 9,
-      color: '#64748b',
+      color: '#878580',
       fontFamily: 'system-ui',
       overflow: 'hidden',
       textOverflow: 'ellipsis',

@@ -19,7 +19,7 @@ export const SketchNode = ({ data }) => {
   const [history, setHistory] = useState([]);
   const [historyStep, setHistoryStep] = useState(-1);
 
-  const colors = ['#000000', '#ffffff', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+  const colors = ['#000000', '#CECDC3', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
 
   // Initialize canvas
   useEffect(() => {
@@ -27,7 +27,7 @@ export const SketchNode = ({ data }) => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#CECDC3';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Load saved canvas if exists
@@ -89,7 +89,7 @@ export const SketchNode = ({ data }) => {
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#CECDC3';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     saveToHistory();
   };
@@ -111,7 +111,7 @@ export const SketchNode = ({ data }) => {
     setIsDrawing(true);
 
     const ctx = canvas.getContext('2d');
-    ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : brushColor;
+    ctx.strokeStyle = tool === 'eraser' ? '#CECDC3' : brushColor;
     ctx.lineWidth = tool === 'eraser' ? brushSize * 3 : brushSize;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -182,7 +182,7 @@ export const SketchNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
         border: '2px solid rgba(139, 92, 246, 0.3)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
@@ -193,7 +193,7 @@ export const SketchNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 12,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
@@ -205,7 +205,7 @@ export const SketchNode = ({ data }) => {
               margin: 0,
               fontSize: 14,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {label}
@@ -244,7 +244,7 @@ export const SketchNode = ({ data }) => {
               onClick={() => setTool('line')}
               tooltip="Line"
             />
-            <div style={{ width: 1, height: 24, background: 'rgba(148, 163, 184, 0.2)', margin: '0 4px' }} />
+            <div style={{ width: 1, height: 24, background: 'rgba(135, 133, 128, 0.2)', margin: '0 4px' }} />
             <ToolButton
               icon={Undo}
               onClick={undo}
@@ -273,7 +273,7 @@ export const SketchNode = ({ data }) => {
         {/* Toolbar */}
         <div style={{
           padding: 12,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.1)',
           display: 'flex',
           alignItems: 'center',
@@ -304,7 +304,7 @@ export const SketchNode = ({ data }) => {
             <span style={{
               fontSize: 11,
               fontWeight: 500,
-              color: '#94a3b8',
+              color: '#878580',
               fontFamily: 'system-ui'
             }}>
               Size:
@@ -323,7 +323,7 @@ export const SketchNode = ({ data }) => {
             <span style={{
               fontSize: 11,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui',
               minWidth: 20,
               textAlign: 'right'
@@ -350,7 +350,7 @@ export const SketchNode = ({ data }) => {
             onMouseUp={stopDrawing}
             onMouseLeave={stopDrawing}
             style={{
-              background: '#ffffff',
+              background: '#CECDC3',
               borderRadius: 8,
               cursor: tool === 'eraser' ? 'crosshair' : 'crosshair',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
@@ -370,10 +370,10 @@ const ToolButton = ({ icon: Icon, active, onClick, disabled, tooltip }) => (
     title={tooltip}
     style={{
       padding: 6,
-      background: active ? 'rgba(139, 92, 246, 0.3)' : 'rgba(148, 163, 184, 0.1)',
-      border: active ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid rgba(148, 163, 184, 0.2)',
+      background: active ? 'rgba(139, 92, 246, 0.3)' : 'rgba(135, 133, 128, 0.15)',
+      border: active ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid rgba(135, 133, 128, 0.2)',
       borderRadius: 6,
-      color: disabled ? '#475569' : active ? '#a78bfa' : '#94a3b8',
+      color: disabled ? '#475569' : active ? '#a78bfa' : '#878580',
       cursor: disabled ? 'not-allowed' : 'pointer',
       display: 'flex',
       alignItems: 'center',

@@ -215,7 +215,7 @@ export const PhotoEditorNode = ({ data }) => {
         <div style={{
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
           borderRadius: 16,
           border: '2px solid rgba(236, 72, 153, 0.3)',
           display: 'flex',
@@ -228,7 +228,7 @@ export const PhotoEditorNode = ({ data }) => {
             <ImageIcon size={48} color="#ec4899" style={{ margin: '0 auto 16px' }} />
             <p style={{
               fontSize: 14,
-              color: '#94a3b8',
+              color: '#878580',
               fontFamily: 'system-ui',
               margin: 0
             }}>
@@ -246,7 +246,7 @@ export const PhotoEditorNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
         border: '2px solid rgba(236, 72, 153, 0.3)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
@@ -257,7 +257,7 @@ export const PhotoEditorNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 12,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)',
           display: 'flex',
           alignItems: 'center',
@@ -269,7 +269,7 @@ export const PhotoEditorNode = ({ data }) => {
               margin: 0,
               fontSize: 14,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               {label}
@@ -282,10 +282,10 @@ export const PhotoEditorNode = ({ data }) => {
               title="Reset All"
               style={{
                 padding: '6px 10px',
-                background: 'rgba(148, 163, 184, 0.1)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
+                background: 'rgba(135, 133, 128, 0.15)',
+                border: '1px solid rgba(135, 133, 128, 0.2)',
                 borderRadius: 6,
-                color: '#94a3b8',
+                color: '#878580',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -325,7 +325,7 @@ export const PhotoEditorNode = ({ data }) => {
         {/* Tabs */}
         <div style={{
           display: 'flex',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.1)'
         }}>
           <Tab
@@ -367,7 +367,7 @@ export const PhotoEditorNode = ({ data }) => {
         {/* Controls */}
         <div style={{
           padding: 16,
-          borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+          borderTop: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)',
           maxHeight: 160,
           overflowY: 'auto'
@@ -421,10 +421,10 @@ export const PhotoEditorNode = ({ data }) => {
                   onClick={() => setActiveFilter(filter.id)}
                   style={{
                     padding: 12,
-                    background: activeFilter === filter.id ? 'rgba(236, 72, 153, 0.2)' : 'rgba(148, 163, 184, 0.1)',
-                    border: activeFilter === filter.id ? '2px solid rgba(236, 72, 153, 0.5)' : '1px solid rgba(148, 163, 184, 0.2)',
+                    background: activeFilter === filter.id ? 'rgba(236, 72, 153, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    border: activeFilter === filter.id ? '2px solid rgba(236, 72, 153, 0.5)' : '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 8,
-                    color: '#f1f5f9',
+                    color: '#CECDC3',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s'
@@ -440,7 +440,7 @@ export const PhotoEditorNode = ({ data }) => {
                   </div>
                   <div style={{
                     fontSize: 9,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontFamily: 'system-ui'
                   }}>
                     {filter.description}
@@ -465,7 +465,7 @@ const Tab = ({ icon: Icon, label, active, onClick }) => (
       background: active ? 'rgba(236, 72, 153, 0.2)' : 'transparent',
       border: 'none',
       borderBottom: active ? '2px solid #ec4899' : '2px solid transparent',
-      color: active ? '#f9a8d4' : '#94a3b8',
+      color: active ? '#f9a8d4' : '#878580',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -488,7 +488,7 @@ const Slider = ({ label, value, min, max, step = 1, onChange }) => (
     <span style={{
       fontSize: 11,
       fontWeight: 500,
-      color: '#94a3b8',
+      color: '#878580',
       fontFamily: 'system-ui',
       minWidth: 80
     }}>
@@ -509,7 +509,7 @@ const Slider = ({ label, value, min, max, step = 1, onChange }) => (
     <span style={{
       fontSize: 11,
       fontWeight: 600,
-      color: '#f1f5f9',
+      color: '#CECDC3',
       fontFamily: 'system-ui',
       minWidth: 36,
       textAlign: 'right'

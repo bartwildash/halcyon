@@ -102,7 +102,7 @@ export const TemporalInboxNode = ({ data }) => {
               margin: 0,
               fontSize: 16,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui',
               flex: 1
             }}>
@@ -115,7 +115,7 @@ export const TemporalInboxNode = ({ data }) => {
                 background: isFilterActive ? color : `${color}30`,
                 border: 'none',
                 borderRadius: 6,
-                color: '#fff',
+                color: '#CECDC3',
                 fontSize: 10,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -142,7 +142,7 @@ export const TemporalInboxNode = ({ data }) => {
             <span style={{
               fontSize: 12,
               fontWeight: 500,
-              color: '#94a3b8',
+              color: '#878580',
               marginLeft: 8
             }}>
               {items.length === 1 ? 'item' : 'items'}
@@ -201,7 +201,7 @@ export const TemporalInboxNode = ({ data }) => {
           <Clock size={12} color={color} />
           <span style={{
             fontSize: 10,
-            color: '#64748b',
+            color: '#878580',
             fontFamily: 'system-ui'
           }}>
             {getTimeframeHint(timeframe)}
@@ -220,18 +220,18 @@ const TimelineItem = ({ icon, label, count, detail, color, complete = false }) =
     gap: 12,
     padding: 10,
     background: complete ? `${color}15` : 'rgba(0, 0, 0, 0.2)',
-    border: `1px solid ${complete ? `${color}40` : 'rgba(148, 163, 184, 0.1)'}`,
+    border: `1px solid ${complete ? `${color}40` : 'rgba(135, 133, 128, 0.15)'}`,
     borderRadius: 8,
     transition: 'all 0.2s ease'
   }}>
-    <div style={{ color: complete ? color : '#94a3b8' }}>
+    <div style={{ color: complete ? color : '#878580' }}>
       {icon}
     </div>
     <div style={{ flex: 1 }}>
       <div style={{
         fontSize: 12,
         fontWeight: 600,
-        color: '#f1f5f9',
+        color: '#CECDC3',
         fontFamily: 'system-ui',
         marginBottom: 2
       }}>
@@ -247,7 +247,7 @@ const TimelineItem = ({ icon, label, count, detail, color, complete = false }) =
       </div>
       <div style={{
         fontSize: 10,
-        color: '#64748b',
+        color: '#878580',
         fontFamily: 'system-ui'
       }}>
         {detail}
@@ -274,9 +274,9 @@ function getTimeframeColor(timeframe) {
     'this-week': '#3b82f6',
     'this-month': '#8b5cf6',
     overdue: '#ef4444',
-    someday: '#64748b'
+    someday: '#878580'
   };
-  return colors[timeframe] || '#94a3b8';
+  return colors[timeframe] || '#878580';
 }
 
 function getTimeframeIcon(timeframe) {

@@ -85,9 +85,9 @@ export const TemplateBrowserNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
-        border: '2px solid rgba(148, 163, 184, 0.2)',
+        border: '2px solid rgba(135, 133, 128, 0.2)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         flexDirection: 'column',
@@ -96,7 +96,7 @@ export const TemplateBrowserNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 16,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)'
         }}>
           <div style={{
@@ -109,7 +109,7 @@ export const TemplateBrowserNode = ({ data }) => {
               margin: 0,
               fontSize: 16,
               fontWeight: 600,
-              color: '#f1f5f9',
+              color: '#CECDC3',
               fontFamily: 'system-ui'
             }}>
               Workspace Templates
@@ -122,7 +122,7 @@ export const TemplateBrowserNode = ({ data }) => {
                   background: '#10b981',
                   border: 'none',
                   borderRadius: 6,
-                  color: '#fff',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -166,7 +166,7 @@ export const TemplateBrowserNode = ({ data }) => {
             <Search size={14} style={{
               position: 'absolute',
               left: 10,
-              color: '#64748b'
+              color: '#878580'
             }} />
             <input
               type="text"
@@ -177,9 +177,9 @@ export const TemplateBrowserNode = ({ data }) => {
                 width: '100%',
                 padding: '8px 12px 8px 36px',
                 background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(148, 163, 184, 0.2)',
+                border: '1px solid rgba(135, 133, 128, 0.2)',
                 borderRadius: 8,
-                color: '#f1f5f9',
+                color: '#CECDC3',
                 fontSize: 12,
                 fontFamily: 'system-ui',
                 outline: 'none'
@@ -199,7 +199,7 @@ export const TemplateBrowserNode = ({ data }) => {
               <div style={{
                 textAlign: 'center',
                 padding: 40,
-                color: '#64748b',
+                color: '#878580',
                 fontSize: 13
               }}>
                 {searchQuery ? 'No templates found' : 'No templates saved yet'}
@@ -216,7 +216,7 @@ export const TemplateBrowserNode = ({ data }) => {
                     marginBottom: 8,
                     padding: 12,
                     background: 'rgba(0, 0, 0, 0.3)',
-                    border: '1px solid rgba(148, 163, 184, 0.1)',
+                    border: '1px solid rgba(135, 133, 128, 0.15)',
                     borderRadius: 8,
                     transition: 'all 0.2s ease',
                     cursor: 'pointer'
@@ -227,7 +227,7 @@ export const TemplateBrowserNode = ({ data }) => {
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.1)';
+                    e.currentTarget.style.borderColor = 'rgba(135, 133, 128, 0.15)';
                   }}
                 >
                   <div style={{
@@ -241,7 +241,7 @@ export const TemplateBrowserNode = ({ data }) => {
                         margin: 0,
                         fontSize: 14,
                         fontWeight: 600,
-                        color: '#f1f5f9',
+                        color: '#CECDC3',
                         fontFamily: 'system-ui',
                         marginBottom: 4
                       }}>
@@ -251,7 +251,7 @@ export const TemplateBrowserNode = ({ data }) => {
                         <p style={{
                           margin: 0,
                           fontSize: 11,
-                          color: '#94a3b8',
+                          color: '#878580',
                           fontFamily: 'system-ui'
                         }}>
                           {template.description}
@@ -268,7 +268,7 @@ export const TemplateBrowserNode = ({ data }) => {
                         background: '#10b981',
                         border: 'none',
                         borderRadius: 4,
-                        color: '#fff',
+                        color: '#CECDC3',
                         fontSize: 11,
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -289,7 +289,7 @@ export const TemplateBrowserNode = ({ data }) => {
                     gap: 12,
                     marginBottom: 8,
                     fontSize: 10,
-                    color: '#64748b'
+                    color: '#878580'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <Clock size={10} />
@@ -359,13 +359,13 @@ export const TemplateBrowserNode = ({ data }) => {
               padding: 20,
               background: '#1e293b',
               borderRadius: 12,
-              border: '1px solid rgba(148, 163, 184, 0.2)'
+              border: '1px solid rgba(135, 133, 128, 0.2)'
             }}>
               <h4 style={{
                 margin: '0 0 16px 0',
                 fontSize: 14,
                 fontWeight: 600,
-                color: '#f1f5f9'
+                color: '#CECDC3'
               }}>
                 Save Current Workspace
               </h4>
@@ -379,9 +379,9 @@ export const TemplateBrowserNode = ({ data }) => {
                   padding: 10,
                   marginBottom: 10,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 13,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -398,9 +398,9 @@ export const TemplateBrowserNode = ({ data }) => {
                   padding: 10,
                   marginBottom: 16,
                   background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#f1f5f9',
+                  color: '#CECDC3',
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
@@ -414,10 +414,10 @@ export const TemplateBrowserNode = ({ data }) => {
                   onClick={() => setShowSaveDialog(false)}
                   style={{
                     padding: '8px 16px',
-                    background: 'rgba(148, 163, 184, 0.1)',
-                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                    background: 'rgba(135, 133, 128, 0.15)',
+                    border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 6,
-                    color: '#94a3b8',
+                    color: '#878580',
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: 'pointer'
@@ -433,7 +433,7 @@ export const TemplateBrowserNode = ({ data }) => {
                     background: newTemplateName.trim() ? '#10b981' : '#374151',
                     border: 'none',
                     borderRadius: 6,
-                    color: '#fff',
+                    color: '#CECDC3',
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: newTemplateName.trim() ? 'pointer' : 'not-allowed'
@@ -457,10 +457,10 @@ const ActionButton = ({ icon, onClick, label, danger = false }) => (
     title={label}
     style={{
       padding: '4px 8px',
-      background: danger ? 'rgba(239, 68, 68, 0.1)' : 'rgba(148, 163, 184, 0.1)',
-      border: `1px solid ${danger ? 'rgba(239, 68, 68, 0.2)' : 'rgba(148, 163, 184, 0.2)'}`,
+      background: danger ? 'rgba(239, 68, 68, 0.1)' : 'rgba(135, 133, 128, 0.15)',
+      border: `1px solid ${danger ? 'rgba(239, 68, 68, 0.2)' : 'rgba(135, 133, 128, 0.2)'}`,
       borderRadius: 4,
-      color: danger ? '#ef4444' : '#94a3b8',
+      color: danger ? '#ef4444' : '#878580',
       fontSize: 10,
       cursor: 'pointer',
       display: 'flex',
@@ -469,10 +469,10 @@ const ActionButton = ({ icon, onClick, label, danger = false }) => (
       transition: 'all 0.2s ease'
     }}
     onMouseEnter={(e) => {
-      e.target.style.background = danger ? 'rgba(239, 68, 68, 0.2)' : 'rgba(148, 163, 184, 0.2)';
+      e.target.style.background = danger ? 'rgba(239, 68, 68, 0.2)' : 'rgba(135, 133, 128, 0.2)';
     }}
     onMouseLeave={(e) => {
-      e.target.style.background = danger ? 'rgba(239, 68, 68, 0.1)' : 'rgba(148, 163, 184, 0.1)';
+      e.target.style.background = danger ? 'rgba(239, 68, 68, 0.1)' : 'rgba(135, 133, 128, 0.15)';
     }}
   >
     {icon}

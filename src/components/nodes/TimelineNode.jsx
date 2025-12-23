@@ -137,9 +137,9 @@ export const TimelineNode = ({ data }) => {
       <div style={{
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
         borderRadius: 16,
-        border: '2px solid rgba(148, 163, 184, 0.2)',
+        border: '2px solid rgba(135, 133, 128, 0.2)',
         boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         flexDirection: 'column',
@@ -148,7 +148,7 @@ export const TimelineNode = ({ data }) => {
         {/* Header */}
         <div style={{
           padding: 16,
-          borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
           background: 'rgba(0, 0, 0, 0.2)'
         }}>
           <div style={{
@@ -162,7 +162,7 @@ export const TimelineNode = ({ data }) => {
                 margin: 0,
                 fontSize: 16,
                 fontWeight: 600,
-                color: '#f1f5f9',
+                color: '#CECDC3',
                 fontFamily: 'system-ui'
               }}>
                 {label}
@@ -175,10 +175,10 @@ export const TimelineNode = ({ data }) => {
                 onClick={() => handleNavigate(-1)}
                 style={{
                   padding: 6,
-                  background: 'rgba(148, 163, 184, 0.1)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  background: 'rgba(135, 133, 128, 0.15)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#94a3b8',
+                  color: '#878580',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center'
@@ -189,7 +189,7 @@ export const TimelineNode = ({ data }) => {
               <span style={{
                 fontSize: 12,
                 fontWeight: 600,
-                color: '#f1f5f9',
+                color: '#CECDC3',
                 fontFamily: 'system-ui',
                 minWidth: 120,
                 textAlign: 'center'
@@ -200,10 +200,10 @@ export const TimelineNode = ({ data }) => {
                 onClick={() => handleNavigate(1)}
                 style={{
                   padding: 6,
-                  background: 'rgba(148, 163, 184, 0.1)',
-                  border: '1px solid rgba(148, 163, 184, 0.2)',
+                  background: 'rgba(135, 133, 128, 0.15)',
+                  border: '1px solid rgba(135, 133, 128, 0.2)',
                   borderRadius: 6,
-                  color: '#94a3b8',
+                  color: '#878580',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center'
@@ -225,7 +225,7 @@ export const TimelineNode = ({ data }) => {
           {/* Time header */}
           <div style={{
             display: 'flex',
-            borderBottom: '2px solid rgba(148, 163, 184, 0.2)',
+            borderBottom: '2px solid rgba(135, 133, 128, 0.2)',
             background: 'rgba(0, 0, 0, 0.2)'
           }}>
             <div style={{
@@ -233,8 +233,8 @@ export const TimelineNode = ({ data }) => {
               padding: 8,
               fontSize: 10,
               fontWeight: 600,
-              color: '#94a3b8',
-              borderRight: '1px solid rgba(148, 163, 184, 0.1)',
+              color: '#878580',
+              borderRight: '1px solid rgba(135, 133, 128, 0.15)',
               fontFamily: 'system-ui'
             }}>
               Tasks
@@ -251,9 +251,9 @@ export const TimelineNode = ({ data }) => {
                     padding: 8,
                     fontSize: 10,
                     fontWeight: 600,
-                    color: '#94a3b8',
+                    color: '#878580',
                     textAlign: 'center',
-                    borderRight: index < timeColumns.length - 1 ? '1px solid rgba(148, 163, 184, 0.1)' : 'none',
+                    borderRight: index < timeColumns.length - 1 ? '1px solid rgba(135, 133, 128, 0.15)' : 'none',
                     fontFamily: 'system-ui'
                   }}
                 >
@@ -272,7 +272,7 @@ export const TimelineNode = ({ data }) => {
               <div style={{
                 padding: 40,
                 textAlign: 'center',
-                color: '#64748b',
+                color: '#878580',
                 fontSize: 12,
                 fontFamily: 'system-ui'
               }}>
@@ -308,7 +308,7 @@ const TimelineRow = ({ item, position, color, index }) => {
       transition={{ delay: index * 0.05 }}
       style={{
         display: 'flex',
-        borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+        borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
         minHeight: 48,
         position: 'relative'
       }}
@@ -317,7 +317,7 @@ const TimelineRow = ({ item, position, color, index }) => {
       <div style={{
         width: 120,
         padding: 12,
-        borderRight: '1px solid rgba(148, 163, 184, 0.1)',
+        borderRight: '1px solid rgba(135, 133, 128, 0.15)',
         display: 'flex',
         alignItems: 'center',
         gap: 8
@@ -325,12 +325,12 @@ const TimelineRow = ({ item, position, color, index }) => {
         {isCompleted ? (
           <CheckCircle2 size={14} color="#10b981" />
         ) : (
-          <Circle size={14} color="#64748b" />
+          <Circle size={14} color="#878580" />
         )}
         <span style={{
           fontSize: 11,
           fontWeight: 500,
-          color: '#f1f5f9',
+          color: '#CECDC3',
           fontFamily: 'system-ui',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -374,7 +374,7 @@ const TimelineRow = ({ item, position, color, index }) => {
             justifyContent: 'center',
             fontSize: 9,
             fontWeight: 600,
-            color: '#fff',
+            color: '#CECDC3',
             fontFamily: 'system-ui',
             textShadow: '0 1px 2px rgba(0,0,0,0.3)'
           }}>
