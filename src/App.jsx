@@ -959,7 +959,17 @@ function SpatialWorkspace() {
         // SOCIAL NODES (Garden)
         {
           id: 'contacts-stack', type: 'contactsStack', position: { x: 0, y: 0 }, parentNode: 'd-garden',
-          data: { label: 'All Contacts', contacts: [{ name: 'Graham McBride', initials: 'GM', color: '#fbbf24' }, { name: 'Brian Carey', image: 'https://i.pravatar.cc/150?u=brian' }] }
+          data: {
+            label: 'All Contacts',
+            contacts: [
+              { name: 'Graham McBride', initials: 'GM', color: '#fbbf24' },
+              { name: 'Brian Carey', image: 'https://i.pravatar.cc/150?u=brian' },
+              { name: 'Darla Davidson', image: 'https://i.pravatar.cc/150?u=darla' },
+              { name: 'Ashley Rice', image: 'https://i.pravatar.cc/150?u=ashley' },
+              { name: 'Dr. Maya Patel', initials: 'MP', color: '#fce7f3' },
+              { name: 'Prof. James Wu', initials: 'JW', color: '#dbeafe' }
+            ]
+          }
         },
         { id: 'c-graham', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Graham McBride', initials: 'GM', color: '#fbbf24', online: true } },
         { id: 'c-brian', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Brian Carey', image: 'https://i.pravatar.cc/150?u=brian', online: true } },
