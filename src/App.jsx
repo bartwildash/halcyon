@@ -185,10 +185,10 @@ const PlacesDock = () => {
 
   const places = [
     { name: 'Study', x: 0, y: 0, color: '#f0f9ff', icon: <BookOpen size={16} /> },
-    { name: 'Studio', x: 1200, y: 0, color: '#fdf4ff', icon: <Palette size={16} /> },
-    { name: 'Strategy', x: 0, y: 1200, color: '#f0fdf4', icon: <Compass size={16} /> },
-    { name: 'Garden', x: 1200, y: 1200, color: '#fffbeb', icon: <Sprout size={16} /> },
-    { name: 'Toy Room', x: 0, y: 2200, color: '#fef3c7', icon: <Box size={16} /> },
+    { name: 'Studio', x: 1500, y: 0, color: '#fdf4ff', icon: <Palette size={16} /> },
+    { name: 'Strategy', x: 0, y: 1500, color: '#f0fdf4', icon: <Compass size={16} /> },
+    { name: 'Garden', x: 1500, y: 1500, color: '#fffbeb', icon: <Sprout size={16} /> },
+    { name: 'Toy Room', x: 0, y: 2600, color: '#fef3c7', icon: <Box size={16} /> },
   ];
 
   const handleToggle = () => {
