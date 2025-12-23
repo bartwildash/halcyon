@@ -187,8 +187,8 @@ const PlacesDock = () => {
     { name: 'Study', x: 0, y: 0, color: '#f0f9ff', icon: <BookOpen size={16} /> },
     { name: 'Studio', x: 1700, y: 0, color: '#fdf4ff', icon: <Palette size={16} /> },
     { name: 'Strategy', x: 0, y: 1700, color: '#f0fdf4', icon: <Compass size={16} /> },
-    { name: 'Garden', x: 1700, y: 1700, color: '#fffbeb', icon: <Sprout size={16} /> },
-    { name: 'Toy Room', x: 0, y: 3000, color: '#fef3c7', icon: <Box size={16} /> },
+    { name: 'Garden', x: 1700, y: 2100, color: '#fffbeb', icon: <Sprout size={16} /> },
+    { name: 'Toy Room', x: 0, y: 3400, color: '#fef3c7', icon: <Box size={16} /> },
   ];
 
   const handleToggle = () => {
@@ -776,10 +776,10 @@ function SpatialWorkspace() {
       // --- STEP 1: Define Districts ---
       const districts = [
         { id: 'd-study', type: 'district', position: { x: 0, y: 0 }, draggable: false, data: { label: 'Study', icon: <BookOpen size={14} />, color: '#f0f9ff' }, style: { width: 1600, height: 1600 } },
-        { id: 'd-studio', type: 'district', position: { x: 1700, y: 0 }, draggable: false, data: { label: 'Studio', icon: <Palette size={14} />, color: '#fdf4ff' }, style: { width: 2000, height: 1600 } },
+        { id: 'd-studio', type: 'district', position: { x: 1700, y: 0 }, draggable: false, data: { label: 'Studio', icon: <Palette size={14} />, color: '#fdf4ff' }, style: { width: 2000, height: 2000 } },
         { id: 'd-strategy', type: 'district', position: { x: 0, y: 1700 }, draggable: false, data: { label: 'Strategy', icon: <Compass size={14} />, color: '#f0fdf4' }, style: { width: 1600, height: 1200 } },
-        { id: 'd-garden', type: 'district', position: { x: 1700, y: 1700 }, draggable: false, data: { label: 'Garden', icon: <Sprout size={14} />, color: '#fffbeb' }, style: { width: 2000, height: 1200 } },
-        { id: 'd-toyroom', type: 'district', position: { x: 0, y: 3000 }, draggable: false, data: { label: 'Toy Room', icon: <Box size={14} />, color: '#fef3c7' }, style: { width: 3700, height: 1200 } },
+        { id: 'd-garden', type: 'district', position: { x: 1700, y: 2100 }, draggable: false, data: { label: 'Garden', icon: <Sprout size={14} />, color: '#fffbeb' }, style: { width: 2000, height: 1200 } },
+        { id: 'd-toyroom', type: 'district', position: { x: 0, y: 3400 }, draggable: false, data: { label: 'Toy Room', icon: <Box size={14} />, color: '#fef3c7' }, style: { width: 3700, height: 1200 } },
       ];
       
       // --- STEP 2: Define All Nodes (without positions initially) ---
