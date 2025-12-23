@@ -62,7 +62,7 @@ import { usePeripheralCables } from './hooks/usePeripheralCables';
 import { PeripheralCable } from './components/edges/PeripheralCable';
 
 // --- COLLISION DETECTION ---
-import { calculateRepulsionForce, findValidPosition, checkCollision, calculateAdaptivePadding } from './utils/collisionDetection';
+import { calculateRepulsionForce, findValidPosition, checkCollision, calculateAdaptivePadding, getNodeBounds } from './utils/collisionDetection';
 
 // --- SPATIAL LAYOUT ---
 import { 
