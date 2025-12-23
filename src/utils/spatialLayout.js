@@ -217,16 +217,10 @@ export function layoutOccupancy(nodes, district, options = {}) {
     // bestCol and bestRow are grid cell indices, so multiply by gridSize
     const pixelX = bestCol * gridSize;
     const pixelY = bestRow * gridSize;
-    
+
     // Ensure positions are at least at startX/startY (padding)
     let finalX = Math.max(pixelX, startX);
     let finalY = Math.max(pixelY, startY);
-
-    // Apply 10% overlap reduction if requested by user
-    // This makes nodes sit slightly tighter together
-    const overlapAdjustment = 0.9;
-    finalX = startX + (pixelX - startX) * overlapAdjustment;
-    finalY = startY + (pixelY - startY) * overlapAdjustment;
 
     // BOUNDS ENFORCEMENT: Clamp position to keep node fully inside district
     const maxX = bounds.width - nodeBounds.width - startX;

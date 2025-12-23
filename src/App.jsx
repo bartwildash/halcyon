@@ -1012,11 +1012,11 @@ function SpatialWorkspace() {
       districts.forEach(district => {
         const districtNodes = distribution[district.id] || [];
         if (districtNodes.length > 0) {
-          const laidOutNodes = layoutNodesInDistrict(districtNodes, district, { 
-            mode: 'occupancy', 
-            spacing: 40, 
-            startX: 50, 
-            startY: 50 
+          const laidOutNodes = layoutNodesInDistrict(districtNodes, district, {
+            mode: 'occupancy',
+            spacing: 80,
+            startX: 60,
+            startY: 60
           });
           console.log(`Layout for ${district.id}:`, laidOutNodes.map(n => ({ id: n.id, pos: n.position })));
           finalNodes.push(...laidOutNodes);
