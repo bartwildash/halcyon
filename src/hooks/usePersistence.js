@@ -2,8 +2,8 @@
 import { useEffect, useRef } from 'react';
 
 export const usePersistence = (nodes, setNodes, edges, setEdges) => {
-  // Bump version to v8 to force layout reset with fixed occupancy algorithm
-  const STORAGE_KEY = 'spatialos-state-v8'; // Fixed overlapping nodes bug in spatial layout
+  // Bump version to v9 to fix persistence timing and extent property
+  const STORAGE_KEY = 'spatialos-state-v9'; // Fixed district spawning with extent:parent and persistence threshold
   const loadedRef = useRef(false);
 
   // Load persistence ONLY after nodes have been initialized with their structure
@@ -23,9 +23,9 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
             return currentNodes.map(node => {
               const savedNode = savedNodes.find(n => n.id === node.id);
               if (savedNode) {
-                // Only restore if position is significantly different from (0,0) or (50,50)
-                // This prevents restoring old (0,0) positions that override the layout
-                const isDefaultPos = savedNode.position.x < 10 && savedNode.position.y < 10;
+                // Allow layout-calculated positions (60-120px range) to be treated as defaults
+                // This prevents persistence from overriding initial layout positions
+                const isDefaultPos = savedNode.position.x < 120 && savedNode.position.y < 120;
                 if (!isDefaultPos) {
                   return { 
                     ...node, 
@@ -40,7 +40,7 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
           // Edges logic could go here
           
           loadedRef.current = true;
-          console.log("SpatialOS: State restored from persistence (v8).");
+          console.log("SpatialOS: State restored from persistence (v9).");
         } catch (e) {
           console.error("Failed to load state", e);
           loadedRef.current = true;

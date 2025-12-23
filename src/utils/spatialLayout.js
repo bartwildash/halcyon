@@ -9,10 +9,10 @@ import { getNodeBounds, getDefaultNodeSize } from './collisionDetection';
  * Node Categories - Maps node types to functional categories
  */
 export const NODE_CATEGORIES = {
-  productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph', 'projecthub', 'kanban', 'gtdinbox', 'mindmap', 'timeline'],
-  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack', 'sketch', 'photoeditor', 'audioeditor', 'publisher', 'zine'],
+  productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph', 'projecthub'],
+  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack', 'sketch', 'photoeditor', 'audioeditor', 'publisher', 'zine', 'kanban', 'gtdinbox', 'mindmap', 'timeline'],
   social: ['contact', 'contactsStack', 'action', 'portal', 'mailbox', 'letter'],
-  play: ['chess', 'synth', 'drummachine', 'winamp', 'butterchurn', 'guitartuna', 'audiointerface'],
+  play: ['chess', 'synth', 'drummachine', 'winamp', 'butterchurn', 'guitartuna', 'audiointerface', 'skinbrowser'],
   time: ['pomodoro', 'flipclock', 'temporalinbox'],
   system: ['device', 'stack', 'templatebrowser']
 };
@@ -397,7 +397,8 @@ export const distributeNodesByCategory = (allNodes, districts) => {
           if (!assignedNodes.has(node.id)) {
             distribution[district.id].push({
               ...node,
-              parentNode: district.id
+              parentNode: district.id,
+              extent: 'parent'
             });
             assignedNodes.add(node.id);
           }
@@ -422,7 +423,8 @@ export const distributeNodesByCategory = (allNodes, districts) => {
       }
       distribution[matchingDistrict.id].push({
         ...node,
-        parentNode: matchingDistrict.id
+        parentNode: matchingDistrict.id,
+        extent: 'parent'
       });
       assignedNodes.add(node.id);
     }

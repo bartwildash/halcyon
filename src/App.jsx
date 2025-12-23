@@ -785,11 +785,11 @@ function SpatialWorkspace() {
       // --- STEP 2: Define All Nodes (without positions initially) ---
       const allNodes = [
         // PRODUCTIVITY NODES (Study & Strategy)
-        { id: 'a2', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { label: 'Sentiment Analysis', provider: 'OpenAI', icon: <Cpu color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['analyze-sentiment'], requiredUtilities: ['capture-audio'] } },
-        { id: 'a1', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-strategy', data: { label: 'Payment Terminal', provider: 'Adyen', icon: <Mail color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['scan-nfc', 'make-payment'], requiredUtilities: ['scan-nfc'] } },
-        { id: 'a3', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { label: 'Code Review', provider: 'GitHub', icon: <Database color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['review-code'] } },
+        { id: 'a2', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { label: 'Sentiment Analysis', provider: 'OpenAI', icon: <Cpu color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['analyze-sentiment'], requiredUtilities: ['capture-audio'] } },
+        { id: 'a1', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-strategy', extent: 'parent', data: { label: 'Payment Terminal', provider: 'Adyen', icon: <Mail color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['scan-nfc', 'make-payment'], requiredUtilities: ['scan-nfc'] } },
+        { id: 'a3', type: 'agent', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { label: 'Code Review', provider: 'GitHub', icon: <Database color="#4b5563" size={16}/>, color: '#f3f4f6', log: addLog, utilityIds: ['review-code'] } },
         {
-          id: 'graph1', type: 'graph', position: { x: 0, y: 0 }, parentNode: 'd-study', style: { width: 500, height: 400 },
+          id: 'graph1', type: 'graph', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', style: { width: 500, height: 400 },
         data: { 
           nodes: [
             { id: 'n1', label: 'Payment Terminal', type: 'agent', x: 100, y: 100 },
@@ -807,57 +807,57 @@ function SpatialWorkspace() {
           ]
         }
       },
-        { id: 'matrix1', type: 'matrix', position: { x: 0, y: 0 }, parentNode: 'd-strategy', style: { width: 500, height: 500 } },
-        { id: 'm1', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-strategy', data: { label: 'Monthly Revenue', value: '$12,450', unit: 'USD' } },
-        { id: 'm2', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-strategy', data: { label: 'Active Users', value: '1,234', unit: 'users' } },
-        { id: 'm3', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { label: 'Tasks Completed', value: '42', unit: 'tasks' } },
-        { id: 'note1', type: 'note', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { content: 'Research notes on spatial computing...', title: 'Spatial OS Research' } },
-        { id: 'note2', type: 'note', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { content: 'Meeting notes from design review...', title: 'Design Review' } },
-        { id: 'task1', type: 'task', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { title: 'Implement collision detection', completed: false } },
-        { id: 'task2', type: 'task', position: { x: 0, y: 0 }, parentNode: 'd-study', data: { title: 'Review PR #123', completed: false } },
+        { id: 'matrix1', type: 'matrix', position: { x: 0, y: 0 }, parentNode: 'd-strategy', extent: 'parent', style: { width: 500, height: 500 } },
+        { id: 'm1', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-strategy', extent: 'parent', data: { label: 'Monthly Revenue', value: '$12,450', unit: 'USD' } },
+        { id: 'm2', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-strategy', extent: 'parent', data: { label: 'Active Users', value: '1,234', unit: 'users' } },
+        { id: 'm3', type: 'metric', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { label: 'Tasks Completed', value: '42', unit: 'tasks' } },
+        { id: 'note1', type: 'note', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { content: 'Research notes on spatial computing...', title: 'Spatial OS Research' } },
+        { id: 'note2', type: 'note', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { content: 'Meeting notes from design review...', title: 'Design Review' } },
+        { id: 'task1', type: 'task', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { title: 'Implement collision detection', completed: false } },
+        { id: 'task2', type: 'task', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent', data: { title: 'Review PR #123', completed: false } },
         
         // TIME NODES (Study)
-        { id: 'time1', type: 'pomodoro', position: { x: 0, y: 0 }, parentNode: 'd-study' },
-        { id: 'flipclock1', type: 'flipclock', position: { x: 0, y: 0 }, parentNode: 'd-study' },
+        { id: 'time1', type: 'pomodoro', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent' },
+        { id: 'flipclock1', type: 'flipclock', position: { x: 0, y: 0 }, parentNode: 'd-study', extent: 'parent' },
         
         // CREATIVE NODES (Studio)
         // Shader nodes disabled temporarily - causing WebGL issues on mobile
-        // { id: 'shader1', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'synthwave-pulse' } },
-        // { id: 'shader2', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'focus-rain' } },
-        // { id: 'shader3', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'organic-flow' } },
+        // { id: 'shader1', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', data: { presetId: 'synthwave-pulse' } },
+        // { id: 'shader2', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', data: { presetId: 'focus-rain' } },
+        // { id: 'shader3', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', data: { presetId: 'organic-flow' } },
 
         // SYSTEM NODES (Studio)
         {
-          id: 'device-hub', type: 'device', position: { x: 0, y: 0 }, parentNode: 'd-studio', draggable: true,
+          id: 'device-hub', type: 'device', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', draggable: true,
           data: { label: 'Local Peripherals', onConnect: (deviceId) => addLog(`> Device Hub: Connected ${deviceId}`) }
         },
-        { id: 'stack1', type: 'stack', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { label: 'Project Files', items: ['design.psd', 'mockup.fig', 'notes.md'] } },
+        { id: 'stack1', type: 'stack', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', data: { label: 'Project Files', items: ['design.psd', 'mockup.fig', 'notes.md'] } },
 
         // PHASE 1-4 DEMO NODES (Studio)
         // Phase 1: Templates & Filters
-        { id: 'demo-templates', type: 'templatebrowser', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { label: 'Workspace Templates' } },
+        { id: 'demo-templates', type: 'templatebrowser', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent', data: { label: 'Workspace Templates' } },
 
         // Phase 2: Organization
         {
-          id: 'demo-project-hub', type: 'projecthub', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-project-hub', type: 'projecthub', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: { label: 'Demo Project', projectTag: 'demo-project', color: '#10b981' }
         },
         {
-          id: 'demo-temporal', type: 'temporalinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-temporal', type: 'temporalinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: { label: 'This Week', timeframe: 'this-week', color: '#3b82f6' }
         },
 
         // Phase 3: Mental Models
         {
-          id: 'demo-kanban', type: 'kanban', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-kanban', type: 'kanban', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: { label: 'Sprint Board', color: '#8b5cf6' }
         },
         {
-          id: 'demo-gtd', type: 'gtdinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-gtd', type: 'gtdinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: { label: 'GTD Workflow', color: '#06b6d4' }
         },
         {
-          id: 'demo-mindmap', type: 'mindmap', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-mindmap', type: 'mindmap', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: {
             label: 'Product Strategy',
             centerText: 'Product Strategy',
@@ -869,7 +869,7 @@ function SpatialWorkspace() {
           }
         },
         {
-          id: 'demo-timeline', type: 'timeline', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-timeline', type: 'timeline', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: {
             label: 'Q1 Roadmap',
             startDate: '2025-01-01',
@@ -883,11 +883,11 @@ function SpatialWorkspace() {
 
         // Phase 4: Creative Tools
         {
-          id: 'demo-sketch', type: 'sketch', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-sketch', type: 'sketch', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: { label: 'Quick Sketch', color: '#8b5cf6' }
         },
         {
-          id: 'demo-photoeditor', type: 'photoeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-photoeditor', type: 'photoeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: {
             label: 'Photo Editor',
             sourceImageId: null, // Will show placeholder
@@ -895,7 +895,7 @@ function SpatialWorkspace() {
           }
         },
         {
-          id: 'demo-audioeditor', type: 'audioeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-audioeditor', type: 'audioeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: {
             label: 'Audio Editor',
             audioUrl: null, // Will show placeholder
@@ -903,7 +903,7 @@ function SpatialWorkspace() {
           }
         },
         {
-          id: 'demo-publisher', type: 'publisher', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          id: 'demo-publisher', type: 'publisher', position: { x: 0, y: 0 }, parentNode: 'd-studio', extent: 'parent',
           data: {
             label: 'Zine Publisher',
             color: '#f59e0b',
@@ -958,7 +958,7 @@ function SpatialWorkspace() {
 
         // SOCIAL NODES (Garden)
         {
-          id: 'contacts-stack', type: 'contactsStack', position: { x: 0, y: 0 }, parentNode: 'd-garden',
+          id: 'contacts-stack', type: 'contactsStack', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent',
           data: {
             label: 'All Contacts',
             contacts: [
@@ -971,36 +971,36 @@ function SpatialWorkspace() {
             ]
           }
         },
-        { id: 'c-graham', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Graham McBride', initials: 'GM', color: '#fbbf24', online: true } },
-        { id: 'c-brian', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Brian Carey', image: 'https://i.pravatar.cc/150?u=brian', online: true } },
-        { id: 'c-darla', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Darla Davidson', image: 'https://i.pravatar.cc/150?u=darla', online: true, role: 'PM' } },
-        { id: 'c-ashley', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Ashley Rice', image: 'https://i.pravatar.cc/150?u=ashley' } },
-        { id: 'c-maya', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Dr. Maya Patel', initials: 'MP', color: '#fce7f3', role: 'Research Lead', online: true } },
-        { id: 'c-james', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { name: 'Prof. James Wu', initials: 'JW', color: '#dbeafe', role: 'Advisor' } },
-        { id: 'p-to-studio', type: 'portal', position: { x: 0, y: 0 }, parentNode: 'd-garden', data: { destinationName: 'Studio District', targetX: 1600, targetY: 500, log: addLog } },
+        { id: 'c-graham', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Graham McBride', initials: 'GM', color: '#fbbf24', online: true } },
+        { id: 'c-brian', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Brian Carey', image: 'https://i.pravatar.cc/150?u=brian', online: true } },
+        { id: 'c-darla', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Darla Davidson', image: 'https://i.pravatar.cc/150?u=darla', online: true, role: 'PM' } },
+        { id: 'c-ashley', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Ashley Rice', image: 'https://i.pravatar.cc/150?u=ashley' } },
+        { id: 'c-maya', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Dr. Maya Patel', initials: 'MP', color: '#fce7f3', role: 'Research Lead', online: true } },
+        { id: 'c-james', type: 'contact', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { name: 'Prof. James Wu', initials: 'JW', color: '#dbeafe', role: 'Advisor' } },
+        { id: 'p-to-studio', type: 'portal', position: { x: 0, y: 0 }, parentNode: 'd-garden', extent: 'parent', data: { destinationName: 'Studio District', targetX: 1600, targetY: 500, log: addLog } },
         
         // PLAY NODES (Toy Room)
-        { id: 'toy-chess', type: 'chess', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { playerColor: 'white', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' } },
-        { id: 'toy-synth', type: 'synth', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { waveform: 'sine', frequency: 440 } },
-        { id: 'toy-drums', type: 'drummachine', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { bpm: 120 } },
+        { id: 'toy-chess', type: 'chess', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { playerColor: 'white', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' } },
+        { id: 'toy-synth', type: 'synth', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { waveform: 'sine', frequency: 440 } },
+        { id: 'toy-drums', type: 'drummachine', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { bpm: 120 } },
         // Individual floating sticker nodes
-        { id: 'sticker-nyan', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif', label: 'Nyan Cat', size: 200, rotation: -5 } },
-        { id: 'sticker-banana', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif', label: 'Dancing Banana', size: 200, rotation: 8 } },
+        { id: 'sticker-nyan', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif', label: 'Nyan Cat', size: 200, rotation: -5 } },
+        { id: 'sticker-banana', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif', label: 'Dancing Banana', size: 200, rotation: 8 } },
         {
-          id: 'winamp1', type: 'winamp', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
+          id: 'winamp1', type: 'winamp', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent',
           data: { tracks: [], skinUrl: "/skins/Nucleo-NLog-2G1.wsz", enableButterchurn: true }
         },
         {
-          id: 'butterchurn1', type: 'butterchurn', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
+          id: 'butterchurn1', type: 'butterchurn', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent',
           data: { width: 400, height: 300, audioSource: 'webamp', presetName: 'Default' }
         },
         {
-          id: 'skinbrowser1', type: 'skinbrowser', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
+          id: 'skinbrowser1', type: 'skinbrowser', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent',
           data: { onSkinSelect: (skin) => { setNodes((nds) => nds.map((n) => n.id === 'winamp1' ? { ...n, data: { ...n.data, skinUrl: skin.url } } : n)); } }
         },
-        { id: 'guitartuna1', type: 'guitartuna', position: { x: 0, y: 0 }, parentNode: 'd-toyroom' },
-        { id: 'audiointerface1', type: 'audiointerface', position: { x: 0, y: 0 }, parentNode: 'd-toyroom' },
-        // { id: 'shader4', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { presetId: 'synthwave-pulse' } },
+        { id: 'guitartuna1', type: 'guitartuna', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent' },
+        { id: 'audiointerface1', type: 'audiointerface', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent' },
+        // { id: 'shader4', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', extent: 'parent', data: { presetId: 'synthwave-pulse' } },
       ];
       
       // --- STEP 3: Distribute nodes by category to districts ---
