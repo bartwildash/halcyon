@@ -177,19 +177,19 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
     <SwayWrapper>
       <div
         style={{
-          filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
-          perspective: '1000px',
-          cursor: 'grab',
-          userSelect: 'none',
-        }}
-      >
-        <div style={{
           background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
           borderRadius: 16,
           padding: 16,
           boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
           border: '1px solid #334155',
-        }}>
+          filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
+          cursor: 'grab',
+          userSelect: 'none',
+          position: 'relative',
+          width: 'fit-content',
+          minWidth: 275,
+        }}
+      >
         <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -202,7 +202,9 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
               width: 275,
               minHeight: 116,
               position: 'relative',
-              pointerEvents: 'auto', // Ensure Webamp UI is interactive
+              pointerEvents: 'auto',
+              overflow: 'hidden',
+              borderRadius: 8,
             }}
             data-type="winamp"
             className="webamp-container"
@@ -236,7 +238,6 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
                 onClick={() => {
                   setShowVisualizer(!showVisualizer);
                   if (webampRef.current) {
-                    // Toggle visualizer in Webamp
                     webampRef.current.toggleButterchurn();
                   }
                 }}
@@ -266,15 +267,12 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
                 onTrackSelect={(index) => {
                   if (webampRef.current) {
                     webampRef.current.setTracksToPlay(tracks);
-                    // Seek to track
-                    // webampRef.current.seekToTime(0);
                   }
                 }}
               />
             </div>
           )}
         </div>
-      </div>
       </div>
     </SwayWrapper>
   );

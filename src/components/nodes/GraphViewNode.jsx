@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNodes, useEdges } from '@xyflow/react';
+import { useNodes, useEdges, Position } from '@xyflow/react';
+import { SwayWrapper, SmartHandle } from '../SpatialCommon';
 
 /**
  * ULTRATHINK GRAPH VIEW NODE
@@ -51,8 +52,9 @@ export const GraphViewNode = ({ data }) => {
       return { source, target, strength: 1 };
     }).filter(e => e.source && e.target);
 
-    // Particles flowing along edges
+    // Particles flowing along edges (Flexoki warm tones)
     const particles = [];
+    const flexokiHues = [25, 30, 45, 160, 175, 210, 280, 320]; // Orange, Yellow, Green, Cyan, Blue, Purple, Magenta
     graphEdges.forEach((edge, i) => {
       // Create 2-4 particles per edge
       const particleCount = 2 + Math.floor(Math.random() * 3);
@@ -62,7 +64,7 @@ export const GraphViewNode = ({ data }) => {
           progress: j / particleCount, // Spread them out
           speed: 0.003 + Math.random() * 0.002,
           size: 2 + Math.random() * 2,
-          hue: 200 + Math.random() * 60, // Blue-cyan range
+          hue: flexokiHues[Math.floor(Math.random() * flexokiHues.length)],
         });
       }
     });
@@ -126,17 +128,194 @@ export const GraphViewNode = ({ data }) => {
           if (node.y > height - margin) { node.y = height - margin; node.vy *= -0.5; }
         });
       } else if (mode === 'radial') {
-        // Radial layout - arrange by connection count
+        // NEWTONIAN ORBITAL PHYSICS (slower, elliptical orbits)
+        const SPEED_SCALE = 0.4; // Much slower than ultrathink orbit (was 2.1)
+        const TILT = 0.42; // Perspective flattening (ry = rx * tilt)
+        const BASE_RADIUS = 80;
+        const RING_GAP = 50;
+
+        // Eccentricity per ring (subtle ellipses, sun at focus)
+        const eccentricity = [0.04, 0.02, 0.03, 0.05, 0.04, 0.06, 0.05, 0.01];
+        // Ring rotation angles (degrees)
+        const ringRotation = { 2: -8, 4: 12, 6: -6 };
+        // Per-ring tilt variation
+        const ringTilt = { 2: 0.40, 4: 0.44, 6: 0.43 };
+
+        // Kepler's equation solver
+        const solveKepler = (M, e) => {
+          let E = M;
+          for (let i = 0; i < 8; i++) {
+            const delta = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+            E -= delta;
+            if (Math.abs(delta) < 1e-6) break;
+          }
+          // True anomaly
+          return 2 * Math.atan2(
+            Math.sqrt(1 + e) * Math.sin(E / 2),
+            Math.sqrt(1 - e) * Math.cos(E / 2)
+          );
+        };
+
+        // Position on ring
+        const posOnRing = (ring, M) => {
+          const a = BASE_RADIUS + ring * RING_GAP; // Semi-major axis
+          const e = eccentricity[ring] || 0.03;
+          const b = a * (ringTilt[ring] ?? TILT); // Semi-minor axis (perspective)
+          const c = a * e; // Focal distance
+
+          const nu = e ? solveKepler(M, e) : M; // True anomaly
+          let x = -c + a * Math.cos(nu);
+          let y = b * Math.sin(nu);
+
+          // Apply ring rotation
+          const rot = (ringRotation[ring] || 0) * Math.PI / 180;
+          if (rot) {
+            const X = x * Math.cos(rot) - y * Math.sin(rot);
+            const Y = x * Math.sin(rot) + y * Math.cos(rot);
+            x = X;
+            y = Y;
+          }
+
+          return { x: width / 2 + x, y: height / 2 + y };
+        };
+
+        // Initialize orbital parameters (once per node)
         const sorted = [...graphNodes].sort((a, b) => b.connections - a.connections);
-        const angleStep = (Math.PI * 2) / graphNodes.length;
         sorted.forEach((node, i) => {
-          const angle = i * angleStep;
-          const radius = 80 + (sorted.length - i) * 15;
-          const targetX = width / 2 + Math.cos(angle) * radius;
-          const targetY = height / 2 + Math.sin(angle) * radius;
-          node.x += (targetX - node.x) * 0.05;
-          node.y += (targetY - node.y) * 0.05;
+          if (!node.orbit) {
+            // Assign to rings based on connection importance
+            const totalRings = Math.min(6, Math.ceil(graphNodes.length / 8));
+            const ring = Math.floor((i / sorted.length) * totalRings);
+
+            // Random starting position on ring with jitter
+            const baseAngle = (i / sorted.length) * Math.PI * 2;
+            const jitter = (Math.random() - 0.5) * 0.3;
+            const M = baseAngle + jitter;
+
+            // Orbital speed (inner rings faster, outer slower - Kepler's 3rd law)
+            const baseSpeed = 0.008 / Math.pow(ring + 1, 0.5);
+            const speedVariation = 0.95 + Math.random() * 0.1; // ±5%
+            const n = baseSpeed * speedVariation * SPEED_SCALE;
+
+            node.orbit = { ring, M, n };
+          }
+
+          // Update mean anomaly (continuous orbital motion)
+          node.orbit.M = (node.orbit.M + node.orbit.n) % (Math.PI * 2);
+
+          // Calculate position
+          const pos = posOnRing(node.orbit.ring, node.orbit.M);
+          node.x = pos.x;
+          node.y = pos.y;
         });
+      }
+
+      // DRAW ORBITAL RINGS (for radial mode)
+      if (mode === 'radial') {
+        const TILT = 0.42;
+        const BASE_RADIUS = 80;
+        const RING_GAP = 50;
+        const eccentricity = [0.04, 0.02, 0.03, 0.05, 0.04, 0.06];
+        const ringRotation = { 2: -8, 4: 12, 6: -6 };
+        const ringTilt = { 2: 0.40, 4: 0.44, 6: 0.43 };
+
+        // Flexoki ring colors (subtle, warm)
+        const ringColors = [
+          'rgba(218, 112, 44, 0.25)',  // Ring 0 - Flexoki Orange
+          'rgba(218, 112, 44, 0.12)',  // Ring 1 - Faint orange
+          'rgba(208, 162, 21, 0.25)',  // Ring 2 - Flexoki Yellow
+          'rgba(208, 162, 21, 0.12)',  // Ring 3 - Faint yellow
+          'rgba(135, 154, 57, 0.25)',  // Ring 4 - Flexoki Green
+          'rgba(135, 154, 57, 0.12)',  // Ring 5 - Faint green
+          'rgba(58, 169, 159, 0.25)',  // Ring 6 - Flexoki Cyan
+        ];
+
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        // Draw 6 concentric orbital rings
+        for (let i = 0; i < 6; i++) {
+          const a = BASE_RADIUS + i * RING_GAP; // Semi-major axis
+          const e = eccentricity[i] || 0.03;
+          const b = a * (ringTilt[i] ?? TILT); // Semi-minor axis (perspective)
+          const c = a * e; // Focal offset
+
+          const rot = (ringRotation[i] || 0) * Math.PI / 180;
+
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.rotate(rot);
+          ctx.translate(-c, 0); // Offset for eccentricity (sun at focus)
+
+          // Draw ellipse
+          ctx.strokeStyle = ringColors[i];
+          ctx.lineWidth = i % 2 === 0 ? 2 : 1; // Heavy/fine alternating
+          ctx.beginPath();
+          ctx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+      }
+
+      // DRAW CENTRAL SUN (for radial mode)
+      if (mode === 'radial') {
+        const sunX = width / 2;
+        const sunY = height / 2;
+        const sunRadius = 28;
+
+        // Outer glow
+        const sunGlow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 3);
+        sunGlow.addColorStop(0, 'rgba(255, 154, 26, 0.6)');
+        sunGlow.addColorStop(0.3, 'rgba(255, 154, 26, 0.3)');
+        sunGlow.addColorStop(0.6, 'rgba(255, 154, 26, 0.1)');
+        sunGlow.addColorStop(1, 'rgba(255, 154, 26, 0)');
+        ctx.fillStyle = sunGlow;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunRadius * 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sun body with gradient
+        const sunGradient = ctx.createRadialGradient(
+          sunX - sunRadius * 0.3,
+          sunY - sunRadius * 0.3,
+          0,
+          sunX,
+          sunY,
+          sunRadius
+        );
+        sunGradient.addColorStop(0, '#FFDA7A');
+        sunGradient.addColorStop(0.5, '#FF9A1A');
+        sunGradient.addColorStop(1, '#FF6B00');
+
+        ctx.fillStyle = sunGradient;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Corona (subtle pulsing ring)
+        const coronaPulse = Math.sin(frame * 0.04) * 2 + 3;
+        ctx.strokeStyle = 'rgba(255, 154, 26, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunRadius + coronaPulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Bright highlight
+        const highlightGradient = ctx.createRadialGradient(
+          sunX - sunRadius * 0.4,
+          sunY - sunRadius * 0.4,
+          0,
+          sunX - sunRadius * 0.4,
+          sunY - sunRadius * 0.4,
+          sunRadius * 0.6
+        );
+        highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+        highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = highlightGradient;
+        ctx.beginPath();
+        ctx.arc(sunX - sunRadius * 0.4, sunY - sunRadius * 0.4, sunRadius * 0.6, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       // DRAW CLUSTERING HALOS (for highly connected nodes)
@@ -323,62 +502,96 @@ export const GraphViewNode = ({ data }) => {
   }, [nodes, edges, mode, showParticles]);
 
   return (
-    <div style={{
-      width: 600,
-      height: 450,
-      background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
-      borderRadius: 20,
-      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-    }}>
-      {/* Header with controls */}
+    <SwayWrapper>
       <div style={{
-        padding: '12px 16px',
-        background: 'rgba(0, 0, 0, 0.3)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        width: 600,
+        height: 450,
+        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 50%, #282726 100%)',
+        borderRadius: 20,
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(206, 205, 195, 0.08)',
+        border: '1px solid rgba(135, 133, 128, 0.2)',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        position: 'relative'
       }}>
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
+        {/* Header with controls */}
         <div style={{
+          padding: '12px 16px',
+          background: 'rgba(16, 15, 15, 0.5)',
+          borderBottom: '1px solid rgba(135, 133, 128, 0.2)',
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
+          justifyContent: 'space-between',
         }}>
-          <span style={{
-            fontSize: 18,
-            filter: 'drop-shadow(0 0 8px rgba(100, 200, 255, 0.6))',
-          }}>🧠</span>
-          <div>
-            <div style={{
-              fontSize: 14,
-              fontWeight: 700,
-              color: '#fff',
-              textShadow: '0 0 10px rgba(100, 200, 255, 0.5)',
-            }}>ULTRATHINK Graph</div>
-            <div style={{
-              fontSize: 10,
-              color: '#a0a0ff',
-              fontFamily: 'monospace',
-            }}>{nodes.length} nodes · {edges.length} connections</div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}>
+            <div>
+              <div style={{
+                fontSize: 14,
+                fontWeight: 700,
+                fontFamily: 'monospace',
+                letterSpacing: 1,
+              }}>
+                <span style={{ color: '#D14D41' }}>u</span>
+                <span style={{ color: '#DA702C' }}>l</span>
+                <span style={{ color: '#D0A215' }}>t</span>
+                <span style={{ color: '#879A39' }}>r</span>
+                <span style={{ color: '#3AA99F' }}>a</span>
+                <span style={{ color: '#4385BE' }}>t</span>
+                <span style={{ color: '#8B7EC8' }}>h</span>
+                <span style={{ color: '#CE5D97' }}>i</span>
+                <span style={{ color: '#DA702C' }}>n</span>
+                <span style={{ color: '#D0A215' }}>k</span>
+                <span style={{ color: '#878580', marginLeft: 6 }}> graph</span>
+              </div>
+              <div style={{
+                fontSize: 10,
+                color: '#878580',
+                fontFamily: 'monospace',
+              }}>{nodes.length} nodes · {edges.length} connections</div>
+            </div>
           </div>
-        </div>
 
-        {/* Mode switcher */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          {['force', 'radial'].map(m => (
+          {/* Mode switcher */}
+          <div style={{ display: 'flex', gap: 8 }}>
+            {['force', 'radial'].map(m => (
+              <button
+                key={m}
+                className="nodrag"
+                onClick={() => setMode(m)}
+                style={{
+                  padding: '4px 12px',
+                  background: mode === m ? 'rgba(218, 112, 44, 0.25)' : 'rgba(135, 133, 128, 0.15)',
+                  border: mode === m ? '1px solid rgba(218, 112, 44, 0.5)' : '1px solid rgba(135, 133, 128, 0.3)',
+                  borderRadius: 8,
+                  color: mode === m ? '#CECDC3' : '#878580',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textTransform: 'uppercase',
+                  letterSpacing: 0.5,
+                  transition: 'all 0.2s',
+                }}
+              >
+                {m}
+              </button>
+            ))}
             <button
-              key={m}
-              onClick={() => setMode(m)}
+              className="nodrag"
+              onClick={() => setShowParticles(!showParticles)}
               style={{
                 padding: '4px 12px',
-                background: mode === m ? 'rgba(100, 200, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-                border: mode === m ? '1px solid rgba(100, 200, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                background: showParticles ? 'rgba(135, 154, 57, 0.25)' : 'rgba(135, 133, 128, 0.15)',
+                border: '1px solid rgba(135, 133, 128, 0.3)',
                 borderRadius: 8,
-                color: '#fff',
+                color: showParticles ? '#CECDC3' : '#878580',
                 fontSize: 11,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -386,55 +599,43 @@ export const GraphViewNode = ({ data }) => {
                 letterSpacing: 0.5,
                 transition: 'all 0.2s',
               }}
+              title="Toggle particles"
             >
-              {m}
+              particles
             </button>
-          ))}
-          <button
-            onClick={() => setShowParticles(!showParticles)}
-            style={{
-              padding: '4px 8px',
-              background: showParticles ? 'rgba(100, 255, 200, 0.3)' : 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: 8,
-              color: '#fff',
-              fontSize: 18,
-              cursor: 'pointer',
-            }}
-            title="Toggle particles"
-          >
-            ✨
-          </button>
+          </div>
         </div>
-      </div>
 
-      {/* Canvas */}
-      <canvas
-        ref={canvasRef}
-        width={600}
-        height={400}
-        style={{
-          flex: 1,
-          cursor: 'grab',
-        }}
-      />
-    </div>
+        {/* Canvas */}
+        <canvas
+          ref={canvasRef}
+          width={600}
+          height={400}
+          className="nodrag"
+          style={{
+            flex: 1,
+            cursor: 'grab',
+          }}
+        />
+      </div>
+    </SwayWrapper>
   );
 };
 
-// Helper function to assign colors based on node type
+// Helper function to assign colors based on node type (Flexoki Dark palette)
 function getNodeColor(type) {
   const colors = {
-    agent: '#8b5cf6',      // Purple
-    stack: '#f59e0b',      // Amber
-    note: '#fbbf24',       // Yellow
-    task: '#10b981',       // Green
-    portal: '#06b6d4',     // Cyan
-    person: '#ec4899',     // Pink
-    pomodoro: '#ef4444',   // Red
-    flipclock: '#6366f1',  // Indigo
-    metric: '#14b8a6',     // Teal
-    default: '#64a8ff',    // Blue
+    agent: '#8B7EC8',      // Flexoki Purple (warm purple)
+    stack: '#DA702C',      // Flexoki Orange (warm orange)
+    note: '#D0A215',       // Flexoki Yellow (warm gold)
+    task: '#879A39',       // Flexoki Green (olive green)
+    portal: '#3AA99F',     // Flexoki Cyan (teal)
+    person: '#CE5D97',     // Flexoki Magenta (warm pink)
+    contact: '#CE5D97',    // Flexoki Magenta
+    pomodoro: '#D14D41',   // Flexoki Red (warm red)
+    flipclock: '#4385BE',  // Flexoki Blue (warm blue)
+    metric: '#3AA99F',     // Flexoki Cyan
+    default: '#878580',    // Flexoki Subtext (warm gray)
   };
   return colors[type] || colors.default;
 }

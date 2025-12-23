@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { SwayWrapper, SmartHandle } from '../SpatialCommon';
+import { Position } from '@xyflow/react';
 
 // ============================================================================
 // Types
@@ -100,211 +102,220 @@ export const FlipClockNode = ({ data }) => {
   const monthName = months[time.getMonth()]
 
   return (
-    <div
-      style={{
-        // Removed fixed positioning and zIndex for React Flow compatibility
-        cursor: 'grab',
-        userSelect: 'none',
-        filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
-        perspective: '1000px',
-      }}
-    >
-      {/* Flip container with 3D transform */}
+    <SwayWrapper>
       <div
         style={{
-          width: 300,
-          height: 342,
-          position: 'relative',
-          transformStyle: 'preserve-3d',
-          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          transition: 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
+          // Removed fixed positioning and zIndex for React Flow compatibility
+          cursor: 'grab',
+          userSelect: 'none',
+          filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
+          perspective: '1000px',
+          position: 'relative'
         }}
       >
-        {/* FRONT FACE - Clock */}
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
+        {/* Flip container with 3D transform */}
         <div
           style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-          }}
-          onClick={(e) => {
-            // Detect double-click to flip to settings
-            const now = Date.now()
-            const timeSinceLastClick = now - lastClickTime.current
-            lastClickTime.current = now
-
-            if (timeSinceLastClick < 300) {
-              setIsFlipped(true)
-            }
+            width: 300,
+            height: 342,
+            position: 'relative',
+            transformStyle: 'preserve-3d',
+            transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            transition: 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
           }}
         >
-          {/* Outer frame - raised metallic rim */}
+          {/* FRONT FACE - Clock */}
           <div
             style={{
-              width: 300,
-              height: 342,
-              background: 'linear-gradient(135deg, #e8e8e8 0%, #cecece 50%, #d8d8d8 100%)',
-              borderRadius: 42,
-              padding: 10,
-              position: 'relative',
-              boxShadow: `
-                inset 0 2px 8px rgba(255, 255, 255, 0.9),
-                inset 0 -3px 8px rgba(0, 0, 0, 0.2),
-                0 12px 24px rgba(0, 0, 0, 0.2),
-                0 4px 8px rgba(0, 0, 0, 0.15)
-              `,
-              border: '3px solid #b8b8b8',
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              backfaceVisibility: 'hidden',
+            }}
+            onClick={(e) => {
+              // Detect double-click to flip to settings
+              const now = Date.now()
+              const timeSinceLastClick = now - lastClickTime.current
+              lastClickTime.current = now
+
+              if (timeSinceLastClick < 300) {
+                setIsFlipped(true)
+              }
             }}
           >
-        {/* Inner recessed border - dark dip */}
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            background: 'linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%)',
-            borderRadius: 36,
-            padding: 6,
-            boxShadow: `
-              inset 0 3px 6px rgba(0, 0, 0, 0.8),
-              inset 0 -1px 3px rgba(255, 255, 255, 0.1)
-            `,
-            position: 'relative',
-          }}
-        >
-          {/* Layer 1: Interior refractive highlight */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 6,
-              left: 6,
-              right: 6,
-              bottom: 6,
-              borderRadius: 34,
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.25) 30%, rgba(0,0,0,0.45) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-
-          {/* Layer 2: Shadowed inner lip */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 12,
-              left: 12,
-              right: 12,
-              bottom: 12,
-              borderRadius: 30,
-              background: 'rgba(0,0,0,0.5)',
-              opacity: 0.7,
-              pointerEvents: 'none',
-            }}
-          />
-          {/* Clock face - light background */}
+            {/* Outer frame - raised metallic rim */}
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, #e8e8e8 0%, #cecece 50%, #d8d8d8 100%)',
+                borderRadius: 42,
+                padding: 10,
+                position: 'relative',
+                boxShadow: `
+                  inset 0 2px 8px rgba(255, 255, 255, 0.9),
+                  inset 0 -3px 8px rgba(0, 0, 0, 0.2),
+                  0 12px 24px rgba(0, 0, 0, 0.2),
+                  0 4px 8px rgba(0, 0, 0, 0.15)
+                `,
+                border: '3px solid #b8b8b8',
+                boxSizing: 'border-box',
+                overflow: 'hidden'
+              }}
+            >
+          {/* Inner recessed border - dark dip */}
           <div
             style={{
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(135deg, #fafafa 0%, #ececec 100%)',
-              borderRadius: 30,
-              padding: '0px 12px 4px 12px',
+              background: 'linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%)',
+              borderRadius: 32, // Adjusted: 42 - 10
+              padding: 6,
+              boxShadow: `
+                inset 0 3px 6px rgba(0, 0, 0, 0.8),
+                inset 0 -1px 3px rgba(255, 255, 255, 0.1)
+              `,
               position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              overflow: 'hidden',
+              boxSizing: 'border-box'
             }}
           >
-            {/* Gloss overlay */}
+            {/* Layer 1: Interior refractive highlight */}
             <div
               style={{
                 position: 'absolute',
-                top: 8,
-                left: 8,
-                right: 8,
-                bottom: 8,
-                borderRadius: 28,
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 40%, rgba(0,0,0,0.05) 100%)',
-                border: '1px solid rgba(255,255,255,0.4)',
+                top: 6,
+                left: 6,
+                right: 6,
+                bottom: 6,
+                borderRadius: 26, // Adjusted: 32 - 6
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.25) 30%, rgba(0,0,0,0.45) 100%)',
                 pointerEvents: 'none',
-                zIndex: 1000,
               }}
             />
-        {/* Internal container */}
-        <div
-          style={{
-            maxWidth: 180,
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '12px',
-            paddingBottom: '3pt',
-          }}
-        >
-          {/* Time row (HH MM) */}
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <DoubleFlipCard
-            digit1={hourTens}
-            digit2={hourOnes}
-            isFlipping1={flipping.hourTens}
-            isFlipping2={flipping.hourOnes}
-          />
 
-          <DoubleFlipCard
-            digit1={minuteTens}
-            digit2={minuteOnes}
-            isFlipping1={flipping.minuteTens}
-            isFlipping2={flipping.minuteOnes}
-          />
-        </div>
-
-          {/* Day row */}
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <FlipCard text={dayName} isFlipping={flipping.day} isWide />
-          </div>
-
-          {/* Date row */}
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', width: '100%' }}>
-            <DoubleFlipCard
-              digit1={dateTens}
-              digit2={dateOnes}
-              isFlipping1={flipping.dateTens}
-              isFlipping2={flipping.dateOnes}
+            {/* Layer 2: Shadowed inner lip */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 12,
+                left: 12,
+                right: 12,
+                bottom: 12,
+                borderRadius: 20,
+                background: 'rgba(0,0,0,0.5)',
+                opacity: 0.7,
+                pointerEvents: 'none',
+              }}
             />
-            <FlipCard text={monthName} isFlipping={flipping.month} />
+            {/* Clock face - light background */}
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(135deg, #fafafa 0%, #ececec 100%)',
+                borderRadius: 26, // Adjusted: 32 - 6
+                padding: '0px 12px 4px 12px',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                boxSizing: 'border-box'
+              }}
+            >
+              {/* Gloss overlay */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  left: 8,
+                  right: 8,
+                  bottom: 8,
+                  borderRadius: 18,
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 40%, rgba(0,0,0,0.05) 100%)',
+                  border: '1px solid rgba(255,255,255,0.4)',
+                  pointerEvents: 'none',
+                  zIndex: 1000,
+                }}
+              />
+          {/* Internal container */}
+          <div
+            style={{
+              maxWidth: 180,
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '12px',
+              paddingBottom: '3pt',
+            }}
+          >
+            {/* Time row (HH MM) */}
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+            <DoubleFlipCard
+              digit1={hourTens}
+              digit2={hourOnes}
+              isFlipping1={flipping.hourTens}
+              isFlipping2={flipping.hourOnes}
+            />
+
+            <DoubleFlipCard
+              digit1={minuteTens}
+              digit2={minuteOnes}
+              isFlipping1={flipping.minuteTens}
+              isFlipping2={flipping.minuteOnes}
+            />
           </div>
+
+            {/* Day row */}
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <FlipCard text={dayName} isFlipping={flipping.day} isWide />
+            </div>
+
+            {/* Date row */}
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', width: '100%' }}>
+              <DoubleFlipCard
+                digit1={dateTens}
+                digit2={dateOnes}
+                isFlipping1={flipping.dateTens}
+                isFlipping2={flipping.dateOnes}
+              />
+              <FlipCard text={monthName} isFlipping={flipping.month} />
+            </div>
+              </div>
+            </div>
             </div>
           </div>
           </div>
-        </div>
-        </div>
-        {/* End FRONT FACE */}
+          {/* End FRONT FACE */}
 
-        {/* BACK FACE - Settings (Simplified for React Flow) */}
-        <div
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
-          }}
-          onClick={(e) => {
-            const now = Date.now()
-            const timeSinceLastClick = now - lastClickTime.current
-            lastClickTime.current = now
-
-            if (timeSinceLastClick < 300) {
-              setIsFlipped(false)
-            }
-          }}
-        >
+          {/* BACK FACE - Settings (Simplified for React Flow) */}
           <div
             style={{
-              width: 300,
-              height: 342,
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              backfaceVisibility: 'hidden',
+              transform: 'rotateY(180deg)',
+            }}
+            onClick={(e) => {
+              const now = Date.now()
+              const timeSinceLastClick = now - lastClickTime.current
+              lastClickTime.current = now
+
+              if (timeSinceLastClick < 300) {
+                setIsFlipped(false)
+              }
+            }}
+          >
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
               background: 'linear-gradient(135deg, #e8e8e8 0%, #cecece 50%, #d8d8d8 100%)',
               borderRadius: 42,
               padding: 10,
@@ -316,15 +327,17 @@ export const FlipClockNode = ({ data }) => {
                 0 4px 8px rgba(0, 0, 0, 0.15)
               `,
               border: '3px solid #b8b8b8',
+              boxSizing: 'border-box'
             }}
           >
-            <div style={{ width: '100%', height: '100%', background: '#fff', borderRadius: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#666' }}>
+            <div style={{ width: '100%', height: '100%', background: '#fff', borderRadius: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#666', boxSizing: 'border-box' }}>
                Double click to return
             </div>
           </div>
+          </div>
         </div>
       </div>
-    </div>
+    </SwayWrapper>
   )
 }
 

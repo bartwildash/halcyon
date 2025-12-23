@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { SwayWrapper } from '../SpatialCommon';
+import { SwayWrapper, SmartHandle } from '../SpatialCommon';
+import { Position } from '@xyflow/react';
 import { Play, Pause, RotateCcw, Cpu, Square } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -47,8 +48,10 @@ export const ChessNode = ({ data }) => {
               cursor: 'pointer',
               fontSize: 28,
               userSelect: 'none',
-              boxShadow: selectedSquare === square ? 'inset 0 0 10px rgba(255,215,0,0.5)' : 'none',
-              textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              boxShadow: selectedSquare === square 
+                ? 'inset 0 0 10px rgba(255,215,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3)' 
+                : 'inset 0 1px 3px rgba(0,0,0,0.2)',
+              textShadow: '0 2px 4px rgba(0,0,0,0.4)',
               position: 'relative',
             }}
           >
@@ -81,19 +84,33 @@ export const ChessNode = ({ data }) => {
       <div style={{
         width: 360,
         background: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)', // Mahogany Wood
-        borderRadius: 12,
-        padding: 8,
-        boxShadow: '0 10px 30px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.1)',
-        border: '1px solid #3E2723',
-        position: 'relative'
+        borderRadius: 16,
+        padding: 12,
+        boxShadow: `
+          0 20px 50px rgba(0,0,0,0.5), 
+          inset 0 2px 3px rgba(255,255,255,0.2),
+          inset 0 -2px 3px rgba(0,0,0,0.5),
+          0 5px 15px rgba(0,0,0,0.3)
+        `,
+        border: '1px solid #2D1B18',
+        position: 'relative',
+        boxSizing: 'border-box'
       }}>
-        {/* Physical Board Frame */}
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
+        {/* Physical Board Frame - Beveled Edge */}
         <div style={{
           background: '#4E342E',
           borderRadius: 8,
           padding: 8,
-          boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.05)',
-          borderBottom: '2px solid rgba(255,255,255,0.05)'
+          boxShadow: `
+            inset 0 10px 20px rgba(0,0,0,0.6), 
+            0 1px 2px rgba(255,255,255,0.1),
+            inset 0 -2px 5px rgba(255,255,255,0.05)
+          `,
+          borderBottom: '2px solid rgba(255,255,255,0.05)',
+          boxSizing: 'border-box'
         }}>
           {/* Header */}
           <div style={{
@@ -109,7 +126,7 @@ export const ChessNode = ({ data }) => {
                 background: 'linear-gradient(180deg, #8D6E63 0%, #5D4037 100%)',
                 borderRadius: 6,
                 padding: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2)'
               }}>
                 <Cpu size={16} color="#fff" />
               </div>
@@ -117,7 +134,8 @@ export const ChessNode = ({ data }) => {
                 fontWeight: 700, 
                 fontSize: 14, 
                 letterSpacing: '0.05em',
-                textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                fontFamily: 'system-ui, sans-serif'
               }}>CHESS</span>
             </div>
             
@@ -149,9 +167,9 @@ export const ChessNode = ({ data }) => {
             display: 'grid',
             gridTemplateColumns: 'repeat(8, 1fr)',
             gridTemplateRows: 'repeat(8, 1fr)',
-            border: '8px solid #3E2723',
-            borderRadius: 6,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+            border: '10px solid #3E2723',
+            borderRadius: 4,
+            boxShadow: '0 8px 16px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4)',
             background: '#3E2723',
             aspectRatio: '1',
             overflow: 'hidden'
@@ -167,7 +185,8 @@ export const ChessNode = ({ data }) => {
           color: '#A1887F',
           textAlign: 'center',
           fontFamily: 'monospace',
-          textShadow: '0 1px 1px rgba(0,0,0,0.5)'
+          textShadow: '0 1px 1px rgba(0,0,0,0.5)',
+          opacity: 0.8
         }}>
           ENGINE: STOCKFISH 14 • {playerColor.toUpperCase()} TO MOVE
         </div>
@@ -235,8 +254,13 @@ export const SynthNode = ({ data }) => {
         padding: 20,
         width: 280,
         boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
-        color: '#fff'
+        color: '#fff',
+        position: 'relative',
+        boxSizing: 'border-box'
       }}>
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
         {/* Header */}
         <div style={{
           fontWeight: 700,
@@ -262,6 +286,7 @@ export const SynthNode = ({ data }) => {
             {['sine', 'square', 'sawtooth', 'triangle'].map(wave => (
               <button
                 key={wave}
+                className="nodrag"
                 onClick={() => setWaveform(wave)}
                 style={{
                   flex: 1,
@@ -290,6 +315,7 @@ export const SynthNode = ({ data }) => {
           </div>
           <input
             type="range"
+            className="nodrag"
             min="110"
             max="880"
             value={frequency}
@@ -309,6 +335,7 @@ export const SynthNode = ({ data }) => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          className="nodrag"
           onClick={playNote}
           style={{
             width: '100%',
@@ -376,8 +403,13 @@ export const DrumMachineNode = ({ data }) => {
         width: 400,
         boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
         border: '2px solid #2c2c2c',
-        color: '#fff'
+        color: '#fff',
+        position: 'relative',
+        boxSizing: 'border-box'
       }}>
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
         {/* Header */}
         <div style={{
           display: 'flex',
@@ -406,6 +438,7 @@ export const DrumMachineNode = ({ data }) => {
                 {steps.map((active, i) => (
                   <button
                     key={i}
+                    className="nodrag"
                     onClick={() => toggleStep(track, i)}
                     style={{
                       width: 18,
@@ -436,6 +469,7 @@ export const DrumMachineNode = ({ data }) => {
         }}>
           <motion.button
             whileTap={{ scale: 0.95 }}
+            className="nodrag"
             onClick={() => setIsPlaying(!isPlaying)}
             style={{
               flex: 1,
@@ -456,6 +490,7 @@ export const DrumMachineNode = ({ data }) => {
             {isPlaying ? <><Pause size={14} /> Stop</> : <><Play size={14} /> Play</>}
           </motion.button>
           <button
+            className="nodrag"
             onClick={() => setCurrentStep(0)}
             style={{
               padding: 12,

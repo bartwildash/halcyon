@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { 
   ReactFlow, 
   Background, 
@@ -11,7 +11,8 @@ import {
   useReactFlow,
   ReactFlowProvider,
   Handle, 
-  Position
+  Position,
+  SelectionMode
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,9 +33,21 @@ import { GraphViewNode } from './components/nodes/GraphViewNode';
 import { ChessNode, SynthNode, DrumMachineNode } from './components/nodes/ToyNodes';
 import { StickerNode, StickerPackNode } from './components/nodes/MediaNodes';
 import { ShaderNode } from './components/nodes/ShaderNode';
+import { GuitarTunaNode } from './components/nodes/GuitarTunaNode';
+import { AudioInterfaceNode } from './components/nodes/AudioInterfaceNode';
 import { WinampNode } from './components/nodes/WinampNode';
 import { ButterchurnVisualizerNode } from './components/nodes/ButterchurnVisualizerNode';
-import { SkinBrowserNode } from './components/nodes/SkinBrowserNode';
+import { TemplateBrowserNode } from './components/nodes/TemplateBrowserNode';
+import { ProjectHubNode } from './components/nodes/ProjectHubNode';
+import { TemporalInboxNode } from './components/nodes/TemporalInboxNode';
+import { KanbanNode } from './components/nodes/KanbanNode';
+import { GTDInboxNode } from './components/nodes/GTDInboxNode';
+import { MindMapNode } from './components/nodes/MindMapNode';
+import { TimelineNode } from './components/nodes/TimelineNode';
+import { SketchNode } from './components/nodes/SketchNode';
+import { PhotoEditorNode } from './components/nodes/PhotoEditorNode';
+import { AudioEditorNode } from './components/nodes/AudioEditorNode';
+import { PublisherNode } from './components/nodes/PublisherNode';
 import { SwayWrapper, SmartHandle } from './components/SpatialCommon';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AudioReactiveBackground } from './components/shaders/AudioReactiveBackground';
@@ -90,7 +103,19 @@ const nodeTypes = {
   sticker: StickerNode,
   stickerpack: StickerPackNode,
   butterchurn: ButterchurnVisualizerNode,
-  skinbrowser: SkinBrowserNode
+  guitartuna: GuitarTunaNode,
+  audiointerface: AudioInterfaceNode,
+  templatebrowser: TemplateBrowserNode,
+  projecthub: ProjectHubNode,
+  temporalinbox: TemporalInboxNode,
+  kanban: KanbanNode,
+  gtdinbox: GTDInboxNode,
+  mindmap: MindMapNode,
+  timeline: TimelineNode,
+  sketch: SketchNode,
+  photoeditor: PhotoEditorNode,
+  audioeditor: AudioEditorNode,
+  publisher: PublisherNode
 };
 
 const edgeTypes = {
@@ -373,6 +398,15 @@ const UniverseLayer = () => {
   */
 };
 
+import { ContextLayer } from './components/interface/ContextLayer';
+import { JumpBar } from './components/interface/JumpBar';
+import { KeyboardShortcuts } from './components/interface/KeyboardShortcuts';
+import { ContextMenu } from './components/interface/ContextMenu';
+import { FilterChips } from './components/interface/FilterChips';
+
+import { useContextStore } from './stores/contextStore';
+import { useFilters } from './hooks/useFilters';
+
 // ==========================================
 // 6. MAIN WORKSPACE COMPONENT
 // ==========================================
@@ -380,21 +414,122 @@ function SpatialWorkspace() {
   const [nodes, setNodes, onNodesChangeBase] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [logs, setLogs] = useState(["> Terra OS v1.0 initialized...", "> Waiting for agent authorization..."]);
-  const { setCenter, getNodes } = useReactFlow();
+  const { setCenter, getNodes, fitView, zoomTo } = useReactFlow();
   const [draggingNodeId, setDraggingNodeId] = useState(null);
+
+  // Context Menu State
+  const [contextMenu, setContextMenu] = useState(null);
+
+  // Use Context Store for routines
+  const { activeContextId, contexts, focusOnNode, exitFocus } = useContextStore();
+  const prevContextRef = useRef(activeContextId);
+
+  // Helper to add logs from inside nodes
+  const addLog = useCallback((msg) => setLogs(p => [...p, msg]), []);
+
+  // ESC KEY HANDLER - Exit deep focus mode
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && activeContextId === 'deep-focus') {
+        exitFocus();
+        addLog('> Exited Deep Focus Mode');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeContextId, exitFocus, addLog]);
+
+  // ROUTINES: React to Context Changes
+  useEffect(() => {
+    if (activeContextId === prevContextRef.current) return;
+    
+    const context = contexts[activeContextId];
+    if (!context) return;
+
+    // 1. Camera Logic
+    const { camera } = context;
+    if (camera) {
+      if (camera.target === 'center') {
+        fitView({ duration: 1000, padding: 0.2 });
+      } else if (typeof camera.target === 'string') {
+        // Target a node ID
+        const targetNode = getNodes().find(n => n.id === camera.target);
+        if (targetNode) {
+          const width = targetNode.style?.width || targetNode.width || 200;
+          const height = targetNode.style?.height || targetNode.height || 150;
+          // ReactFlow nodes have position at top-left
+          const centerX = targetNode.position.x + width / 2;
+          const centerY = targetNode.position.y + height / 2;
+          
+          setCenter(centerX, centerY, { zoom: camera.zoom, duration: 1200 });
+        }
+      }
+    }
+
+    // 2. Focus/Rules Logic - Apply opacity based on context.focus
+    const { focus } = context;
+    if (focus && focus.length > 0) {
+      const isShowAll = focus.includes('*');
+      const isDeepFocus = activeContextId === 'deep-focus';
+
+      setNodes((currentNodes) =>
+        currentNodes.map((node) => {
+          // Never dim districts (they're containers)
+          if (node.type === 'district') {
+            return node;
+          }
+
+          // If showing all, or node type/id is in focus, full opacity
+          const isFocused = isShowAll ||
+                           focus.includes(node.type) ||
+                           focus.includes(node.id);
+
+          // In deep focus, dim unfocused nodes more heavily
+          const targetOpacity = isFocused ? 1 : (isDeepFocus ? 0.1 : 0.3);
+
+          // Only update if opacity actually changed
+          const currentOpacity = node.style?.opacity ?? 1;
+          if (currentOpacity !== targetOpacity) {
+            return {
+              ...node,
+              style: {
+                ...node.style,
+                opacity: targetOpacity,
+                transition: 'opacity 0.5s ease'
+              }
+            };
+          }
+
+          return node;
+        })
+      );
+    }
+
+    prevContextRef.current = activeContextId;
+  }, [activeContextId, contexts, getNodes, setCenter, fitView, setNodes]);
+
+  // Platform detection for input optimization
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   // Memoize nodeTypes and edgeTypes to prevent React Flow warnings
   const memoizedNodeTypes = useMemo(() => nodeTypes, []);
   const memoizedEdgeTypes = useMemo(() => edgeTypes, []);
-
-  // Helper to add logs from inside nodes
-  const addLog = useCallback((msg) => setLogs(p => [...p, msg]), []);
 
   // Enable Persistence
   usePersistence(nodes, setNodes, edges, setEdges);
   
   // Activate Auto-Cabling Hook
   usePeripheralCables();
+
+  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
+  const onNodesDelete = useCallback((deletedNodes) => {
+    addLog(`> System: Deleted ${deletedNodes.length} nodes`);
+  }, [addLog]);
 
   // ZOOM TO DISTRICT ON DOUBLE CLICK
   const onNodeDoubleClick = useCallback((e, node) => {
@@ -403,11 +538,43 @@ function SpatialWorkspace() {
       const height = node.style?.height || 1000;
       const centerX = node.position.x + width / 2;
       const centerY = node.position.y + height / 2;
-      
+
       setCenter(centerX, centerY, { zoom: 1.2, duration: 1200 });
       addLog(`> Navigation: Entering ${node.data.label} District`);
     }
   }, [setCenter, addLog]);
+
+  // RIGHT-CLICK CONTEXT MENU
+  const onNodeContextMenu = useCallback((event, node) => {
+    event.preventDefault();
+
+    // Don't show context menu for districts
+    if (node.type === 'district') return;
+
+    setContextMenu({
+      position: { x: event.clientX, y: event.clientY },
+      nodeId: node.id,
+      nodeLabel: node.data?.label || node.data?.title || node.type
+    });
+  }, []);
+
+  const handleContextMenuClose = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
+  const handleFocusNode = useCallback(() => {
+    if (contextMenu?.nodeId) {
+      focusOnNode(contextMenu.nodeId);
+      addLog(`> Deep Focus: ${contextMenu.nodeLabel}`);
+    }
+  }, [contextMenu, focusOnNode, addLog]);
+
+  const handleDeleteNode = useCallback(() => {
+    if (contextMenu?.nodeId) {
+      setNodes((nds) => nds.filter((n) => n.id !== contextMenu.nodeId));
+      addLog(`> System: Deleted ${contextMenu.nodeLabel}`);
+    }
+  }, [contextMenu, setNodes, addLog]);
 
   // Track when dragging starts
   const onNodeDragStart = useCallback((event, node) => {
@@ -417,33 +584,40 @@ function SpatialWorkspace() {
   }, []);
 
   // MAGNETIC REPULSION DURING DRAG
+  // Use a ref to throttle updates and prevent jerky behavior
+  const repulsionUpdateRef = useRef(null);
+  
   const onNodeDrag = useCallback((event, node) => {
     // Skip districts and non-draggable nodes
     if (node.type === 'district' || node.draggable === false) return;
     
-    const allNodes = getNodes();
-    const otherNodes = allNodes.filter(n => 
-      n.id !== node.id && 
-      n.type !== 'district' && 
-      n.parentNode === node.parentNode
-    );
+    // Throttle repulsion updates to prevent jerky behavior
+    if (repulsionUpdateRef.current) {
+      cancelAnimationFrame(repulsionUpdateRef.current);
+    }
     
-    let totalRepulsionX = 0;
-    let totalRepulsionY = 0;
-    
-    otherNodes.forEach(otherNode => {
-      const repulsion = calculateRepulsionForce(node, otherNode, allNodes);
-      if (repulsion.strength > 0.05) {
-        // Increased damping from 0.3 to 0.5 for stronger repulsion
-        totalRepulsionX += repulsion.deltaX * repulsion.strength * 0.5;
-        totalRepulsionY += repulsion.deltaY * repulsion.strength * 0.5;
-      }
-    });
-    
-    // Apply repulsion to node position (feels like magnetic resistance)
-    if (Math.abs(totalRepulsionX) > 0.1 || Math.abs(totalRepulsionY) > 0.1) {
-      // Use requestAnimationFrame to ensure smooth updates
-      requestAnimationFrame(() => {
+    repulsionUpdateRef.current = requestAnimationFrame(() => {
+      const allNodes = getNodes();
+      const otherNodes = allNodes.filter(n => 
+        n.id !== node.id && 
+        n.type !== 'district' && 
+        n.parentNode === node.parentNode
+      );
+      
+      let totalRepulsionX = 0;
+      let totalRepulsionY = 0;
+      
+      otherNodes.forEach(otherNode => {
+        const repulsion = calculateRepulsionForce(node, otherNode, allNodes);
+        if (repulsion.strength > 0.01) { // Lower threshold for more responsive repulsion
+          // Smooth damping - less aggressive for smoother feel
+          totalRepulsionX += repulsion.deltaX * 0.3; // Reduced from 0.5
+          totalRepulsionY += repulsion.deltaY * 0.3;
+        }
+      });
+      
+      // Apply repulsion if significant (lower threshold for smoother response)
+      if (Math.abs(totalRepulsionX) > 0.5 || Math.abs(totalRepulsionY) > 0.5) {
         setNodes((nds) => nds.map((n) => 
           n.id === node.id 
             ? { ...n, position: { 
@@ -452,73 +626,77 @@ function SpatialWorkspace() {
               }}
             : n
         ));
-      });
-    }
-  }, [getNodes, setNodes]);
-
-  // SNAP TO VALID POSITION ON RELEASE
-  const onNodeDragStop = useCallback((event, node) => {
-    setDraggingNodeId(null);
-    if (node.type === 'district' || node.draggable === false) return;
-    
-    const allNodes = getNodes();
-    const validPos = findValidPosition(node, allNodes, node.position);
-    
-    // Snap to valid position if different (with small threshold to avoid jitter)
-    const threshold = 1;
-    if (Math.abs(validPos.x - node.position.x) > threshold || 
-        Math.abs(validPos.y - node.position.y) > threshold) {
-      setNodes((nds) => nds.map((n) => 
-        n.id === node.id 
-          ? { ...n, position: validPos }
-          : n
-      ));
-    }
-  }, [getNodes, setNodes]);
-
-  // Enhanced onNodesChange with collision handling during drag
-  const onNodesChange = useCallback((changes) => {
-    onNodesChangeBase(changes);
-    
-    // Apply repulsion if a node is being dragged
-    if (draggingNodeId) {
-      const allNodes = getNodes();
-      const draggedNode = allNodes.find(n => n.id === draggingNodeId);
+      }
       
-      if (draggedNode && draggedNode.type !== 'district' && draggedNode.draggable !== false) {
-        const otherNodes = allNodes.filter(n => 
-          n.id !== draggedNode.id && 
-          n.type !== 'district' && 
-          n.parentNode === draggedNode.parentNode
-        );
-        
-        let totalRepulsionX = 0;
-        let totalRepulsionY = 0;
-        
-        otherNodes.forEach(otherNode => {
-          const repulsion = calculateRepulsionForce(draggedNode, otherNode, allNodes);
-          if (repulsion.strength > 0.05) {
-            totalRepulsionX += repulsion.deltaX * repulsion.strength * 0.4;
-            totalRepulsionY += repulsion.deltaY * repulsion.strength * 0.4;
-          }
-        });
-        
-        // Apply repulsion if significant
-        if (Math.abs(totalRepulsionX) > 0.5 || Math.abs(totalRepulsionY) > 0.5) {
-          requestAnimationFrame(() => {
-            setNodes((nds) => nds.map((n) => 
-              n.id === draggedNode.id 
-                ? { ...n, position: { 
-                    x: n.position.x + totalRepulsionX, 
-                    y: n.position.y + totalRepulsionY 
-                  }}
-                : n
-            ));
-          });
+      repulsionUpdateRef.current = null;
+    });
+  }, [getNodes, setNodes]);
+
+  // Handle drop on Eisenhower Matrix
+  const onNodeDragStop = useCallback((event, node) => {
+    // 1. Regular cleanup
+    setDraggingNodeId(null);
+    
+    // 2. Collision/Position correction
+    if (node.type !== 'district' && node.draggable !== false) {
+      const allNodes = getNodes();
+      const validPos = findValidPosition(node, allNodes, node.position);
+      const threshold = 1;
+      
+      if (Math.abs(validPos.x - node.position.x) > threshold || 
+          Math.abs(validPos.y - node.position.y) > threshold) {
+        setNodes((nds) => nds.map((n) => 
+          n.id === node.id ? { ...n, position: validPos } : n
+        ));
+      }
+    }
+
+    // 3. Eisenhower Matrix Logic
+    if (node.type === 'task') {
+      const matrix = getNodes().find(n => n.type === 'matrix');
+      if (matrix) {
+        // Calculate relative position
+        // Assuming matrix is in same coordinate space (or adjust if parentNode differs)
+        const mx = node.position.x - matrix.position.x;
+        const my = node.position.y - matrix.position.y;
+        const w = matrix.width || 500;
+        const h = matrix.height || 500;
+
+        // Check intersection
+        if (mx > 0 && mx < w && my > 0 && my < h) {
+          let priority = 'unknown';
+          const isRight = mx > w / 2;
+          const isBottom = my > h / 2;
+
+          if (!isRight && !isBottom) priority = 'do';        // Top-Left
+          if (isRight && !isBottom) priority = 'schedule';   // Top-Right
+          if (!isRight && isBottom) priority = 'delegate';   // Bottom-Left
+          if (isRight && isBottom) priority = 'eliminate';   // Bottom-Right
+
+          // Update task data
+          setNodes((nds) => nds.map((n) => {
+            if (n.id === node.id) {
+              const colorMap = {
+                do: '#ef4444', schedule: '#3b82f6', delegate: '#eab308', eliminate: '#94a3b8'
+              };
+              return {
+                ...n,
+                data: { ...n.data, tag: priority.toUpperCase(), color: colorMap[priority] }
+              };
+            }
+            return n;
+          }));
+          addLog(`> Matrix: Task assigned to ${priority.toUpperCase()}`);
         }
       }
     }
-  }, [onNodesChangeBase, draggingNodeId, getNodes, setNodes]);
+  }, [getNodes, setNodes, addLog]);
+
+  // Enhanced onNodesChange - simplified to avoid duplicate repulsion logic
+  const onNodesChange = useCallback((changes) => {
+    onNodesChangeBase(changes);
+    // Repulsion is now handled entirely in onNodeDrag for smoother behavior
+  }, [onNodesChangeBase]);
 
   // FIX INITIAL OVERLAPS ON LOAD
   const fixInitialOverlaps = useCallback(() => {
@@ -643,23 +821,141 @@ function SpatialWorkspace() {
         { id: 'flipclock1', type: 'flipclock', position: { x: 0, y: 0 }, parentNode: 'd-study' },
         
         // CREATIVE NODES (Studio)
-        { 
-          id: 'app1', type: 'app', position: { x: 0, y: 0 }, parentNode: 'd-studio', style: { width: 600, height: 400 },
-          data: { title: 'Arc Browser', type: 'browser', url: 'skins.webamp.org', contentTitle: 'Winamp Skins', image: 'https://placehold.co/600x200/EEE/31343C?text=Winamp+Skins', constraints: { allowNavigation: false } } 
-        },
         // Shader nodes disabled temporarily - causing WebGL issues on mobile
         // { id: 'shader1', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'synthwave-pulse' } },
         // { id: 'shader2', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'focus-rain' } },
         // { id: 'shader3', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { presetId: 'organic-flow' } },
-        { id: 'image1', type: 'image', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { url: 'https://placehold.co/400x300/EEE/31343C?text=Creative+Work', title: 'Inspiration' } },
-        
+
         // SYSTEM NODES (Studio)
-        { 
+        {
           id: 'device-hub', type: 'device', position: { x: 0, y: 0 }, parentNode: 'd-studio', draggable: true,
-          data: { label: 'Local Peripherals', onConnect: (deviceId) => addLog(`> Device Hub: Connected ${deviceId}`) } 
+          data: { label: 'Local Peripherals', onConnect: (deviceId) => addLog(`> Device Hub: Connected ${deviceId}`) }
         },
         { id: 'stack1', type: 'stack', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { label: 'Project Files', items: ['design.psd', 'mockup.fig', 'notes.md'] } },
-        
+
+        // PHASE 1-4 DEMO NODES (Studio)
+        // Phase 1: Templates & Filters
+        { id: 'demo-templates', type: 'templatebrowser', position: { x: 0, y: 0 }, parentNode: 'd-studio', data: { label: 'Workspace Templates' } },
+
+        // Phase 2: Organization
+        {
+          id: 'demo-project-hub', type: 'projecthub', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: { label: 'Demo Project', projectTag: 'demo-project', color: '#10b981' }
+        },
+        {
+          id: 'demo-temporal', type: 'temporalinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: { label: 'This Week', timeframe: 'this-week', color: '#3b82f6' }
+        },
+
+        // Phase 3: Mental Models
+        {
+          id: 'demo-kanban', type: 'kanban', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: { label: 'Sprint Board', color: '#8b5cf6' }
+        },
+        {
+          id: 'demo-gtd', type: 'gtdinbox', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: { label: 'GTD Workflow', color: '#06b6d4' }
+        },
+        {
+          id: 'demo-mindmap', type: 'mindmap', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: {
+            label: 'Product Strategy',
+            centerText: 'Product Strategy',
+            branches: [
+              { id: 'features', text: 'Features', children: [{ id: 'f1', text: 'Auth' }, { id: 'f2', text: 'Dashboard' }] },
+              { id: 'market', text: 'Market', children: [{ id: 'm1', text: 'Research' }] },
+              { id: 'design', text: 'Design', children: [{ id: 'd1', text: 'UI Kit' }] }
+            ]
+          }
+        },
+        {
+          id: 'demo-timeline', type: 'timeline', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: {
+            label: 'Q1 Roadmap',
+            startDate: '2025-01-01',
+            endDate: '2025-03-31',
+            items: [
+              { id: 'task1', label: 'Design Phase', start: '2025-01-01', end: '2025-01-31', progress: 0.7 },
+              { id: 'task2', label: 'Development', start: '2025-02-01', end: '2025-03-15', progress: 0.3 }
+            ]
+          }
+        },
+
+        // Phase 4: Creative Tools
+        {
+          id: 'demo-sketch', type: 'sketch', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: { label: 'Quick Sketch', color: '#8b5cf6' }
+        },
+        {
+          id: 'demo-photoeditor', type: 'photoeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: {
+            label: 'Photo Editor',
+            sourceImageId: null, // Will show placeholder
+            color: '#ec4899'
+          }
+        },
+        {
+          id: 'demo-audioeditor', type: 'audioeditor', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: {
+            label: 'Audio Editor',
+            audioUrl: null, // Will show placeholder
+            color: '#06b6d4'
+          }
+        },
+        {
+          id: 'demo-publisher', type: 'publisher', position: { x: 0, y: 0 }, parentNode: 'd-studio',
+          data: {
+            label: 'Zine Publisher',
+            color: '#f59e0b',
+            elements: [
+              {
+                id: 'title-text',
+                type: 'text',
+                x: 50,
+                y: 40,
+                width: 300,
+                height: 60,
+                content: 'MY ZINE',
+                style: {
+                  fontFamily: 'system-ui',
+                  fontSize: 48,
+                  fontWeight: 'bold',
+                  color: '#000000',
+                  textAlign: 'center'
+                }
+              },
+              {
+                id: 'subtitle-text',
+                type: 'text',
+                x: 50,
+                y: 120,
+                width: 300,
+                height: 40,
+                content: 'Issue #1 - Demo Edition',
+                style: {
+                  fontFamily: 'system-ui',
+                  fontSize: 16,
+                  fontWeight: 'normal',
+                  color: '#666666',
+                  textAlign: 'center'
+                }
+              },
+              {
+                id: 'shape-1',
+                type: 'shape',
+                shape: 'rectangle',
+                x: 50,
+                y: 200,
+                width: 300,
+                height: 200,
+                fill: '#f59e0b',
+                stroke: '#000000',
+                strokeWidth: 3
+              }
+            ]
+          }
+        },
+
         // SOCIAL NODES (Garden)
         {
           id: 'contacts-stack', type: 'contactsStack', position: { x: 0, y: 0 }, parentNode: 'd-garden',
@@ -677,7 +973,9 @@ function SpatialWorkspace() {
         { id: 'toy-chess', type: 'chess', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { playerColor: 'white', fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' } },
         { id: 'toy-synth', type: 'synth', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { waveform: 'sine', frequency: 440 } },
         { id: 'toy-drums', type: 'drummachine', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { bpm: 120 } },
-        { id: 'sticker-pack-1', type: 'stickerpack', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { packName: 'Retro GIFs', stickers: [{ name: 'Nyan Cat', url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif' }, { name: 'Dancing Banana', url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif' }] } },
+        // Individual floating sticker nodes
+        { id: 'sticker-nyan', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { url: 'https://media.giphy.com/media/sIIhZAKj2rPtK/giphy.gif', label: 'Nyan Cat', size: 200, rotation: -5 } },
+        { id: 'sticker-banana', type: 'sticker', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { url: 'https://media.giphy.com/media/IB9foBA4PVkKA/giphy.gif', label: 'Dancing Banana', size: 200, rotation: 8 } },
         {
           id: 'winamp1', type: 'winamp', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
           data: { tracks: [], skinUrl: "/skins/Nucleo-NLog-2G1.wsz", enableButterchurn: true }
@@ -690,6 +988,8 @@ function SpatialWorkspace() {
           id: 'skinbrowser1', type: 'skinbrowser', position: { x: 0, y: 0 }, parentNode: 'd-toyroom',
           data: { onSkinSelect: (skin) => { setNodes((nds) => nds.map((n) => n.id === 'winamp1' ? { ...n, data: { ...n.data, skinUrl: skin.url } } : n)); } }
         },
+        { id: 'guitartuna1', type: 'guitartuna', position: { x: 0, y: 0 }, parentNode: 'd-toyroom' },
+        { id: 'audiointerface1', type: 'audiointerface', position: { x: 0, y: 0 }, parentNode: 'd-toyroom' },
         // { id: 'shader4', type: 'shader', position: { x: 0, y: 0 }, parentNode: 'd-toyroom', data: { presetId: 'synthwave-pulse' } },
       ];
       
@@ -735,23 +1035,97 @@ function SpatialWorkspace() {
     }
   }, [nodes.length, hasFixedOverlaps, fixInitialOverlaps]);
 
+  // Apply filters to nodes
+  const { filteredNodes } = useFilters(nodes);
+
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#fdfbf7' }}>
+        <style>{`
+          /* Hide connection handles by default */
+          .react-flow__handle {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+
+          /* Show handles on node hover */
+          .react-flow__node:hover .react-flow__handle {
+            opacity: 1;
+          }
+
+          /* Position handles outside the node */
+          .react-flow__handle-top {
+            top: -8px;
+          }
+          .react-flow__handle-bottom {
+            bottom: -8px;
+          }
+          .react-flow__handle-left {
+            left: -8px;
+          }
+          .react-flow__handle-right {
+            right: -8px;
+          }
+
+          /* Make handles slightly larger for easier targeting */
+          .react-flow__handle {
+            width: 12px;
+            height: 12px;
+            border-width: 2px;
+          }
+        `}</style>
         <UniverseLayer />
-        <ReactFlow 
-          nodes={nodes} edges={edges} nodeTypes={memoizedNodeTypes} edgeTypes={memoizedEdgeTypes}
+        <ContextLayer />
+        <JumpBar />
+        <KeyboardShortcuts />
+        <FilterChips />
+        <ReactFlow
+          nodes={filteredNodes} edges={edges} nodeTypes={memoizedNodeTypes} edgeTypes={memoizedEdgeTypes}
           onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodesDelete={onNodesDelete}
           onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
           onNodeDoubleClick={onNodeDoubleClick}
-          fitView minZoom={0.2} maxZoom={2}
+          onNodeContextMenu={onNodeContextMenu}
+          
+          // --- PLATFORM OPTIMIZATIONS ---
+          // Mouse/Desktop
+          panOnScroll={!isTouchDevice}
+          selectionOnDrag={!isTouchDevice}
+          selectionMode={SelectionMode.Partial}
+          panOnDrag={isTouchDevice ? [1, 2] : [1]} // Allow panning with fingers on iPad
+          
+          // iPad/Touch
+          zoomOnPinch={true}
+          preventScrolling={true}
+          nodeClickDistance={isTouchDevice ? 10 : 3}
+          paneClickDistance={isTouchDevice ? 10 : 3}
+          
+          // Keyboard Shortcuts
+          multiSelectionKeyCode={['Meta', 'Control', 'Shift']}
+          deleteKeyCode={['Backspace', 'Delete']}
+          selectionKeyCode={['KeyS']} // 'S' for box selection toggle
+          
+          // Global UX
+          elevateNodesOnSelect={true}
+          autoPanOnConnect={true}
+          autoPanOnNodeDrag={true}
+          
+          fitView minZoom={0.1} maxZoom={4}
           style={{ background: 'transparent' }}
         >
           <Background color="#cbd5e1" gap={25} size={2} variant="dots" />
           <PlacesDock />
         </ReactFlow>
         <TerminalDrawer logs={logs} />
+        <ContextMenu
+          position={contextMenu?.position}
+          onClose={handleContextMenuClose}
+          onFocus={handleFocusNode}
+          onDelete={handleDeleteNode}
+          nodeLabel={contextMenu?.nodeLabel}
+        />
     </div>
   );
 }

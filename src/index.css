@@ -34,23 +34,29 @@ body {
  * Force Webamp to stay contained within its node
  * Webamp defaults to fixed positioning which breaks out of the flow
  */
-#webamp {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
+.webamp-container #webamp {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
   z-index: 1 !important;
   /* Prevent interaction conflicts */
-  pointer-events: auto !important; 
+  pointer-events: auto !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 /* Ensure Webamp container in node receives events */
 .webamp-container {
+  position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
 
 /* Ensure controls are accessible */
-#webamp-main {
-  position: absolute !important;
+.webamp-container #webamp-main {
+  position: relative !important;
 }
 
 /* Prevent unwanted dragging of internal elements */

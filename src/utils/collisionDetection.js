@@ -18,7 +18,6 @@ const DEFAULT_NODE_SIZES = {
   pomodoro: { width: 228, height: 228 }, // Actual size from component
   flipclock: { width: 300, height: 342 }, // Actual size from component
   shader: { width: 200, height: 150 },
-  skinbrowser: { width: 500, height: 600 },
   matrix: { width: 500, height: 500 },
   portal: { width: 150, height: 100 },
   note: { width: 200, height: 150 },
@@ -27,10 +26,23 @@ const DEFAULT_NODE_SIZES = {
   device: { width: 200, height: 150 },
   synth: { width: 300, height: 200 },
   drummachine: { width: 400, height: 300 },
-  sticker: { width: 150, height: 150 },
+  sticker: { width: 200, height: 200 }, // Match actual sticker size from data.size
   stickerpack: { width: 300, height: 200 },
   contactsStack: { width: 280, height: 200 },
   action: { width: 80, height: 80 },
+  guitartuna: { width: 380, height: 200 },
+  audiointerface: { width: 360, height: 220 },
+  templatebrowser: { width: 400, height: 500 },
+  projecthub: { width: 320, height: 280 },
+  temporalinbox: { width: 280, height: 320 },
+  kanban: { width: 600, height: 400 },
+  gtdinbox: { width: 480, height: 420 },
+  mindmap: { width: 600, height: 400 },
+  timeline: { width: 700, height: 400 },
+  sketch: { width: 600, height: 500 },
+  photoeditor: { width: 560, height: 440 },
+  audioeditor: { width: 600, height: 380 },
+  publisher: { width: 650, height: 600 },
   // Default fallback
   default: { width: 200, height: 150 }
 };
@@ -154,7 +166,8 @@ export const checkCollision = (node1, node2, padding = 0) => {
 
 /**
  * Calculate magnetic repulsion force between two nodes
- * Uses inverse-square law for natural magnetic feel
+ * Uses AABB (axis-aligned bounding box) collision detection
+ * Repulsion starts when bounding boxes are about to overlap
  * Returns deltaX, deltaY, and strength (0-1)
  */
 export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
@@ -166,7 +179,52 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
   const bounds1 = getNodeBounds(draggedNode);
   const bounds2 = getNodeBounds(otherNode);
   
-  // Calculate distance between centers
+  // Get adaptive padding
+  const padding = calculateAdaptivePadding(draggedNode, otherNode);
+  
+  // Expand bounds by padding to create "repulsion zone"
+  const expanded1 = {
+    x: bounds1.x - padding,
+    y: bounds1.y - padding,
+    right: bounds1.right + padding,
+    bottom: bounds1.bottom + padding,
+    width: bounds1.width + padding * 2,
+    height: bounds1.height + padding * 2
+  };
+  
+  const expanded2 = {
+    x: bounds2.x - padding,
+    y: bounds2.y - padding,
+    right: bounds2.right + padding,
+    bottom: bounds2.bottom + padding,
+    width: bounds2.width + padding * 2,
+    height: bounds2.height + padding * 2
+  };
+  
+  // Check if expanded bounding boxes overlap (AABB collision)
+  const isOverlapping = !(
+    expanded1.right < expanded2.x ||
+    expanded1.x > expanded2.right ||
+    expanded1.bottom < expanded2.y ||
+    expanded1.y > expanded2.bottom
+  );
+  
+  // If not overlapping, no repulsion
+  if (!isOverlapping) {
+    return { deltaX: 0, deltaY: 0, strength: 0 };
+  }
+  
+  // Calculate overlap amount
+  const overlapX = Math.min(
+    expanded1.right - expanded2.x,
+    expanded2.right - expanded1.x
+  );
+  const overlapY = Math.min(
+    expanded1.bottom - expanded2.y,
+    expanded2.bottom - expanded1.y
+  );
+  
+  // Calculate distance between centers for direction
   const dx = bounds1.centerX - bounds2.centerX;
   const dy = bounds1.centerY - bounds2.centerY;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -175,34 +233,25 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
     // If exactly overlapping, push in a random direction
     const angle = Math.random() * Math.PI * 2;
     return { 
-      deltaX: Math.cos(angle) * 50, 
-      deltaY: Math.sin(angle) * 50, 
+      deltaX: Math.cos(angle) * 30, 
+      deltaY: Math.sin(angle) * 30, 
       strength: 1 
     };
   }
   
-  // Calculate radii (half of diagonal for more generous repulsion)
-  const radius1 = Math.sqrt(bounds1.width * bounds1.width + bounds1.height * bounds1.height) / 2;
-  const radius2 = Math.sqrt(bounds2.width * bounds2.width + bounds2.height * bounds2.height) / 2;
-  const minDistance = radius1 + radius2;
+  // Calculate repulsion strength based on overlap
+  // Use the smaller overlap dimension to determine how "deep" the collision is
+  const minOverlap = Math.min(overlapX, overlapY);
+  const maxDimension = Math.max(expanded1.width, expanded1.height, expanded2.width, expanded2.height);
+  const normalizedOverlap = Math.min(minOverlap / maxDimension, 1);
   
-  // Get adaptive padding
-  const padding = calculateAdaptivePadding(draggedNode, otherNode);
-  const repulsionDistance = minDistance + padding;
+  // Smooth force curve: stronger when more overlapped, but not too aggressive
+  // Use a smoother curve (ease-out cubic) for less jerky behavior
+  const strength = normalizedOverlap * normalizedOverlap * (3 - 2 * normalizedOverlap); // Smoothstep
   
-  // If nodes are far enough apart, no repulsion
-  if (distance >= repulsionDistance) {
-    return { deltaX: 0, deltaY: 0, strength: 0 };
-  }
-  
-  // Calculate repulsion strength (inverse-square, normalized)
-  // Closer = stronger repulsion
-  const normalizedDistance = distance / repulsionDistance;
-  const strength = 1 - normalizedDistance; // 0 (far) to 1 (touching)
-  
-  // Inverse-square repulsion force (stronger for closer nodes)
-  const force = (repulsionDistance - distance) / repulsionDistance;
-  const forceMagnitude = force * force * 150; // Increased from 100 to 150 for stronger repulsion
+  // Calculate force magnitude - smoother, less aggressive
+  // Base force on overlap amount, not distance
+  const forceMagnitude = minOverlap * 0.8; // Reduced from 150 to be less jerky
   
   // Normalize direction vector
   const normalizedDx = dx / distance;

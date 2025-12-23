@@ -9,8 +9,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 export const ActionBubbleNode = ({ data }) => {
   return (
     <SwayWrapper>
-    <div className="nodrag" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
-       <div style={{ 
+    <div className="nodrag" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', position: 'relative' }}>
+       <SmartHandle type="target" position={Position.Top} />
+       <SmartHandle type="source" position={Position.Bottom} />
+
+      <div style={{ 
         width: 64, height: 64, 
         borderRadius: '50%', 
         background: data.color || '#3b82f6',
@@ -20,10 +23,10 @@ export const ActionBubbleNode = ({ data }) => {
         transition: 'transform 0.2s',
       }} className="hover:scale-110">
           {data.icon || <Activity size={24} />}
-       </div>
+      </div>
        <div style={{ marginTop: 8, fontSize: 11, color: '#64748b', fontWeight: 500, background: 'rgba(255,255,255,0.5)', padding: '2px 8px', borderRadius: 8 }}>
          {data.label}
-       </div>
+      </div>
     </div>
     </SwayWrapper>
   );
@@ -33,28 +36,54 @@ export const MetricNode = ({ data }) => {
   return (
     <SwayWrapper>
     <div style={{
-      width: 160,
-      background: '#fff',
-      borderRadius: 12,
-      padding: 16,
-      boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-      border: '1px solid #e2e8f0'
+      width: 180,
+      background: 'rgba(255, 255, 255, 0.6)',
+      backdropFilter: 'blur(16px) saturate(180%)',
+      borderRadius: 20,
+      padding: 20,
+      boxShadow: `
+        0 10px 30px -10px rgba(0,0,0,0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.4)
+      `,
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
-      <div style={{ fontSize: 12, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <Activity size={12} /> {data.label}
-      </div>
-      <div style={{ fontSize: 32, fontWeight: 900, color: '#0f172a', margin: '8px 0' }}>
-        {data.value}
-        <span style={{ fontSize: 14, color: '#94a3b8', fontWeight: 500, marginLeft: 4 }}>{data.unit}</span>
-      </div>
+      <SmartHandle type="target" position={Position.Top} />
+      <SmartHandle type="source" position={Position.Bottom} />
+      
+      {/* Glossy Reflection */}
+      <div style={{
+        position: 'absolute',
+        top: '-50%',
+        left: '-50%',
+        width: '200%',
+        height: '200%',
+        background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)',
+        pointerEvents: 'none'
+      }} />
 
+      <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6, letterSpacing: '0.05em', position: 'relative', zIndex: 1 }}>
+        <Activity size={12} strokeWidth={2.5} /> {data.label}
+      </div>
+      <div style={{ fontSize: 36, fontWeight: 800, color: '#0f172a', margin: '12px 0', letterSpacing: '-0.02em', position: 'relative', zIndex: 1 }}>
+        {data.value}
+        <span style={{ fontSize: 14, color: '#64748b', fontWeight: 600, marginLeft: 4 }}>{data.unit}</span>
+      </div>
+      
       {/* Sparkline Mock */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, height: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, height: 24, position: 'relative', zIndex: 1 }}>
         {[40, 60, 30, 70, 50, 80, 60].map((h, i) => (
-          <div key={i} style={{ flex: 1, background: i === 6 ? '#3b82f6' : '#e2e8f0', height: `${h}%`, borderRadius: 2 }} />
+          <div key={i} style={{ 
+            flex: 1, 
+            background: i === 6 ? '#3b82f6' : 'rgba(148, 163, 184, 0.3)', 
+            height: `${h}%`, 
+            borderRadius: 2,
+            transition: 'height 0.3s ease'
+          }} />
         ))}
-        <div style={{ marginLeft: 'auto', fontSize: 11, color: '#22c55e', fontWeight: 700, display: 'flex', alignItems: 'center' }}>
-          <TrendingUp size={10} style={{ marginRight: 2 }} /> +12%
+        <div style={{ marginLeft: 'auto', fontSize: 11, color: '#16a34a', fontWeight: 800, display: 'flex', alignItems: 'center' }}>
+          <TrendingUp size={10} style={{ marginRight: 2 }} strokeWidth={3} /> +12%
         </div>
       </div>
     </div>
@@ -257,6 +286,9 @@ export const ContactsStackNode = ({ data }) => {
         justifyContent: 'center'
       }}
     >
+      <SmartHandle type="target" position={Position.Top} />
+      <SmartHandle type="source" position={Position.Bottom} />
+      
       {/* Label */}
       <div style={{
         position: 'absolute',

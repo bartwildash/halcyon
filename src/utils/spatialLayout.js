@@ -9,12 +9,12 @@ import { getNodeBounds, getDefaultNodeSize } from './collisionDetection';
  * Node Categories - Maps node types to functional categories
  */
 export const NODE_CATEGORIES = {
-  productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph'],
-  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack'],
+  productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph', 'projecthub', 'kanban', 'gtdinbox', 'mindmap', 'timeline'],
+  creative: ['app', 'shader', 'image', 'sticker', 'stickerpack', 'sketch', 'photoeditor', 'audioeditor', 'publisher'],
   social: ['contact', 'contactsStack', 'action', 'portal'],
-  play: ['chess', 'synth', 'drummachine', 'winamp', 'butterchurn', 'skinbrowser'],
-  time: ['pomodoro', 'flipclock'],
-  system: ['device', 'stack']
+  play: ['chess', 'synth', 'drummachine', 'winamp', 'butterchurn', 'guitartuna', 'audiointerface'],
+  time: ['pomodoro', 'flipclock', 'temporalinbox'],
+  system: ['device', 'stack', 'templatebrowser']
 };
 
 /**

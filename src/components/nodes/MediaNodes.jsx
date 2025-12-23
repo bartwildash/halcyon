@@ -1,134 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SwayWrapper } from '../SpatialCommon';
+import { SwayWrapper, SmartHandle } from '../SpatialCommon';
+import { Position } from '@xyflow/react';
 import { Play, Pause, Volume2, Heart, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Webamp from 'webamp';
 
 /**
  * MEDIA NODES - ULTRATHINK EDITION
- * Webamp player with custom skins + Animated Stickers
+ * Animated Stickers
  */
-
-// ==========================================
-// WEBAMP NODE - Winamp Player with Skin Support
-// ==========================================
-export const WebampNode = ({ data }) => {
-  const containerRef = useRef(null);
-  const webampRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    if (!containerRef.current || webampRef.current) return;
-
-    // Initialize Webamp
-    const webamp = new Webamp({
-      initialTracks: data.tracks || [
-        {
-          metaData: {
-            artist: "Rick Astley",
-            title: "Never Gonna Give You Up"
-          },
-          url: "https://cdn.jsdelivr.net/gh/captbaritone/webamp@43434d82cfe0e37286dbbe0666072dc3190a83bc/mp3/llama-2.91.mp3",
-          duration: 5.322286
-        }
-      ],
-      initialSkin: data.skinUrl ? {
-        url: data.skinUrl
-      } : undefined,
-      __butterchurnOptions: {
-        importButterchurn: () => Promise.resolve(null), // Disable visualizer for simplicity
-        butterchurnOpen: false
-      },
-      __initialWindowLayout: {
-        main: { position: { x: 0, y: 0 } },
-        equalizer: { position: { x: 0, y: 116 } },
-        playlist: { position: { x: 0, y: 232 }, size: [0, 4] }
-      }
-    });
-
-    webamp.renderWhenReady(containerRef.current).then(() => {
-      setIsLoaded(true);
-      webampRef.current = webamp;
-
-      // Listen to play/pause events
-      webamp.onTrackDidChange(() => {
-        setIsPlaying(true);
-      });
-    });
-
-    return () => {
-      if (webampRef.current) {
-        webampRef.current.dispose();
-        webampRef.current = null;
-      }
-    };
-  }, [data.skinUrl, data.tracks]);
-
-  return (
-    <SwayWrapper>
-      <div style={{
-        background: 'rgba(0, 0, 0, 0.8)',
-        borderRadius: 16,
-        padding: 16,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-        border: '2px solid #333'
-      }}>
-        {/* Header */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 12,
-          color: '#fff'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Volume2 size={16} />
-            <span style={{ fontWeight: 700, fontSize: 13 }}>
-              {data.title || 'Webamp Player'}
-            </span>
-          </div>
-          {data.skinName && (
-            <div style={{
-              fontSize: 10,
-              color: '#9ca3af',
-              background: '#1f2937',
-              padding: '3px 8px',
-              borderRadius: 6
-            }}>
-              Skin: {data.skinName}
-            </div>
-          )}
-        </div>
-
-        {/* Webamp Container */}
-        <div
-          ref={containerRef}
-          className="nodrag"
-          style={{
-            minWidth: 275,
-            minHeight: 116,
-            position: 'relative'
-          }}
-        />
-
-        {/* Loading State */}
-        {!isLoaded && (
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: '#9ca3af',
-            fontSize: 12
-          }}>
-            Loading Webamp...
-          </div>
-        )}
-      </div>
-    </SwayWrapper>
-  );
-};
 
 // ==========================================
 // STICKER NODE - Animated GIF Stickers
@@ -166,6 +45,9 @@ export const StickerNode = ({ data }) => {
           display: 'inline-block'
         }}
       >
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
         {/* Sticker Image */}
         <div style={{
           width: data.size || 200,
@@ -324,8 +206,12 @@ export const StickerPackNode = ({ data }) => {
         padding: 20,
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
         border: '2px solid #fbbf24',
-        maxWidth: 400
+        maxWidth: 400,
+        position: 'relative'
       }}>
+        <SmartHandle type="target" position={Position.Top} />
+        <SmartHandle type="source" position={Position.Bottom} />
+        
         {/* Header */}
         <div style={{
           fontWeight: 700,
