@@ -775,11 +775,11 @@ function SpatialWorkspace() {
       
       // --- STEP 1: Define Districts ---
       const districts = [
-        { id: 'd-study', type: 'district', position: { x: 0, y: 0 }, draggable: false, data: { label: 'Study', icon: <BookOpen size={14} />, color: '#f0f9ff' }, style: { width: 1000, height: 1000 } },
-        { id: 'd-studio', type: 'district', position: { x: 1200, y: 0 }, draggable: false, data: { label: 'Studio', icon: <Palette size={14} />, color: '#fdf4ff' }, style: { width: 1200, height: 1000 } },
-        { id: 'd-strategy', type: 'district', position: { x: 0, y: 1200 }, draggable: false, data: { label: 'Strategy', icon: <Compass size={14} />, color: '#f0fdf4' }, style: { width: 1000, height: 800 } },
-        { id: 'd-garden', type: 'district', position: { x: 1200, y: 1200 }, draggable: false, data: { label: 'Garden', icon: <Sprout size={14} />, color: '#fffbeb' }, style: { width: 1200, height: 800 } },
-        { id: 'd-toyroom', type: 'district', position: { x: 0, y: 2200 }, draggable: false, data: { label: 'Toy Room', icon: <Box size={14} />, color: '#fef3c7' }, style: { width: 2400, height: 800 } },
+        { id: 'd-study', type: 'district', position: { x: 0, y: 0 }, draggable: false, data: { label: 'Study', icon: <BookOpen size={14} />, color: '#f0f9ff' }, style: { width: 1400, height: 1400 } },
+        { id: 'd-studio', type: 'district', position: { x: 1500, y: 0 }, draggable: false, data: { label: 'Studio', icon: <Palette size={14} />, color: '#fdf4ff' }, style: { width: 1600, height: 1400 } },
+        { id: 'd-strategy', type: 'district', position: { x: 0, y: 1500 }, draggable: false, data: { label: 'Strategy', icon: <Compass size={14} />, color: '#f0fdf4' }, style: { width: 1400, height: 1000 } },
+        { id: 'd-garden', type: 'district', position: { x: 1500, y: 1500 }, draggable: false, data: { label: 'Garden', icon: <Sprout size={14} />, color: '#fffbeb' }, style: { width: 1600, height: 1000 } },
+        { id: 'd-toyroom', type: 'district', position: { x: 0, y: 2600 }, draggable: false, data: { label: 'Toy Room', icon: <Box size={14} />, color: '#fef3c7' }, style: { width: 3100, height: 1000 } },
       ];
       
       // --- STEP 2: Define All Nodes (without positions initially) ---
