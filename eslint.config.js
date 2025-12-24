@@ -39,6 +39,11 @@ export default [
         cancelAnimationFrame: 'readonly',
         confirm: 'readonly',
         alert: 'readonly',
+        prompt: 'readonly',
+        Blob: 'readonly',
+        FileReader: 'readonly',
+        MutationObserver: 'readonly',
+        performance: 'readonly',
       },
     },
     rules: {

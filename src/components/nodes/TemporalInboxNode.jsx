@@ -331,25 +331,29 @@ function getNodesInTimeframe(nodes, timeframe) {
     const dueDateStr = node.data?.temporalContext?.dueDate;
 
     switch (timeframe) {
-      case 'today':
+      case 'today': {
         if (!dueDateStr) return false;
         const due = new Date(dueDateStr);
         return due >= today && due < tomorrow;
+      }
 
-      case 'this-week':
+      case 'this-week': {
         if (!dueDateStr) return false;
         const dueWeek = new Date(dueDateStr);
         return dueWeek >= today && dueWeek < weekFromNow;
+      }
 
-      case 'this-month':
+      case 'this-month': {
         if (!dueDateStr) return false;
         const dueMonth = new Date(dueDateStr);
         return dueMonth >= today && dueMonth < monthFromNow;
+      }
 
-      case 'overdue':
+      case 'overdue': {
         if (!dueDateStr) return false;
         const overdueDate = new Date(dueDateStr);
         return overdueDate < today;
+      }
 
       case 'someday':
         // Nodes without a deadline
