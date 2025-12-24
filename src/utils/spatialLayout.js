@@ -1,12 +1,20 @@
 /**
  * Spatial Layout System
  * Treats districts as bounded containers and intelligently populates them with nodes
+ * using an occupancy grid algorithm to prevent overlaps.
+ *
+ * @module spatialLayout
+ * @description Provides automatic node distribution and layout within districts.
+ * Uses a virtual grid-based occupancy system to pack nodes efficiently without overlaps.
  */
 
 import { getNodeBounds, getDefaultNodeSize } from './collisionDetection';
 
 /**
  * Node Categories - Maps node types to functional categories
+ * @type {Object.<string, string[]>}
+ * @description Defines which node types belong to which functional category.
+ * Used by distributeNodesByCategory to assign nodes to appropriate districts.
  */
 export const NODE_CATEGORIES = {
   productivity: ['agent', 'note', 'task', 'matrix', 'metric', 'graph', 'projecthub'],
@@ -43,6 +51,9 @@ export const NODE_CATEGORIES = {
 
 /**
  * District Categories - Maps districts to allowed node categories
+ * @type {Object.<string, string[]>}
+ * @description Defines which categories of nodes are allowed in each district.
+ * For example, 'd-study' accepts 'productivity' and 'time' categories.
  */
 export const DISTRICT_CATEGORIES = {
   'd-study': ['productivity', 'time'],
@@ -122,6 +133,34 @@ export const calculateAvailableArea = (district, padding = 40) => {
 
 /**
  * Occupancy Layout: Uses a virtual grid to prevent overlaps
+ * @param {Array<Object>} nodes - Array of nodes to layout (will be sorted by size)
+ * @param {Object} district - The parent district node
+ * @param {Object} [options={}] - Layout options
+ * @param {number} [options.spacing=80] - Spacing between nodes in pixels
+ * @param {number} [options.startX=50] - Padding from left edge
+ * @param {number} [options.startY=50] - Padding from top edge
+ * @param {number} [options.gridSize=10] - Virtual grid cell size in pixels
+ * @returns {Array<Object>} Nodes with updated position properties
+ * @description
+ * Advanced bin-packing algorithm using a 2D occupancy grid.
+ *
+ * Algorithm:
+ * 1. Creates a virtual grid dividing the district into gridSize×gridSize cells
+ * 2. Sorts nodes by height (largest first) for better packing efficiency
+ * 3. For each node:
+ *    - Calculates how many grid cells it needs (width + spacing / gridSize)
+ *    - Scans grid row-by-row, left-to-right for free space
+ *    - Marks occupied cells to prevent future overlaps
+ *    - Falls back to rightmost/bottom position if no space found
+ * 4. Clamps final positions to keep nodes within district bounds
+ *
+ * @example
+ * const laidOut = layoutOccupancy(nodes, district, {
+ *   spacing: 40,
+ *   startX: 40,
+ *   startY: 40,
+ *   gridSize: 10
+ * })
  */
 export function layoutOccupancy(nodes, district, options = {}) {
   const { spacing = 80, startX = 50, startY = 50, gridSize = 10 } = options;
@@ -394,6 +433,26 @@ function layoutFlow(nodes, district, options) {
 
 /**
  * Distribute nodes by category across districts
+ * @param {Array<Object>} allNodes - All nodes to distribute (including districts)
+ * @param {Array<Object>} districts - Array of district nodes
+ * @returns {Object.<string, Array<Object>>} Map of district IDs to their assigned nodes
+ * @description
+ * Automatically assigns nodes to districts based on category matching.
+ *
+ * Process:
+ * 1. Categorizes all non-district nodes by type (productivity, creative, etc.)
+ * 2. Matches categories to districts using DISTRICT_CATEGORIES mapping
+ * 3. Assigns nodes to first matching district
+ * 4. Adds extent:'parent' property for ReactFlow containment
+ * 5. Handles unassigned nodes by finding compatible districts
+ *
+ * @example
+ * const distribution = distributeNodesByCategory(allNodes, districts)
+ * // Returns: {
+ * //   'd-study': [agent1, note1, task1, ...],
+ * //   'd-studio': [kanban1, sketch1, ...],
+ * //   ...
+ * // }
  */
 export const distributeNodesByCategory = (allNodes, districts) => {
   // Categorize all nodes

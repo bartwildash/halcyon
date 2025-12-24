@@ -1,10 +1,27 @@
 /**
  * Collision Detection and Magnetic Repulsion System
  * Provides real-time collision detection and repulsion for ReactFlow nodes
+ *
+ * @module collisionDetection
+ * @description
+ * Handles spatial collision detection, magnetic repulsion during drag,
+ * and automatic position correction for nodes within districts.
+ *
+ * Key features:
+ * - AABB (Axis-Aligned Bounding Box) collision detection
+ * - Adaptive padding based on node sizes
+ * - Magnetic repulsion with smooth force curves
+ * - Spiral search for valid non-overlapping positions
+ * - District bounds enforcement
  */
 
 /**
  * Default node sizes by type
+ * @type {Object.<string, {width: number, height: number}>}
+ * @description
+ * Defines default dimensions for each node type.
+ * Accounts for visual decorations (borders, shadows, frames).
+ * Used as fallback when node.style.width/height not specified.
  */
 const DEFAULT_NODE_SIZES = {
   agent: { width: 220, height: 140 }, // Increased for glass border
@@ -52,6 +69,14 @@ const DEFAULT_NODE_SIZES = {
 
 /**
  * Get default size for a node type
+ * @param {string} nodeType - The type of node (e.g., 'agent', 'chess', 'note')
+ * @returns {{width: number, height: number}} Default dimensions for the node type
+ * @description
+ * Returns predefined dimensions for a node type, falling back to default (200x150)
+ * if the type is not recognized.
+ * @example
+ * getDefaultNodeSize('chess') // Returns { width: 384, height: 420 }
+ * getDefaultNodeSize('unknown') // Returns { width: 200, height: 150 }
  */
 export const getDefaultNodeSize = nodeType => {
   return DEFAULT_NODE_SIZES[nodeType] || DEFAULT_NODE_SIZES.default;
@@ -59,7 +84,28 @@ export const getDefaultNodeSize = nodeType => {
 
 /**
  * Get bounding box for a node
- * Uses style.width/height if available, otherwise falls back to defaults
+ * @param {Object} node - ReactFlow node object
+ * @param {Object} node.position - Node position with x, y coordinates
+ * @param {string} node.type - Node type
+ * @param {Object} [node.style] - Optional style with width/height overrides
+ * @param {Object} [node.data] - Optional data with width/height overrides
+ * @returns {Object} Bounding box with x, y, width, height, centerX, centerY, right, bottom
+ * @description
+ * Calculates complete bounding box for a node including all edges and center point.
+ *
+ * Priority order for dimensions:
+ * 1. node.style.width/height (highest priority)
+ * 2. node.data.width/height
+ * 3. DEFAULT_NODE_SIZES[type] (fallback)
+ *
+ * @example
+ * const bounds = getNodeBounds(node)
+ * // Returns: {
+ * //   x: 100, y: 200,
+ * //   width: 220, height: 140,
+ * //   centerX: 210, centerY: 270,
+ * //   right: 320, bottom: 340
+ * // }
  */
 export const getNodeBounds = node => {
   const defaultSize = getDefaultNodeSize(node.type);
@@ -93,8 +139,22 @@ export const getNodeBounds = node => {
 
 /**
  * Calculate adaptive padding between two nodes
- * Base padding: 20px + 10% of average node size
- * Min: 20px, Max: 100px
+ * @param {Object} node1 - First node
+ * @param {Object} node2 - Second node
+ * @returns {number} Adaptive padding in pixels (20-100px range)
+ * @description
+ * Dynamically calculates spacing between nodes based on their sizes.
+ * Larger nodes get more padding, smaller nodes get less.
+ *
+ * Formula: 20px base + 10% of average node dimension
+ * Clamped between 20px (minimum) and 100px (maximum)
+ *
+ * @example
+ * // Two small nodes (200x150 average)
+ * calculateAdaptivePadding(smallNode1, smallNode2) // ~37px
+ *
+ * // Two large nodes (600x500 average)
+ * calculateAdaptivePadding(largeNode1, largeNode2) // ~75px (clamped to 100px max)
  */
 export const calculateAdaptivePadding = (node1, node2) => {
   const bounds1 = getNodeBounds(node1);
@@ -165,9 +225,34 @@ export const checkCollision = (node1, node2, padding = 0) => {
 
 /**
  * Calculate magnetic repulsion force between two nodes
- * Uses AABB (axis-aligned bounding box) collision detection
- * Repulsion starts when bounding boxes are about to overlap
- * Returns deltaX, deltaY, and strength (0-1)
+ * @param {Object} draggedNode - The node being dragged
+ * @param {Object} otherNode - Another node to check collision against
+ * @param {Array<Object>} allNodes - All nodes (used for adaptive padding calculation)
+ * @returns {{deltaX: number, deltaY: number, strength: number}} Repulsion force vector
+ * @description
+ * Implements smooth magnetic repulsion when nodes get too close during drag.
+ * Uses AABB (Axis-Aligned Bounding Box) collision detection with padding zones.
+ *
+ * Algorithm:
+ * 1. Skip if nodes have different parentNode (different districts)
+ * 2. Expand bounding boxes by adaptive padding to create "repulsion zone"
+ * 3. Check if expanded boxes overlap (AABB collision)
+ * 4. Calculate overlap amount in X and Y directions
+ * 5. Apply smoothstep curve for gentle force ramp-up
+ * 6. Push nodes apart along vector from center to center
+ *
+ * Force characteristics:
+ * - Returns {0, 0, 0} if nodes don't overlap
+ * - Strength: 0-1 using smoothstep curve (ease-out cubic)
+ * - Direction: Normalized vector between node centers
+ * - Magnitude: 80% of overlap distance (smooth, not jerky)
+ *
+ * @example
+ * const force = calculateRepulsionForce(draggedNode, otherNode, allNodes)
+ * if (force.strength > 0.01) {
+ *   draggedNode.position.x += force.deltaX
+ *   draggedNode.position.y += force.deltaY
+ * }
  */
 export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
   // Skip if different parents
