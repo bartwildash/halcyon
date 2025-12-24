@@ -26,7 +26,7 @@ const DEFAULT_NODE_SIZES = {
   device: { width: 300, height: 180 },
   synth: { width: 300, height: 240 },
   drummachine: { width: 420, height: 320 },
-  sticker: { width: 220, height: 220 }, 
+  sticker: { width: 220, height: 220 },
   contactsStack: { width: 120, height: 120 },
   action: { width: 80, height: 100 },
   mailbox: { width: 180, height: 140 },
@@ -47,13 +47,13 @@ const DEFAULT_NODE_SIZES = {
   audioeditor: { width: 600, height: 380 },
   publisher: { width: 650, height: 600 },
   // Default fallback
-  default: { width: 200, height: 150 }
+  default: { width: 200, height: 150 },
 };
 
 /**
  * Get default size for a node type
  */
-export const getDefaultNodeSize = (nodeType) => {
+export const getDefaultNodeSize = nodeType => {
   return DEFAULT_NODE_SIZES[nodeType] || DEFAULT_NODE_SIZES.default;
 };
 
@@ -61,22 +61,24 @@ export const getDefaultNodeSize = (nodeType) => {
  * Get bounding box for a node
  * Uses style.width/height if available, otherwise falls back to defaults
  */
-export const getNodeBounds = (node) => {
+export const getNodeBounds = node => {
   const defaultSize = getDefaultNodeSize(node.type);
-  
+
   // Check for explicit dimensions in style
-  const width = node.style?.width || 
-                (node.data?.width && typeof node.data.width === 'number' ? node.data.width : null) ||
-                defaultSize.width;
-  const height = node.style?.height || 
-                 (node.data?.height && typeof node.data.height === 'number' ? node.data.height : null) ||
-                 defaultSize.height;
-  
+  const width =
+    node.style?.width ||
+    (node.data?.width && typeof node.data.width === 'number' ? node.data.width : null) ||
+    defaultSize.width;
+  const height =
+    node.style?.height ||
+    (node.data?.height && typeof node.data.height === 'number' ? node.data.height : null) ||
+    defaultSize.height;
+
   const x = node.position.x;
   const y = node.position.y;
   const centerX = x + width / 2;
   const centerY = y + height / 2;
-  
+
   return {
     x,
     y,
@@ -85,7 +87,7 @@ export const getNodeBounds = (node) => {
     centerX,
     centerY,
     right: x + width,
-    bottom: y + height
+    bottom: y + height,
   };
 };
 
@@ -97,11 +99,11 @@ export const getNodeBounds = (node) => {
 export const calculateAdaptivePadding = (node1, node2) => {
   const bounds1 = getNodeBounds(node1);
   const bounds2 = getNodeBounds(node2);
-  
+
   const avgSize = (bounds1.width + bounds1.height + bounds2.width + bounds2.height) / 4;
   const adaptivePadding = avgSize * 0.1;
   const totalPadding = 20 + adaptivePadding;
-  
+
   return Math.max(20, Math.min(100, totalPadding));
 };
 
@@ -115,25 +117,25 @@ export const checkCollision = (node1, node2, padding = 0) => {
   if (node1.parentNode !== node2.parentNode) {
     return { colliding: false, overlapX: 0, overlapY: 0, distance: Infinity };
   }
-  
+
   const bounds1 = getNodeBounds(node1);
   const bounds2 = getNodeBounds(node2);
-  
+
   // Expand bounds by padding
   const expanded1 = {
     x: bounds1.x - padding / 2,
     y: bounds1.y - padding / 2,
     right: bounds1.right + padding / 2,
-    bottom: bounds1.bottom + padding / 2
+    bottom: bounds1.bottom + padding / 2,
   };
-  
+
   const expanded2 = {
     x: bounds2.x - padding / 2,
     y: bounds2.y - padding / 2,
     right: bounds2.right + padding / 2,
-    bottom: bounds2.bottom + padding / 2
+    bottom: bounds2.bottom + padding / 2,
   };
-  
+
   // AABB collision check
   const colliding = !(
     expanded1.right < expanded2.x ||
@@ -141,7 +143,7 @@ export const checkCollision = (node1, node2, padding = 0) => {
     expanded1.bottom < expanded2.y ||
     expanded1.y > expanded2.bottom
   );
-  
+
   if (!colliding) {
     // Calculate distance between centers
     const dx = bounds1.centerX - bounds2.centerX;
@@ -149,21 +151,15 @@ export const checkCollision = (node1, node2, padding = 0) => {
     const distance = Math.sqrt(dx * dx + dy * dy);
     return { colliding: false, overlapX: 0, overlapY: 0, distance };
   }
-  
+
   // Calculate overlap
-  const overlapX = Math.min(
-    expanded1.right - expanded2.x,
-    expanded2.right - expanded1.x
-  );
-  const overlapY = Math.min(
-    expanded1.bottom - expanded2.y,
-    expanded2.bottom - expanded1.y
-  );
-  
+  const overlapX = Math.min(expanded1.right - expanded2.x, expanded2.right - expanded1.x);
+  const overlapY = Math.min(expanded1.bottom - expanded2.y, expanded2.bottom - expanded1.y);
+
   const dx = bounds1.centerX - bounds2.centerX;
   const dy = bounds1.centerY - bounds2.centerY;
   const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
   return { colliding: true, overlapX, overlapY, distance };
 };
 
@@ -178,13 +174,13 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
   if (draggedNode.parentNode !== otherNode.parentNode) {
     return { deltaX: 0, deltaY: 0, strength: 0 };
   }
-  
+
   const bounds1 = getNodeBounds(draggedNode);
   const bounds2 = getNodeBounds(otherNode);
-  
+
   // Get adaptive padding
   const padding = calculateAdaptivePadding(draggedNode, otherNode);
-  
+
   // Expand bounds by padding to create "repulsion zone"
   const expanded1 = {
     x: bounds1.x - padding,
@@ -192,18 +188,18 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
     right: bounds1.right + padding,
     bottom: bounds1.bottom + padding,
     width: bounds1.width + padding * 2,
-    height: bounds1.height + padding * 2
+    height: bounds1.height + padding * 2,
   };
-  
+
   const expanded2 = {
     x: bounds2.x - padding,
     y: bounds2.y - padding,
     right: bounds2.right + padding,
     bottom: bounds2.bottom + padding,
     width: bounds2.width + padding * 2,
-    height: bounds2.height + padding * 2
+    height: bounds2.height + padding * 2,
   };
-  
+
   // Check if expanded bounding boxes overlap (AABB collision)
   const isOverlapping = !(
     expanded1.right < expanded2.x ||
@@ -211,59 +207,58 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
     expanded1.bottom < expanded2.y ||
     expanded1.y > expanded2.bottom
   );
-  
+
   // If not overlapping, no repulsion
   if (!isOverlapping) {
     return { deltaX: 0, deltaY: 0, strength: 0 };
   }
-  
+
   // Calculate overlap amount
-  const overlapX = Math.min(
-    expanded1.right - expanded2.x,
-    expanded2.right - expanded1.x
-  );
-  const overlapY = Math.min(
-    expanded1.bottom - expanded2.y,
-    expanded2.bottom - expanded1.y
-  );
-  
+  const overlapX = Math.min(expanded1.right - expanded2.x, expanded2.right - expanded1.x);
+  const overlapY = Math.min(expanded1.bottom - expanded2.y, expanded2.bottom - expanded1.y);
+
   // Calculate distance between centers for direction
   const dx = bounds1.centerX - bounds2.centerX;
   const dy = bounds1.centerY - bounds2.centerY;
   const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
   if (distance === 0) {
     // If exactly overlapping, push in a random direction
     const angle = Math.random() * Math.PI * 2;
-    return { 
-      deltaX: Math.cos(angle) * 30, 
-      deltaY: Math.sin(angle) * 30, 
-      strength: 1 
+    return {
+      deltaX: Math.cos(angle) * 30,
+      deltaY: Math.sin(angle) * 30,
+      strength: 1,
     };
   }
-  
+
   // Calculate repulsion strength based on overlap
   // Use the smaller overlap dimension to determine how "deep" the collision is
   const minOverlap = Math.min(overlapX, overlapY);
-  const maxDimension = Math.max(expanded1.width, expanded1.height, expanded2.width, expanded2.height);
+  const maxDimension = Math.max(
+    expanded1.width,
+    expanded1.height,
+    expanded2.width,
+    expanded2.height
+  );
   const normalizedOverlap = Math.min(minOverlap / maxDimension, 1);
-  
+
   // Smooth force curve: stronger when more overlapped, but not too aggressive
   // Use a smoother curve (ease-out cubic) for less jerky behavior
   const strength = normalizedOverlap * normalizedOverlap * (3 - 2 * normalizedOverlap); // Smoothstep
-  
+
   // Calculate force magnitude - smoother, less aggressive
   // Base force on overlap amount, not distance
   const forceMagnitude = minOverlap * 0.8; // Reduced from 150 to be less jerky
-  
+
   // Normalize direction vector
   const normalizedDx = dx / distance;
   const normalizedDy = dy / distance;
-  
+
   return {
     deltaX: normalizedDx * forceMagnitude,
     deltaY: normalizedDy * forceMagnitude,
-    strength
+    strength,
   };
 };
 
@@ -276,12 +271,16 @@ export const calculateRepulsionForce = (draggedNode, otherNode, allNodes) => {
  * @param {Object} district - Optional parent district for bounds checking
  * @param {number} padding - Optional padding from district edges (default: 50)
  */
-export const findValidPosition = (node, allNodes, preferredPosition, district = null, padding = 50) => {
+export const findValidPosition = (
+  node,
+  allNodes,
+  preferredPosition,
+  district = null,
+  padding = 50
+) => {
   // Filter to only check nodes in same parent
-  const otherNodes = allNodes.filter(n =>
-    n.id !== node.id &&
-    n.type !== 'district' &&
-    n.parentNode === node.parentNode
+  const otherNodes = allNodes.filter(
+    n => n.id !== node.id && n.type !== 'district' && n.parentNode === node.parentNode
   );
 
   // Helper to check if position is within district bounds
@@ -337,7 +336,7 @@ export const findValidPosition = (node, allNodes, preferredPosition, district = 
     const positionsPerRadius = Math.floor((2 * Math.PI) / angleStep);
 
     for (let i = 0; i < positionsPerRadius && i < maxIterations; i++) {
-      const angle = (i * angleStep) + (radius / stepSize) * 0.5; // Slight rotation per radius
+      const angle = i * angleStep + (radius / stepSize) * 0.5; // Slight rotation per radius
       const testX = preferredPosition.x + Math.cos(angle) * radius;
       const testY = preferredPosition.y + Math.sin(angle) * radius;
 
@@ -372,12 +371,17 @@ export const findValidPosition = (node, allNodes, preferredPosition, district = 
     const districtHeight = district.style?.height || 1000;
 
     return {
-      x: Math.max(padding, Math.min(preferredPosition.x, districtWidth - nodeBounds.width - padding)),
-      y: Math.max(padding, Math.min(preferredPosition.y, districtHeight - nodeBounds.height - padding))
+      x: Math.max(
+        padding,
+        Math.min(preferredPosition.x, districtWidth - nodeBounds.width - padding)
+      ),
+      y: Math.max(
+        padding,
+        Math.min(preferredPosition.y, districtHeight - nodeBounds.height - padding)
+      ),
     };
   }
 
   // If no valid position found, return preferred (will have collision but better than nothing)
   return preferredPosition;
 };
-

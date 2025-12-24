@@ -14,30 +14,34 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
     onTracksChange(newTracks);
   };
 
-  const handleReorder = (newOrder) => {
+  const handleReorder = newOrder => {
     onTracksChange(newOrder);
   };
 
   return (
-    <div style={{
-      width: '100%',
-      maxHeight: 400,
-      background: '#fff',
-      borderRadius: 8,
-      border: '1px solid #e5e7eb',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-    }}>
-      {/* Header */}
-      <div style={{
-        padding: 12,
-        background: '#f9fafb',
-        borderBottom: '1px solid #e5e7eb',
+    <div
+      style={{
+        width: '100%',
+        maxHeight: 400,
+        background: '#fff',
+        borderRadius: 8,
+        border: '1px solid #e5e7eb',
+        overflow: 'hidden',
         display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-      }}>
+        flexDirection: 'column',
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: 12,
+          background: '#f9fafb',
+          borderBottom: '1px solid #e5e7eb',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
         <Music size={16} color="#6b7280" />
         <span style={{ fontSize: 14, fontWeight: 600, color: '#374151' }}>
           Playlist ({tracks.length})
@@ -45,20 +49,23 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
       </div>
 
       {/* Track List */}
-      <div 
+      <div
         className="nodrag"
         style={{
-        flex: 1,
-        overflowY: 'auto',
-        padding: 8,
-      }}>
+          flex: 1,
+          overflowY: 'auto',
+          padding: 8,
+        }}
+      >
         {tracks.length === 0 ? (
-          <div style={{
-            padding: 40,
-            textAlign: 'center',
-            color: '#9ca3af',
-            fontSize: 13,
-          }}>
+          <div
+            style={{
+              padding: 40,
+              textAlign: 'center',
+              color: '#9ca3af',
+              fontSize: 13,
+            }}
+          >
             No tracks in playlist
             <br />
             <span style={{ fontSize: 11 }}>Drag files here or add via URL</span>
@@ -93,11 +100,11 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
                     cursor: 'grab',
                     transition: 'all 0.2s',
                   }}
-                  onHoverStart={(e) => {
+                  onHoverStart={e => {
                     e.currentTarget.style.background = '#f9fafb';
                     e.currentTarget.style.borderColor = '#3b82f6';
                   }}
-                  onHoverEnd={(e) => {
+                  onHoverEnd={e => {
                     e.currentTarget.style.background = '#fff';
                     e.currentTarget.style.borderColor = '#e5e7eb';
                   }}
@@ -111,10 +118,10 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
                       display: 'flex',
                       alignItems: 'center',
                     }}
-                    onMouseDown={(e) => {
+                    onMouseDown={e => {
                       e.currentTarget.style.cursor = 'grabbing';
                     }}
-                    onMouseUp={(e) => {
+                    onMouseUp={e => {
                       e.currentTarget.style.cursor = 'grab';
                     }}
                   >
@@ -123,30 +130,34 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
 
                   {/* Track Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: '#111827',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: '#111827',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {track.metaData?.title || 'Unknown Title'}
                     </div>
-                    <div style={{
-                      fontSize: 11,
-                      color: '#6b7280',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: '#6b7280',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {track.metaData?.artist || 'Unknown Artist'}
                     </div>
                   </div>
 
                   {/* Remove Button */}
                   <button
-                    onClick={(e) => handleRemove(index, e)}
+                    onClick={e => handleRemove(index, e)}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -157,7 +168,7 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
                       alignItems: 'center',
                       borderRadius: 4,
                     }}
-                    onHover={(e) => {
+                    onHover={e => {
                       e.currentTarget.style.background = '#fee2e2';
                       e.currentTarget.style.color = '#dc2626';
                     }}
@@ -181,24 +192,24 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
           fontSize: 12,
           color: '#6b7280',
         }}
-        onDragOver={(e) => {
+        onDragOver={e => {
           e.preventDefault();
           e.currentTarget.style.background = '#eff6ff';
           e.currentTarget.style.borderColor = '#3b82f6';
         }}
-        onDragLeave={(e) => {
+        onDragLeave={e => {
           e.currentTarget.style.background = '#f9fafb';
           e.currentTarget.style.borderColor = '#d1d5db';
         }}
-        onDrop={(e) => {
+        onDrop={e => {
           e.preventDefault();
           e.currentTarget.style.background = '#f9fafb';
           e.currentTarget.style.borderColor = '#d1d5db';
-          
+
           // Handle file drops
           const files = Array.from(e.dataTransfer.files);
           const audioFiles = files.filter(f => f.type.startsWith('audio/'));
-          
+
           if (audioFiles.length > 0) {
             const newTracks = audioFiles.map(file => ({
               url: URL.createObjectURL(file),
@@ -216,4 +227,3 @@ export const PlaylistManager = ({ tracks, onTracksChange, onTrackSelect }) => {
     </div>
   );
 };
-

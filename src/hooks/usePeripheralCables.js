@@ -21,7 +21,7 @@ export const usePeripheralCables = () => {
     // 3. Match peripherals to consumer nodes
     activePeripherals.forEach(peripheral => {
       // Find nodes that need this utility
-      const consumers = nodes.filter(node => 
+      const consumers = nodes.filter(node =>
         node.data?.requiredUtilities?.includes(peripheral.utilityId)
       );
 
@@ -47,19 +47,20 @@ export const usePeripheralCables = () => {
     setEdges(prev => {
       // Keep non-peripheral edges
       const others = prev.filter(e => e.type !== 'peripheral-cable');
-      
+
       // Basic diffing to prevent re-renders if cables haven't changed
       const currentIds = new Set(newCables.map(c => c.id));
       const existingPeripheralEdges = prev.filter(e => e.type === 'peripheral-cable');
       const existingIds = new Set(existingPeripheralEdges.map(e => e.id));
-      
-      if (currentIds.size === existingIds.size && [...currentIds].every(id => existingIds.has(id))) {
+
+      if (
+        currentIds.size === existingIds.size &&
+        [...currentIds].every(id => existingIds.has(id))
+      ) {
         return prev;
       }
 
       return [...others, ...newCables];
     });
-
   }, [portState, nodes, setEdges]);
 };
-

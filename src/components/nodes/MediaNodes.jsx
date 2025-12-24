@@ -17,7 +17,7 @@ export const StickerNode = ({ data }) => {
   const [likes, setLikes] = useState(data.likes || 0);
   const [hasLiked, setHasLiked] = useState(false);
 
-  const handleLike = (e) => {
+  const handleLike = e => {
     e.stopPropagation();
     if (!hasLiked) {
       setLikes(likes + 1);
@@ -25,7 +25,7 @@ export const StickerNode = ({ data }) => {
     }
   };
 
-  const handleRemove = (e) => {
+  const handleRemove = e => {
     e.stopPropagation();
     if (data.onRemove) {
       data.onRemove();
@@ -42,24 +42,26 @@ export const StickerNode = ({ data }) => {
         style={{
           position: 'relative',
           cursor: 'pointer',
-          display: 'inline-block'
+          display: 'inline-block',
         }}
       >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Sticker Image */}
-        <div style={{
-          width: data.size || 200,
-          height: data.size || 200,
-          borderRadius: data.rounded ? 16 : 0,
-          overflow: 'hidden',
-          boxShadow: isHovered
-            ? '0 12px 24px rgba(0, 0, 0, 0.2)'
-            : '0 4px 12px rgba(0, 0, 0, 0.1)',
-          background: '#fff',
-          transition: 'all 0.3s ease'
-        }}>
+        <div
+          style={{
+            width: data.size || 200,
+            height: data.size || 200,
+            borderRadius: data.rounded ? 16 : 0,
+            overflow: 'hidden',
+            boxShadow: isHovered
+              ? '0 12px 24px rgba(0, 0, 0, 0.2)'
+              : '0 4px 12px rgba(0, 0, 0, 0.1)',
+            background: '#fff',
+            transition: 'all 0.3s ease',
+          }}
+        >
           <img
             src={data.url}
             alt={data.label || 'Sticker'}
@@ -67,7 +69,7 @@ export const StickerNode = ({ data }) => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              display: 'block'
+              display: 'block',
             }}
           />
         </div>
@@ -90,7 +92,7 @@ export const StickerNode = ({ data }) => {
                 padding: '8px 12px',
                 borderRadius: 20,
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                zIndex: 100
+                zIndex: 100,
               }}
             >
               {/* Like Button */}
@@ -108,7 +110,7 @@ export const StickerNode = ({ data }) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  color: '#fff'
+                  color: '#fff',
                 }}
               >
                 <Heart size={16} fill={hasLiked ? '#fff' : 'none'} />
@@ -116,14 +118,16 @@ export const StickerNode = ({ data }) => {
 
               {/* Like Count */}
               {likes > 0 && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  paddingRight: 4
-                }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    paddingRight: 4,
+                  }}
+                >
                   {likes}
                 </div>
               )}
@@ -144,7 +148,7 @@ export const StickerNode = ({ data }) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    color: '#fff'
+                    color: '#fff',
                   }}
                 >
                   <X size={16} />
@@ -156,35 +160,39 @@ export const StickerNode = ({ data }) => {
 
         {/* Label (optional) */}
         {data.label && !isHovered && (
-          <div style={{
-            position: 'absolute',
-            bottom: -30,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'rgba(0, 0, 0, 0.7)',
-            color: '#fff',
-            padding: '4px 12px',
-            borderRadius: 12,
-            fontSize: 11,
-            fontWeight: 600,
-            whiteSpace: 'nowrap'
-          }}>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: -30,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0, 0, 0, 0.7)',
+              color: '#fff',
+              padding: '4px 12px',
+              borderRadius: 12,
+              fontSize: 11,
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+            }}
+          >
             {data.label}
           </div>
         )}
 
         {/* Rotation indicator (if rotated) */}
         {data.rotation && !isHovered && (
-          <div style={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: '#fbbf24',
-            boxShadow: '0 0 0 2px rgba(251, 191, 36, 0.3)'
-          }} />
+          <div
+            style={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#fbbf24',
+              boxShadow: '0 0 0 2px rgba(251, 191, 36, 0.3)',
+            }}
+          />
         )}
       </motion.div>
     </SwayWrapper>
@@ -200,38 +208,44 @@ export const StickerPackNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-        borderRadius: 16,
-        padding: 20,
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-        border: '2px solid #fbbf24',
-        maxWidth: 400,
-        position: 'relative'
-      }}>
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+          borderRadius: 16,
+          padding: 20,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+          border: '2px solid #fbbf24',
+          maxWidth: 400,
+          position: 'relative',
+        }}
+      >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Header */}
-        <div style={{
-          fontWeight: 700,
-          fontSize: 16,
-          marginBottom: 16,
-          color: '#78350f',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 16,
+            marginBottom: 16,
+            color: '#78350f',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
           <span style={{ fontSize: 24 }}>✨</span>
           {data.packName || 'Sticker Pack'}
         </div>
 
         {/* Sticker Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
-          gap: 12
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+            gap: 12,
+          }}
+        >
           {stickers.map((sticker, i) => (
             <motion.div
               key={i}
@@ -244,10 +258,11 @@ export const StickerPackNode = ({ data }) => {
                 borderRadius: 12,
                 overflow: 'hidden',
                 cursor: 'pointer',
-                boxShadow: selectedSticker === sticker
-                  ? '0 0 0 3px #f59e0b'
-                  : '0 2px 8px rgba(0, 0, 0, 0.1)',
-                background: '#fff'
+                boxShadow:
+                  selectedSticker === sticker
+                    ? '0 0 0 3px #f59e0b'
+                    : '0 2px 8px rgba(0, 0, 0, 0.1)',
+                background: '#fff',
               }}
             >
               <img
@@ -256,7 +271,7 @@ export const StickerPackNode = ({ data }) => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'cover'
+                  objectFit: 'cover',
                 }}
               />
             </motion.div>
@@ -264,21 +279,19 @@ export const StickerPackNode = ({ data }) => {
         </div>
 
         {/* Info */}
-        <div style={{
-          marginTop: 16,
-          paddingTop: 16,
-          borderTop: '1px solid rgba(120, 53, 15, 0.2)',
-          fontSize: 12,
-          color: '#92400e',
-          display: 'flex',
-          justifyContent: 'space-between'
-        }}>
+        <div
+          style={{
+            marginTop: 16,
+            paddingTop: 16,
+            borderTop: '1px solid rgba(120, 53, 15, 0.2)',
+            fontSize: 12,
+            color: '#92400e',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <span>{stickers.length} stickers</span>
-          {selectedSticker && (
-            <span style={{ fontWeight: 600 }}>
-              {selectedSticker.name}
-            </span>
-          )}
+          {selectedSticker && <span style={{ fontWeight: 600 }}>{selectedSticker.name}</span>}
         </div>
       </div>
     </SwayWrapper>

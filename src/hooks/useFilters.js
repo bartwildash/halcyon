@@ -11,7 +11,7 @@ import { useFilterStore } from '../stores/filterStore';
  * @param {Array} nodes - Array of ReactFlow nodes
  * @returns {Object} - { filteredNodes, filterStats }
  */
-export const useFilters = (nodes) => {
+export const useFilters = nodes => {
   const { activeFilters, combineMode } = useFilterStore();
 
   const result = useMemo(() => {
@@ -23,8 +23,8 @@ export const useFilters = (nodes) => {
           total: nodes.length,
           visible: nodes.length,
           hidden: 0,
-          dimmed: 0
-        }
+          dimmed: 0,
+        },
       };
     }
 
@@ -89,9 +89,8 @@ export const useFilters = (nodes) => {
       });
 
       // Combine filter results based on mode
-      const matches = combineMode === 'AND'
-        ? filterResults.every(r => r)
-        : filterResults.some(r => r);
+      const matches =
+        combineMode === 'AND' ? filterResults.every(r => r) : filterResults.some(r => r);
 
       // Apply filter behavior
       const behavior = activeFilters[0]?.behavior || 'show-only';
@@ -120,8 +119,8 @@ export const useFilters = (nodes) => {
         style: {
           ...node.style,
           opacity: dimmed ? 0.3 : hidden ? 0 : 1,
-          pointerEvents: hidden ? 'none' : 'auto'
-        }
+          pointerEvents: hidden ? 'none' : 'auto',
+        },
       };
     });
 
@@ -130,12 +129,12 @@ export const useFilters = (nodes) => {
       total: nodes.length,
       visible: processedNodes.filter(n => !n.hidden).length,
       hidden: processedNodes.filter(n => n.hidden).length,
-      dimmed: processedNodes.filter(n => n.dimmed && !n.hidden).length
+      dimmed: processedNodes.filter(n => n.dimmed && !n.hidden).length,
     };
 
     return {
       filteredNodes: processedNodes,
-      filterStats: stats
+      filterStats: stats,
     };
   }, [nodes, activeFilters, combineMode]);
 
@@ -147,7 +146,7 @@ export const useFilters = (nodes) => {
  * @param {Object} node - ReactFlow node
  * @returns {boolean}
  */
-export const useNodeMatchesFilters = (node) => {
+export const useNodeMatchesFilters = node => {
   const { activeFilters, combineMode } = useFilterStore();
 
   return useMemo(() => {
@@ -173,14 +172,14 @@ export const useNodeMatchesFilters = (node) => {
         case 'node-type':
           return (Array.isArray(filter.value) ? filter.value : [filter.value]).includes(node.type);
         case 'district':
-          return (Array.isArray(filter.value) ? filter.value : [filter.value]).includes(node.parentNode);
+          return (Array.isArray(filter.value) ? filter.value : [filter.value]).includes(
+            node.parentNode
+          );
         default:
           return true;
       }
     });
 
-    return combineMode === 'AND'
-      ? filterResults.every(r => r)
-      : filterResults.some(r => r);
+    return combineMode === 'AND' ? filterResults.every(r => r) : filterResults.some(r => r);
   }, [node, activeFilters, combineMode]);
 };

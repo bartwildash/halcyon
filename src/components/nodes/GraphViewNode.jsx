@@ -44,13 +44,15 @@ export const GraphViewNode = ({ data }) => {
       }));
 
     // Calculate connection counts and build edge list
-    const graphEdges = edges.map(e => {
-      const source = graphNodes.find(n => n.id === e.source);
-      const target = graphNodes.find(n => n.id === e.target);
-      if (source) source.connections++;
-      if (target) target.connections++;
-      return { source, target, strength: 1 };
-    }).filter(e => e.source && e.target);
+    const graphEdges = edges
+      .map(e => {
+        const source = graphNodes.find(n => n.id === e.source);
+        const target = graphNodes.find(n => n.id === e.target);
+        if (source) source.connections++;
+        if (target) target.connections++;
+        return { source, target, strength: 1 };
+      })
+      .filter(e => e.source && e.target);
 
     // Particles flowing along edges (Flexoki warm tones)
     const particles = [];
@@ -122,10 +124,22 @@ export const GraphViewNode = ({ data }) => {
 
           // Bounds
           const margin = 30;
-          if (node.x < margin) { node.x = margin; node.vx *= -0.5; }
-          if (node.x > width - margin) { node.x = width - margin; node.vx *= -0.5; }
-          if (node.y < margin) { node.y = margin; node.vy *= -0.5; }
-          if (node.y > height - margin) { node.y = height - margin; node.vy *= -0.5; }
+          if (node.x < margin) {
+            node.x = margin;
+            node.vx *= -0.5;
+          }
+          if (node.x > width - margin) {
+            node.x = width - margin;
+            node.vx *= -0.5;
+          }
+          if (node.y < margin) {
+            node.y = margin;
+            node.vy *= -0.5;
+          }
+          if (node.y > height - margin) {
+            node.y = height - margin;
+            node.vy *= -0.5;
+          }
         });
       } else if (mode === 'radial') {
         // NEWTONIAN ORBITAL PHYSICS (slower, elliptical orbits)
@@ -139,7 +153,7 @@ export const GraphViewNode = ({ data }) => {
         // Ring rotation angles (degrees)
         const ringRotation = { 2: -8, 4: 12, 6: -6 };
         // Per-ring tilt variation
-        const ringTilt = { 2: 0.40, 4: 0.44, 6: 0.43 };
+        const ringTilt = { 2: 0.4, 4: 0.44, 6: 0.43 };
 
         // Kepler's equation solver
         const solveKepler = (M, e) => {
@@ -150,9 +164,8 @@ export const GraphViewNode = ({ data }) => {
             if (Math.abs(delta) < 1e-6) break;
           }
           // True anomaly
-          return 2 * Math.atan2(
-            Math.sqrt(1 + e) * Math.sin(E / 2),
-            Math.sqrt(1 - e) * Math.cos(E / 2)
+          return (
+            2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2))
           );
         };
 
@@ -168,7 +181,7 @@ export const GraphViewNode = ({ data }) => {
           let y = b * Math.sin(nu);
 
           // Apply ring rotation
-          const rot = (ringRotation[ring] || 0) * Math.PI / 180;
+          const rot = ((ringRotation[ring] || 0) * Math.PI) / 180;
           if (rot) {
             const X = x * Math.cos(rot) - y * Math.sin(rot);
             const Y = x * Math.sin(rot) + y * Math.cos(rot);
@@ -217,17 +230,17 @@ export const GraphViewNode = ({ data }) => {
         const RING_GAP = 50;
         const eccentricity = [0.04, 0.02, 0.03, 0.05, 0.04, 0.06];
         const ringRotation = { 2: -8, 4: 12, 6: -6 };
-        const ringTilt = { 2: 0.40, 4: 0.44, 6: 0.43 };
+        const ringTilt = { 2: 0.4, 4: 0.44, 6: 0.43 };
 
         // Flexoki ring colors (subtle, warm)
         const ringColors = [
-          'rgba(218, 112, 44, 0.25)',  // Ring 0 - Flexoki Orange
-          'rgba(218, 112, 44, 0.12)',  // Ring 1 - Faint orange
-          'rgba(208, 162, 21, 0.25)',  // Ring 2 - Flexoki Yellow
-          'rgba(208, 162, 21, 0.12)',  // Ring 3 - Faint yellow
-          'rgba(135, 154, 57, 0.25)',  // Ring 4 - Flexoki Green
-          'rgba(135, 154, 57, 0.12)',  // Ring 5 - Faint green
-          'rgba(58, 169, 159, 0.25)',  // Ring 6 - Flexoki Cyan
+          'rgba(218, 112, 44, 0.25)', // Ring 0 - Flexoki Orange
+          'rgba(218, 112, 44, 0.12)', // Ring 1 - Faint orange
+          'rgba(208, 162, 21, 0.25)', // Ring 2 - Flexoki Yellow
+          'rgba(208, 162, 21, 0.12)', // Ring 3 - Faint yellow
+          'rgba(135, 154, 57, 0.25)', // Ring 4 - Flexoki Green
+          'rgba(135, 154, 57, 0.12)', // Ring 5 - Faint green
+          'rgba(58, 169, 159, 0.25)', // Ring 6 - Flexoki Cyan
         ];
 
         const centerX = width / 2;
@@ -240,7 +253,7 @@ export const GraphViewNode = ({ data }) => {
           const b = a * (ringTilt[i] ?? TILT); // Semi-minor axis (perspective)
           const c = a * e; // Focal offset
 
-          const rot = (ringRotation[i] || 0) * Math.PI / 180;
+          const rot = ((ringRotation[i] || 0) * Math.PI) / 180;
 
           ctx.save();
           ctx.translate(centerX, centerY);
@@ -345,7 +358,12 @@ export const GraphViewNode = ({ data }) => {
         const hue = 200 + avgConnections * 10; // Blue to cyan based on importance
 
         // Draw line with gradient
-        const gradient = ctx.createLinearGradient(edge.source.x, edge.source.y, edge.target.x, edge.target.y);
+        const gradient = ctx.createLinearGradient(
+          edge.source.x,
+          edge.source.y,
+          edge.target.x,
+          edge.target.y
+        );
         gradient.addColorStop(0, `hsla(${hue}, 70%, 60%, ${opacity * 0.5})`);
         gradient.addColorStop(0.5, `hsla(${hue}, 70%, 60%, ${opacity})`);
         gradient.addColorStop(1, `hsla(${hue}, 70%, 60%, ${opacity * 0.5})`);
@@ -430,8 +448,12 @@ export const GraphViewNode = ({ data }) => {
 
         // Node body with gradient
         const nodeGradient = ctx.createRadialGradient(
-          node.x - size * 0.3, node.y - size * 0.3, 0,
-          node.x, node.y, size
+          node.x - size * 0.3,
+          node.y - size * 0.3,
+          0,
+          node.x,
+          node.y,
+          size
         );
         nodeGradient.addColorStop(0, node.color);
         nodeGradient.addColorStop(1, node.color + 'cc');
@@ -503,42 +525,50 @@ export const GraphViewNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        width: 600,
-        height: 450,
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 50%, #282726 100%)',
-        borderRadius: 20,
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(206, 205, 195, 0.08)',
-        border: '1px solid rgba(135, 133, 128, 0.2)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        position: 'relative'
-      }}>
+      <div
+        style={{
+          width: 600,
+          height: 450,
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 50%, #282726 100%)',
+          borderRadius: 20,
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(206, 205, 195, 0.08)',
+          border: '1px solid rgba(135, 133, 128, 0.2)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Header with controls */}
-        <div style={{
-          padding: '12px 16px',
-          background: 'rgba(16, 15, 15, 0.5)',
-          borderBottom: '1px solid rgba(135, 133, 128, 0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-          <div style={{
+        <div
+          style={{
+            padding: '12px 16px',
+            background: 'rgba(16, 15, 15, 0.5)',
+            borderBottom: '1px solid rgba(135, 133, 128, 0.2)',
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
-          }}>
+            justifyContent: 'space-between',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+            }}
+          >
             <div>
-              <div style={{
-                fontSize: 14,
-                fontWeight: 700,
-                fontFamily: 'monospace',
-                letterSpacing: 1,
-              }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  fontFamily: 'monospace',
+                  letterSpacing: 1,
+                }}
+              >
                 <span style={{ color: '#D14D41' }}>u</span>
                 <span style={{ color: '#DA702C' }}>l</span>
                 <span style={{ color: '#D0A215' }}>t</span>
@@ -551,11 +581,15 @@ export const GraphViewNode = ({ data }) => {
                 <span style={{ color: '#D0A215' }}>k</span>
                 <span style={{ color: '#878580', marginLeft: 6 }}> graph</span>
               </div>
-              <div style={{
-                fontSize: 10,
-                color: '#878580',
-                fontFamily: 'monospace',
-              }}>{nodes.length} nodes · {edges.length} connections</div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: '#878580',
+                  fontFamily: 'monospace',
+                }}
+              >
+                {nodes.length} nodes · {edges.length} connections
+              </div>
             </div>
           </div>
 
@@ -569,7 +603,10 @@ export const GraphViewNode = ({ data }) => {
                 style={{
                   padding: '4px 12px',
                   background: mode === m ? 'rgba(218, 112, 44, 0.25)' : 'rgba(135, 133, 128, 0.15)',
-                  border: mode === m ? '1px solid rgba(218, 112, 44, 0.5)' : '1px solid rgba(135, 133, 128, 0.3)',
+                  border:
+                    mode === m
+                      ? '1px solid rgba(218, 112, 44, 0.5)'
+                      : '1px solid rgba(135, 133, 128, 0.3)',
                   borderRadius: 8,
                   color: mode === m ? '#CECDC3' : '#878580',
                   fontSize: 11,
@@ -588,7 +625,9 @@ export const GraphViewNode = ({ data }) => {
               onClick={() => setShowParticles(!showParticles)}
               style={{
                 padding: '4px 12px',
-                background: showParticles ? 'rgba(135, 154, 57, 0.25)' : 'rgba(135, 133, 128, 0.15)',
+                background: showParticles
+                  ? 'rgba(135, 154, 57, 0.25)'
+                  : 'rgba(135, 133, 128, 0.15)',
                 border: '1px solid rgba(135, 133, 128, 0.3)',
                 borderRadius: 8,
                 color: showParticles ? '#CECDC3' : '#878580',
@@ -625,17 +664,17 @@ export const GraphViewNode = ({ data }) => {
 // Helper function to assign colors based on node type (Flexoki Dark palette)
 function getNodeColor(type) {
   const colors = {
-    agent: '#8B7EC8',      // Flexoki Purple (warm purple)
-    stack: '#DA702C',      // Flexoki Orange (warm orange)
-    note: '#D0A215',       // Flexoki Yellow (warm gold)
-    task: '#879A39',       // Flexoki Green (olive green)
-    portal: '#3AA99F',     // Flexoki Cyan (teal)
-    person: '#CE5D97',     // Flexoki Magenta (warm pink)
-    contact: '#CE5D97',    // Flexoki Magenta
-    pomodoro: '#D14D41',   // Flexoki Red (warm red)
-    flipclock: '#4385BE',  // Flexoki Blue (warm blue)
-    metric: '#3AA99F',     // Flexoki Cyan
-    default: '#878580',    // Flexoki Subtext (warm gray)
+    agent: '#8B7EC8', // Flexoki Purple (warm purple)
+    stack: '#DA702C', // Flexoki Orange (warm orange)
+    note: '#D0A215', // Flexoki Yellow (warm gold)
+    task: '#879A39', // Flexoki Green (olive green)
+    portal: '#3AA99F', // Flexoki Cyan (teal)
+    person: '#CE5D97', // Flexoki Magenta (warm pink)
+    contact: '#CE5D97', // Flexoki Magenta
+    pomodoro: '#D14D41', // Flexoki Red (warm red)
+    flipclock: '#4385BE', // Flexoki Blue (warm blue)
+    metric: '#3AA99F', // Flexoki Cyan
+    default: '#878580', // Flexoki Subtext (warm gray)
   };
   return colors[type] || colors.default;
 }

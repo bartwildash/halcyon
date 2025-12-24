@@ -17,7 +17,7 @@ import {
   Grid3x3,
   AlignLeft,
   AlignCenter,
-  AlignRight
+  AlignRight,
 } from 'lucide-react';
 
 export const PublisherNode = ({ data }) => {
@@ -48,8 +48,8 @@ export const PublisherNode = ({ data }) => {
         fontSize: 16,
         fontWeight: 'normal',
         color: '#000000',
-        textAlign: 'left'
-      }
+        textAlign: 'left',
+      },
     };
     setElements([...elements, newElement]);
     setTool(null);
@@ -68,7 +68,7 @@ export const PublisherNode = ({ data }) => {
       width: 150,
       height: 150,
       source: imageNode?.data?.url || 'https://placehold.co/150x150/EEE/31343C?text=Image',
-      fit: 'cover'
+      fit: 'cover',
     };
     setElements([...elements, newElement]);
     setTool(null);
@@ -85,13 +85,13 @@ export const PublisherNode = ({ data }) => {
       height: 100,
       fill: '#f59e0b',
       stroke: '#000000',
-      strokeWidth: 2
+      strokeWidth: 2,
     };
     setElements([...elements, newElement]);
     setTool(null);
   };
 
-  const deleteElement = (id) => {
+  const deleteElement = id => {
     setElements(elements.filter(el => el.id !== id));
     if (selectedElement?.id === id) {
       setSelectedElement(null);
@@ -99,9 +99,7 @@ export const PublisherNode = ({ data }) => {
   };
 
   const updateElement = (id, updates) => {
-    setElements(elements.map(el =>
-      el.id === id ? { ...el, ...updates } : el
-    ));
+    setElements(elements.map(el => (el.id === id ? { ...el, ...updates } : el)));
     if (selectedElement?.id === id) {
       setSelectedElement({ ...selectedElement, ...updates });
     }
@@ -118,7 +116,7 @@ export const PublisherNode = ({ data }) => {
     alert('PDF export would happen here. See console for data.');
   };
 
-  const handleContentEdit = (element) => {
+  const handleContentEdit = element => {
     if (element.type !== 'text') return;
 
     const newContent = prompt('Edit text:', element.content);
@@ -129,35 +127,41 @@ export const PublisherNode = ({ data }) => {
 
   return (
     <SwayWrapper style={{ width: 650, height: 600 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-        borderRadius: 16,
-        border: '2px solid rgba(245, 158, 11, 0.3)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        {/* Header */}
-        <div style={{
-          padding: 12,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.2)',
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+          borderRadius: 16,
+          border: '2px solid rgba(245, 158, 11, 0.3)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: 12,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <FileText size={18} color={color} />
-            <h3 style={{
-              margin: 0,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui'
-            }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+              }}
+            >
               {label}
             </h3>
           </div>
@@ -169,12 +173,14 @@ export const PublisherNode = ({ data }) => {
               style={{
                 padding: 6,
                 background: showGrid ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
-                border: showGrid ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(135, 133, 128, 0.2)',
+                border: showGrid
+                  ? '1px solid rgba(245, 158, 11, 0.4)'
+                  : '1px solid rgba(135, 133, 128, 0.2)',
                 borderRadius: 6,
                 color: showGrid ? '#fbbf24' : '#878580',
                 cursor: 'pointer',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               <Grid3x3 size={14} />
@@ -194,7 +200,7 @@ export const PublisherNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <Download size={12} />
@@ -204,19 +210,16 @@ export const PublisherNode = ({ data }) => {
         </div>
 
         {/* Toolbar */}
-        <div style={{
-          padding: 10,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.1)',
-          display: 'flex',
-          gap: 6
-        }}>
-          <ToolButton
-            icon={Type}
-            label="Text"
-            onClick={addTextElement}
-            tooltip="Add Text Box"
-          />
+        <div
+          style={{
+            padding: 10,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            gap: 6,
+          }}
+        >
+          <ToolButton icon={Type} label="Text" onClick={addTextElement} tooltip="Add Text Box" />
           <ToolButton
             icon={ImageIcon}
             label="Image"
@@ -245,7 +248,7 @@ export const PublisherNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <Trash2 size={12} />
@@ -255,14 +258,16 @@ export const PublisherNode = ({ data }) => {
         </div>
 
         {/* Canvas Area */}
-        <div style={{
-          flex: 1,
-          padding: 20,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'rgba(0, 0, 0, 0.2)'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: 20,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0, 0, 0, 0.2)',
+          }}
+        >
           <div
             ref={canvasRef}
             onClick={() => setSelectedElement(null)}
@@ -277,7 +282,7 @@ export const PublisherNode = ({ data }) => {
                 ? 'repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(0,0,0,0.05) 19px, rgba(0,0,0,0.05) 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0,0,0,0.05) 19px, rgba(0,0,0,0.05) 20px)'
                 : 'none',
               backgroundSize: '20px 20px',
-              overflow: 'hidden'
+              overflow: 'hidden',
             }}
           >
             {/* Render elements */}
@@ -286,9 +291,9 @@ export const PublisherNode = ({ data }) => {
                 key={element.id}
                 element={element}
                 isSelected={selectedElement?.id === element.id}
-                onMouseDown={(e) => handleElementMouseDown(e, element)}
+                onMouseDown={e => handleElementMouseDown(e, element)}
                 onDoubleClick={() => handleContentEdit(element)}
-                onUpdate={(updates) => updateElement(element.id, updates)}
+                onUpdate={updates => updateElement(element.id, updates)}
               />
             ))}
           </div>
@@ -296,23 +301,27 @@ export const PublisherNode = ({ data }) => {
 
         {/* Properties Panel */}
         {selectedElement && (
-          <div style={{
-            padding: 12,
-            borderTop: '1px solid rgba(135, 133, 128, 0.15)',
-            background: 'rgba(0, 0, 0, 0.2)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            maxHeight: 140,
-            overflowY: 'auto'
-          }}>
-            <div style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui',
-              marginBottom: 4
-            }}>
+          <div
+            style={{
+              padding: 12,
+              borderTop: '1px solid rgba(135, 133, 128, 0.15)',
+              background: 'rgba(0, 0, 0, 0.2)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              maxHeight: 140,
+              overflowY: 'auto',
+            }}
+          >
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+                marginBottom: 4,
+              }}
+            >
               Element Properties
             </div>
 
@@ -320,9 +329,11 @@ export const PublisherNode = ({ data }) => {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <select
                   value={selectedElement.style.fontSize}
-                  onChange={(e) => updateElement(selectedElement.id, {
-                    style: { ...selectedElement.style, fontSize: parseInt(e.target.value) }
-                  })}
+                  onChange={e =>
+                    updateElement(selectedElement.id, {
+                      style: { ...selectedElement.style, fontSize: parseInt(e.target.value) },
+                    })
+                  }
                   style={{
                     padding: '4px 8px',
                     background: 'rgba(135, 133, 128, 0.15)',
@@ -330,7 +341,7 @@ export const PublisherNode = ({ data }) => {
                     borderRadius: 4,
                     color: '#CECDC3',
                     fontSize: 11,
-                    fontFamily: 'system-ui'
+                    fontFamily: 'system-ui',
                   }}
                 >
                   <option value="12">12px</option>
@@ -344,9 +355,11 @@ export const PublisherNode = ({ data }) => {
 
                 <select
                   value={selectedElement.style.fontWeight}
-                  onChange={(e) => updateElement(selectedElement.id, {
-                    style: { ...selectedElement.style, fontWeight: e.target.value }
-                  })}
+                  onChange={e =>
+                    updateElement(selectedElement.id, {
+                      style: { ...selectedElement.style, fontWeight: e.target.value },
+                    })
+                  }
                   style={{
                     padding: '4px 8px',
                     background: 'rgba(135, 133, 128, 0.15)',
@@ -354,7 +367,7 @@ export const PublisherNode = ({ data }) => {
                     borderRadius: 4,
                     color: '#CECDC3',
                     fontSize: 11,
-                    fontFamily: 'system-ui'
+                    fontFamily: 'system-ui',
                   }}
                 >
                   <option value="normal">Normal</option>
@@ -362,46 +375,61 @@ export const PublisherNode = ({ data }) => {
                 </select>
 
                 <button
-                  onClick={() => updateElement(selectedElement.id, {
-                    style: { ...selectedElement.style, textAlign: 'left' }
-                  })}
+                  onClick={() =>
+                    updateElement(selectedElement.id, {
+                      style: { ...selectedElement.style, textAlign: 'left' },
+                    })
+                  }
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'left' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    background:
+                      selectedElement.style.textAlign === 'left'
+                        ? 'rgba(245, 158, 11, 0.2)'
+                        : 'rgba(135, 133, 128, 0.15)',
                     border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
                     color: '#CECDC3',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   <AlignLeft size={12} />
                 </button>
                 <button
-                  onClick={() => updateElement(selectedElement.id, {
-                    style: { ...selectedElement.style, textAlign: 'center' }
-                  })}
+                  onClick={() =>
+                    updateElement(selectedElement.id, {
+                      style: { ...selectedElement.style, textAlign: 'center' },
+                    })
+                  }
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'center' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    background:
+                      selectedElement.style.textAlign === 'center'
+                        ? 'rgba(245, 158, 11, 0.2)'
+                        : 'rgba(135, 133, 128, 0.15)',
                     border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
                     color: '#CECDC3',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   <AlignCenter size={12} />
                 </button>
                 <button
-                  onClick={() => updateElement(selectedElement.id, {
-                    style: { ...selectedElement.style, textAlign: 'right' }
-                  })}
+                  onClick={() =>
+                    updateElement(selectedElement.id, {
+                      style: { ...selectedElement.style, textAlign: 'right' },
+                    })
+                  }
                   style={{
                     padding: 6,
-                    background: selectedElement.style.textAlign === 'right' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(135, 133, 128, 0.15)',
+                    background:
+                      selectedElement.style.textAlign === 'right'
+                        ? 'rgba(245, 158, 11, 0.2)'
+                        : 'rgba(135, 133, 128, 0.15)',
                     border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
                     color: '#CECDC3',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   <AlignRight size={12} />
@@ -417,13 +445,13 @@ export const PublisherNode = ({ data }) => {
                 <input
                   type="color"
                   value={selectedElement.fill}
-                  onChange={(e) => updateElement(selectedElement.id, { fill: e.target.value })}
+                  onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
                   style={{
                     width: 40,
                     height: 24,
                     border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 />
                 <span style={{ fontSize: 11, color: '#878580', fontFamily: 'system-ui' }}>
@@ -432,13 +460,13 @@ export const PublisherNode = ({ data }) => {
                 <input
                   type="color"
                   value={selectedElement.stroke}
-                  onChange={(e) => updateElement(selectedElement.id, { stroke: e.target.value })}
+                  onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
                   style={{
                     width: 40,
                     height: 24,
                     border: '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 4,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 />
               </div>
@@ -455,16 +483,16 @@ const LayoutElement = ({ element, isSelected, onMouseDown, onDoubleClick, onUpda
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = e => {
     onMouseDown(e);
     setIsDragging(true);
     setDragStart({
       x: e.clientX - element.x,
-      y: e.clientY - element.y
+      y: e.clientY - element.y,
     });
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = e => {
     if (!isDragging) return;
 
     const newX = e.clientX - dragStart.x;
@@ -497,7 +525,7 @@ const LayoutElement = ({ element, isSelected, onMouseDown, onDoubleClick, onUpda
     cursor: 'move',
     border: isSelected ? '2px solid #f59e0b' : '1px solid transparent',
     boxShadow: isSelected ? '0 0 0 1px rgba(245, 158, 11, 0.3)' : 'none',
-    userSelect: 'none'
+    userSelect: 'none',
   };
 
   if (element.type === 'text') {
@@ -512,7 +540,7 @@ const LayoutElement = ({ element, isSelected, onMouseDown, onDoubleClick, onUpda
           alignItems: 'center',
           padding: 8,
           wordWrap: 'break-word',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
       >
         {element.content}
@@ -530,7 +558,7 @@ const LayoutElement = ({ element, isSelected, onMouseDown, onDoubleClick, onUpda
           backgroundImage: `url(${element.source})`,
           backgroundSize: element.fit,
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
         }}
       />
     );
@@ -544,7 +572,7 @@ const LayoutElement = ({ element, isSelected, onMouseDown, onDoubleClick, onUpda
           ...commonStyle,
           background: element.fill,
           border: `${element.strokeWidth}px solid ${element.stroke}`,
-          borderRadius: element.shape === 'circle' ? '50%' : 0
+          borderRadius: element.shape === 'circle' ? '50%' : 0,
         }}
       />
     );
@@ -571,7 +599,7 @@ const ToolButton = ({ icon: Icon, label, onClick, tooltip }) => (
       fontSize: 11,
       fontWeight: 500,
       fontFamily: 'system-ui',
-      transition: 'all 0.2s'
+      transition: 'all 0.2s',
     }}
   >
     <Icon size={12} />

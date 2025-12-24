@@ -34,7 +34,7 @@ export const SkinBrowserNode = ({ data }) => {
     loadSkins();
   }, []);
 
-  const handleSkinSelect = (skin) => {
+  const handleSkinSelect = skin => {
     setSelectedSkin(skin);
     // Emit event or callback to apply skin to Winamp
     if (data.onSkinSelect) {
@@ -48,22 +48,26 @@ export const SkinBrowserNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        width: 500,
-        maxHeight: 600,
-        background: '#fff',
-        borderRadius: 12,
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}>
+      <div
+        style={{
+          width: 500,
+          maxHeight: 600,
+          background: '#fff',
+          borderRadius: 12,
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
         {/* Header */}
-        <div style={{
-          padding: 16,
-          borderBottom: '1px solid #e5e7eb',
-          background: '#f9fafb',
-        }}>
+        <div
+          style={{
+            padding: 16,
+            borderBottom: '1px solid #e5e7eb',
+            background: '#f9fafb',
+          }}
+        >
           <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#111827' }}>
             Winamp Skin Museum
           </h3>
@@ -79,7 +83,7 @@ export const SkinBrowserNode = ({ data }) => {
             type="text"
             placeholder="Search skins..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             style={{
               width: '100%',
               padding: '8px 12px',
@@ -91,22 +95,27 @@ export const SkinBrowserNode = ({ data }) => {
         </div>
 
         {/* Skin Grid */}
-        <div 
+        <div
           className="nodrag"
           style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: 12,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-          gap: 12,
-        }}>
+            flex: 1,
+            overflowY: 'auto',
+            padding: 12,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+            gap: 12,
+          }}
+        >
           {loading ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 40, color: '#6b7280' }}>
+            <div
+              style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 40, color: '#6b7280' }}
+            >
               Loading skins...
             </div>
           ) : filteredSkins.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 40, color: '#6b7280' }}>
+            <div
+              style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 40, color: '#6b7280' }}
+            >
               No skins found
             </div>
           ) : (
@@ -118,7 +127,8 @@ export const SkinBrowserNode = ({ data }) => {
                   aspectRatio: '1',
                   background: '#f3f4f6',
                   borderRadius: 8,
-                  border: selectedSkin?.hash === skin.hash ? '2px solid #3b82f6' : '1px solid #e5e7eb',
+                  border:
+                    selectedSkin?.hash === skin.hash ? '2px solid #3b82f6' : '1px solid #e5e7eb',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
@@ -129,33 +139,37 @@ export const SkinBrowserNode = ({ data }) => {
                   position: 'relative',
                   overflow: 'hidden',
                 }}
-                onMouseEnter={(e) => {
+                onMouseEnter={e => {
                   e.currentTarget.style.transform = 'scale(1.05)';
                   e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                   e.currentTarget.style.transform = 'scale(1)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
                 {/* Skin Preview Placeholder */}
-                <div style={{
-                  width: '100%',
-                  height: '60%',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: 4,
-                  marginBottom: 8,
-                }} />
-                <div style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: '#374151',
-                  textAlign: 'center',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  width: '100%',
-                }}>
+                <div
+                  style={{
+                    width: '100%',
+                    height: '60%',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: 4,
+                    marginBottom: 8,
+                  }}
+                />
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#374151',
+                    textAlign: 'center',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    width: '100%',
+                  }}
+                >
                   {skin.name}
                 </div>
               </div>
@@ -165,21 +179,21 @@ export const SkinBrowserNode = ({ data }) => {
 
         {/* Footer */}
         {selectedSkin && (
-          <div style={{
-            padding: 12,
-            borderTop: '1px solid #e5e7eb',
-            background: '#f9fafb',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
+          <div
+            style={{
+              padding: 12,
+              borderTop: '1px solid #e5e7eb',
+              background: '#f9fafb',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
                 {selectedSkin.name}
               </div>
-              <div style={{ fontSize: 11, color: '#6b7280' }}>
-                Click to apply to Winamp
-              </div>
+              <div style={{ fontSize: 11, color: '#6b7280' }}>Click to apply to Winamp</div>
             </div>
             <button
               className="nodrag"
@@ -203,4 +217,3 @@ export const SkinBrowserNode = ({ data }) => {
     </SwayWrapper>
   );
 };
-

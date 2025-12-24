@@ -5,7 +5,17 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { SwayWrapper } from '../SpatialCommon';
-import { Paintbrush, Eraser, Square, Circle, Minus, Undo, Redo, Download, Trash2 } from 'lucide-react';
+import {
+  Paintbrush,
+  Eraser,
+  Square,
+  Circle,
+  Minus,
+  Undo,
+  Redo,
+  Download,
+  Trash2,
+} from 'lucide-react';
 
 export const SketchNode = ({ data }) => {
   const label = data.label || 'Sketch';
@@ -19,7 +29,16 @@ export const SketchNode = ({ data }) => {
   const [history, setHistory] = useState([]);
   const [historyStep, setHistoryStep] = useState(-1);
 
-  const colors = ['#000000', '#CECDC3', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+  const colors = [
+    '#000000',
+    '#CECDC3',
+    '#ef4444',
+    '#f59e0b',
+    '#10b981',
+    '#3b82f6',
+    '#8b5cf6',
+    '#ec4899',
+  ];
 
   // Initialize canvas
   useEffect(() => {
@@ -102,7 +121,7 @@ export const SketchNode = ({ data }) => {
     link.click();
   };
 
-  const startDrawing = (e) => {
+  const startDrawing = e => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -131,7 +150,7 @@ export const SketchNode = ({ data }) => {
     }
   };
 
-  const draw = (e) => {
+  const draw = e => {
     if (!isDrawing) return;
 
     const canvas = canvasRef.current;
@@ -155,9 +174,7 @@ export const SketchNode = ({ data }) => {
         const height = y - canvas.startY;
         ctx.strokeRect(canvas.startX, canvas.startY, width, height);
       } else if (tool === 'circle') {
-        const radius = Math.sqrt(
-          Math.pow(x - canvas.startX, 2) + Math.pow(y - canvas.startY, 2)
-        );
+        const radius = Math.sqrt(Math.pow(x - canvas.startX, 2) + Math.pow(y - canvas.startY, 2));
         ctx.beginPath();
         ctx.arc(canvas.startX, canvas.startY, radius, 0, 2 * Math.PI);
         ctx.stroke();
@@ -179,35 +196,41 @@ export const SketchNode = ({ data }) => {
 
   return (
     <SwayWrapper style={{ width: 600, height: 500 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-        borderRadius: 16,
-        border: '2px solid rgba(139, 92, 246, 0.3)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        {/* Header */}
-        <div style={{
-          padding: 12,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.2)',
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+          borderRadius: 16,
+          border: '2px solid rgba(139, 92, 246, 0.3)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: 12,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Paintbrush size={18} color={color} />
-            <h3 style={{
-              margin: 0,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui'
-            }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+              }}
+            >
               {label}
             </h3>
           </div>
@@ -244,41 +267,37 @@ export const SketchNode = ({ data }) => {
               onClick={() => setTool('line')}
               tooltip="Line"
             />
-            <div style={{ width: 1, height: 24, background: 'rgba(135, 133, 128, 0.2)', margin: '0 4px' }} />
-            <ToolButton
-              icon={Undo}
-              onClick={undo}
-              disabled={historyStep <= 0}
-              tooltip="Undo"
+            <div
+              style={{
+                width: 1,
+                height: 24,
+                background: 'rgba(135, 133, 128, 0.2)',
+                margin: '0 4px',
+              }}
             />
+            <ToolButton icon={Undo} onClick={undo} disabled={historyStep <= 0} tooltip="Undo" />
             <ToolButton
               icon={Redo}
               onClick={redo}
               disabled={historyStep >= history.length - 1}
               tooltip="Redo"
             />
-            <ToolButton
-              icon={Trash2}
-              onClick={clearCanvas}
-              tooltip="Clear"
-            />
-            <ToolButton
-              icon={Download}
-              onClick={exportImage}
-              tooltip="Export PNG"
-            />
+            <ToolButton icon={Trash2} onClick={clearCanvas} tooltip="Clear" />
+            <ToolButton icon={Download} onClick={exportImage} tooltip="Export PNG" />
           </div>
         </div>
 
         {/* Toolbar */}
-        <div style={{
-          padding: 12,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16
-        }}>
+        <div
+          style={{
+            padding: 12,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+          }}
+        >
           {/* Color palette */}
           <div style={{ display: 'flex', gap: 6 }}>
             {colors.map(c => (
@@ -290,10 +309,11 @@ export const SketchNode = ({ data }) => {
                   height: 24,
                   borderRadius: 6,
                   background: c,
-                  border: brushColor === c ? '2px solid #8b5cf6' : '2px solid rgba(148, 163, 184, 0.3)',
+                  border:
+                    brushColor === c ? '2px solid #8b5cf6' : '2px solid rgba(148, 163, 184, 0.3)',
                   cursor: 'pointer',
                   boxShadow: brushColor === c ? '0 0 8px rgba(139, 92, 246, 0.6)' : 'none',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
                 }}
               />
             ))}
@@ -301,12 +321,14 @@ export const SketchNode = ({ data }) => {
 
           {/* Size slider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{
-              fontSize: 11,
-              fontWeight: 500,
-              color: '#878580',
-              fontFamily: 'system-ui'
-            }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                color: '#878580',
+                fontFamily: 'system-ui',
+              }}
+            >
               Size:
             </span>
             <input
@@ -314,33 +336,37 @@ export const SketchNode = ({ data }) => {
               min="1"
               max="20"
               value={brushSize}
-              onChange={(e) => setBrushSize(parseInt(e.target.value))}
+              onChange={e => setBrushSize(parseInt(e.target.value))}
               style={{
                 width: 100,
-                accentColor: color
+                accentColor: color,
               }}
             />
-            <span style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui',
-              minWidth: 20,
-              textAlign: 'right'
-            }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+                minWidth: 20,
+                textAlign: 'right',
+              }}
+            >
               {brushSize}
             </span>
           </div>
         </div>
 
         {/* Canvas */}
-        <div style={{
-          flex: 1,
-          padding: 16,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <canvas
             ref={canvasRef}
             width={560}
@@ -353,7 +379,7 @@ export const SketchNode = ({ data }) => {
               background: '#CECDC3',
               borderRadius: 8,
               cursor: tool === 'eraser' ? 'crosshair' : 'crosshair',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
             }}
           />
         </div>
@@ -378,7 +404,7 @@ const ToolButton = ({ icon: Icon, active, onClick, disabled, tooltip }) => (
       display: 'flex',
       alignItems: 'center',
       opacity: disabled ? 0.5 : 1,
-      transition: 'all 0.2s'
+      transition: 'all 0.2s',
     }}
   >
     <Icon size={14} />

@@ -12,7 +12,7 @@ export class ErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      attempting: false
+      attempting: false,
     };
   }
 
@@ -62,67 +62,85 @@ export class ErrorBoundary extends React.Component {
 
       // Full-screen error for critical failures
       return (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Inter, sans-serif',
-          padding: 40,
-          zIndex: 999999
-        }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'Inter, sans-serif',
+            padding: 40,
+            zIndex: 999999,
+          }}
+        >
           {/* Breathing pulse background */}
-          <div style={{
-            position: 'absolute',
-            top: '50%', left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400, height: 400,
-            background: 'radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%)',
-            borderRadius: '50%',
-            animation: 'breathe 3s ease-in-out infinite'
-          }} />
-
-          <div style={{
-            position: 'relative',
-            maxWidth: 600,
-            background: '#ffffff',
-            borderRadius: 24,
-            padding: 48,
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            border: '2px solid #fca5a5',
-            textAlign: 'center'
-          }}>
-            {/* Icon */}
-            <div style={{
-              display: 'inline-flex',
-              padding: 20,
-              background: '#fee2e2',
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 400,
+              height: 400,
+              background: 'radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%)',
               borderRadius: '50%',
-              marginBottom: 24
-            }}>
+              animation: 'breathe 3s ease-in-out infinite',
+            }}
+          />
+
+          <div
+            style={{
+              position: 'relative',
+              maxWidth: 600,
+              background: '#ffffff',
+              borderRadius: 24,
+              padding: 48,
+              boxShadow:
+                '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              border: '2px solid #fca5a5',
+              textAlign: 'center',
+            }}
+          >
+            {/* Icon */}
+            <div
+              style={{
+                display: 'inline-flex',
+                padding: 20,
+                background: '#fee2e2',
+                borderRadius: '50%',
+                marginBottom: 24,
+              }}
+            >
               <AlertTriangle size={48} color="#dc2626" strokeWidth={2} />
             </div>
 
             {/* Title */}
-            <h1 style={{
-              fontSize: 32,
-              fontWeight: 800,
-              color: '#dc2626',
-              marginBottom: 16,
-              letterSpacing: '-0.025em'
-            }}>
+            <h1
+              style={{
+                fontSize: 32,
+                fontWeight: 800,
+                color: '#dc2626',
+                marginBottom: 16,
+                letterSpacing: '-0.025em',
+              }}
+            >
               Terra OS Hit a Snag
             </h1>
 
             {/* Message */}
-            <p style={{
-              fontSize: 16,
-              color: '#6b7280',
-              lineHeight: 1.7,
-              marginBottom: 12
-            }}>
+            <p
+              style={{
+                fontSize: 16,
+                color: '#6b7280',
+                lineHeight: 1.7,
+                marginBottom: 12,
+              }}
+            >
               Something unexpected happened and the system stopped working.
               <br />
               This is usually temporary and fixes itself with a quick refresh.
@@ -130,48 +148,55 @@ export class ErrorBoundary extends React.Component {
 
             {/* Error Details (Collapsible) */}
             {this.state.error && (
-              <details style={{
-                marginTop: 20,
-                marginBottom: 24,
-                textAlign: 'left',
-                background: '#fef2f2',
-                padding: 16,
-                borderRadius: 8,
-                border: '1px solid #fca5a5'
-              }}>
-                <summary style={{
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  color: '#991b1b',
-                  fontSize: 13,
-                  userSelect: 'none'
-                }}>
+              <details
+                style={{
+                  marginTop: 20,
+                  marginBottom: 24,
+                  textAlign: 'left',
+                  background: '#fef2f2',
+                  padding: 16,
+                  borderRadius: 8,
+                  border: '1px solid #fca5a5',
+                }}
+              >
+                <summary
+                  style={{
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    color: '#991b1b',
+                    fontSize: 13,
+                    userSelect: 'none',
+                  }}
+                >
                   🔍 Technical Details
                 </summary>
-                <pre style={{
-                  marginTop: 12,
-                  fontSize: 11,
-                  color: '#7f1d1d',
-                  overflowX: 'auto',
-                  fontFamily: 'monospace',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word'
-                }}>
+                <pre
+                  style={{
+                    marginTop: 12,
+                    fontSize: 11,
+                    color: '#7f1d1d',
+                    overflowX: 'auto',
+                    fontFamily: 'monospace',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                  }}
+                >
                   {this.state.error.toString()}
-                  {this.state.errorInfo?.componentStack && (
-                    '\n\nComponent Stack:' + this.state.errorInfo.componentStack
-                  )}
+                  {this.state.errorInfo?.componentStack &&
+                    '\n\nComponent Stack:' + this.state.errorInfo.componentStack}
                 </pre>
               </details>
             )}
 
             {/* Recovery Actions */}
-            <div style={{
-              display: 'flex',
-              gap: 12,
-              justifyContent: 'center',
-              marginTop: 32
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: 12,
+                justifyContent: 'center',
+                marginTop: 32,
+              }}
+            >
               {/* Reload Button */}
               <button
                 onClick={this.handleReload}
@@ -190,15 +215,15 @@ export class ErrorBoundary extends React.Component {
                   cursor: this.state.attempting ? 'not-allowed' : 'pointer',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.2s ease',
-                  opacity: this.state.attempting ? 0.6 : 1
+                  opacity: this.state.attempting ? 0.6 : 1,
                 }}
-                onMouseOver={(e) => {
+                onMouseOver={e => {
                   if (!this.state.attempting) {
                     e.target.style.background = '#b91c1c';
                     e.target.style.transform = 'translateY(-1px)';
                   }
                 }}
-                onMouseOut={(e) => {
+                onMouseOut={e => {
                   if (!this.state.attempting) {
                     e.target.style.background = '#dc2626';
                     e.target.style.transform = 'translateY(0)';
@@ -226,15 +251,15 @@ export class ErrorBoundary extends React.Component {
                   fontWeight: 600,
                   cursor: this.state.attempting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s ease',
-                  opacity: this.state.attempting ? 0.6 : 1
+                  opacity: this.state.attempting ? 0.6 : 1,
                 }}
-                onMouseOver={(e) => {
+                onMouseOver={e => {
                   if (!this.state.attempting) {
                     e.target.style.borderColor = '#dc2626';
                     e.target.style.color = '#dc2626';
                   }
                 }}
-                onMouseOut={(e) => {
+                onMouseOut={e => {
                   if (!this.state.attempting) {
                     e.target.style.borderColor = '#d1d5db';
                     e.target.style.color = '#6b7280';
@@ -247,12 +272,14 @@ export class ErrorBoundary extends React.Component {
             </div>
 
             {/* Helper Text */}
-            <p style={{
-              marginTop: 24,
-              fontSize: 13,
-              color: '#9ca3af',
-              fontStyle: 'italic'
-            }}>
+            <p
+              style={{
+                marginTop: 24,
+                fontSize: 13,
+                color: '#9ca3af',
+                fontStyle: 'italic',
+              }}
+            >
               💡 Try reloading first. Factory reset clears all saved data.
             </p>
           </div>
@@ -282,18 +309,18 @@ export class ErrorBoundary extends React.Component {
  * Lighter error fallback for component-level errors
  */
 export const ComponentErrorFallback = ({ componentName = 'Component' }) => (
-  <div style={{
-    padding: 24,
-    background: '#fef2f2',
-    border: '2px dashed #fca5a5',
-    borderRadius: 12,
-    textAlign: 'center',
-    color: '#991b1b'
-  }}>
+  <div
+    style={{
+      padding: 24,
+      background: '#fef2f2',
+      border: '2px dashed #fca5a5',
+      borderRadius: 12,
+      textAlign: 'center',
+      color: '#991b1b',
+    }}
+  >
     <AlertTriangle size={32} color="#dc2626" style={{ marginBottom: 8 }} />
-    <div style={{ fontWeight: 600, marginBottom: 4 }}>
-      ⚠️ {componentName} Failed to Load
-    </div>
+    <div style={{ fontWeight: 600, marginBottom: 4 }}>⚠️ {componentName} Failed to Load</div>
     <div style={{ fontSize: 13, color: '#7f1d1d' }}>
       This component encountered an error. The rest of the system is still working.
     </div>

@@ -21,16 +21,20 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   const { setAudioRef } = useMaterialStore();
 
   // Expose imperative handle for external control
-  useImperativeHandle(ref, () => ({
-    play: () => webampRef.current?.play(),
-    pause: () => webampRef.current?.pause(),
-    nextTrack: () => webampRef.current?.nextTrack(),
-    previousTrack: () => webampRef.current?.previousTrack(),
-    setVolume: (v) => webampRef.current?.setVolume(v),
-    seekTo: (s) => webampRef.current?.seekToTime(s),
-    setSkin: (url) => webampRef.current?.setSkinFromUrl(url),
-    setTracks: (tracks) => webampRef.current?.setTracksToPlay(tracks),
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      play: () => webampRef.current?.play(),
+      pause: () => webampRef.current?.pause(),
+      nextTrack: () => webampRef.current?.nextTrack(),
+      previousTrack: () => webampRef.current?.previousTrack(),
+      setVolume: v => webampRef.current?.setVolume(v),
+      seekTo: s => webampRef.current?.seekToTime(s),
+      setSkin: url => webampRef.current?.setSkinFromUrl(url),
+      setTracks: tracks => webampRef.current?.setTracksToPlay(tracks),
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!containerRef.current || webampRef.current) return;
@@ -55,7 +59,7 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
         importButterchurn: () => Promise.resolve(butterchurn),
         getPresets: () => {
           const presets = butterchurnPresets;
-          return Object.keys(presets).map((name) => ({
+          return Object.keys(presets).map(name => ({
             name,
             butterchurnPresetObject: presets[name],
           }));
@@ -81,41 +85,42 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
     });
 
     if (containerRef.current) {
-        webamp.renderWhenReady(containerRef.current)
+      webamp
+        .renderWhenReady(containerRef.current)
         .then(() => {
-            // Check if still mounted and same instance
-            if (!containerRef.current || webampRef.current !== webamp) return;
+          // Check if still mounted and same instance
+          if (!containerRef.current || webampRef.current !== webamp) return;
 
-            // Find the audio element that Webamp creates
-            const findAudioElement = () => {
-                const audioElement = containerRef.current?.querySelector('audio');
-                if (audioElement) {
-                    setAudioRef({ current: audioElement });
-                    audioElement.addEventListener('play', () => {
-                        setAudioRef({ current: audioElement });
-                    });
-                    return true;
-                }
-                return false;
-            };
-            
-            if (!findAudioElement()) {
-                setTimeout(() => {
-                    if (!findAudioElement()) {
-                        const observer = new MutationObserver(() => {
-                            if (findAudioElement()) observer.disconnect();
-                        });
-                        if (containerRef.current) {
-                            observer.observe(containerRef.current, { childList: true, subtree: true });
-                            setTimeout(() => observer.disconnect(), 5000);
-                        }
-                    }
-                }, 300);
+          // Find the audio element that Webamp creates
+          const findAudioElement = () => {
+            const audioElement = containerRef.current?.querySelector('audio');
+            if (audioElement) {
+              setAudioRef({ current: audioElement });
+              audioElement.addEventListener('play', () => {
+                setAudioRef({ current: audioElement });
+              });
+              return true;
             }
+            return false;
+          };
+
+          if (!findAudioElement()) {
+            setTimeout(() => {
+              if (!findAudioElement()) {
+                const observer = new MutationObserver(() => {
+                  if (findAudioElement()) observer.disconnect();
+                });
+                if (containerRef.current) {
+                  observer.observe(containerRef.current, { childList: true, subtree: true });
+                  setTimeout(() => observer.disconnect(), 5000);
+                }
+              }
+            }, 300);
+          }
         })
         .catch(err => {
-            if (err.message && err.message.includes('disposed')) return;
-            console.warn("Webamp render error:", err);
+          if (err.message && err.message.includes('disposed')) return;
+          console.warn('Webamp render error:', err);
         });
     }
 
@@ -130,7 +135,7 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   // Update tracks if they change
   useEffect(() => {
     if (!webampRef.current) return;
-    
+
     // Update tracks when prop changes
     if (tracks && tracks.length > 0) {
       webampRef.current.setTracksToPlay(tracks);
@@ -138,7 +143,7 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   }, [tracks]);
 
   // Handle playlist changes
-  const handleTracksChange = (newTracks) => {
+  const handleTracksChange = newTracks => {
     setTracks(newTracks);
     if (webampRef.current) {
       webampRef.current.setTracksToPlay(newTracks);
@@ -154,19 +159,22 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   if (isMinimized) {
     return (
       <SwayWrapper>
-        <div style={{
-          width: 275,
-          height: 14,
-          background: '#000',
-          borderRadius: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          fontSize: 10,
-          color: '#fff',
-          fontFamily: 'Arial, sans-serif'
-        }} onClick={() => webampRef.current?.restore()}>
+        <div
+          style={{
+            width: 275,
+            height: 14,
+            background: '#000',
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: 10,
+            color: '#fff',
+            fontFamily: 'Arial, sans-serif',
+          }}
+          onClick={() => webampRef.current?.restore()}
+        >
           Winamp
         </div>
       </SwayWrapper>
@@ -190,11 +198,13 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
           minWidth: 275,
         }}
       >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
           {/* Webamp Player */}
           <div
             ref={containerRef}
@@ -211,10 +221,12 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
           />
 
           {/* Controls */}
-          <div style={{
-            display: 'flex',
-            gap: 8,
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+            }}
+          >
             <button
               className="nodrag"
               onClick={() => setShowPlaylist(!showPlaylist)}
@@ -264,7 +276,7 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
               <PlaylistManager
                 tracks={tracks}
                 onTracksChange={handleTracksChange}
-                onTrackSelect={(index) => {
+                onTrackSelect={index => {
                   if (webampRef.current) {
                     webampRef.current.setTracksToPlay(tracks);
                   }

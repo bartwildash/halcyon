@@ -46,27 +46,27 @@ export const useAudioAnalysis = (sourceType = 'none', audioRef = null) => {
         } else if (sourceType === 'element' && audioRef?.current) {
           // Use the singleton helper to get/create source safely
           const source = getSourceForElement(audioRef.current, ctx);
-          
+
           if (source) {
             sourceNodeRef.current = source;
             // Connect to analyser
             // Note: We can connect one source to multiple destinations (analysers)
             try {
-               source.connect(analyser);
-               // Also connect to destination for playback if not already connected?
-               // The singleton helper doesn't connect to destination.
-               // We should check if we need to. Usually yes.
-               // But connecting twice might increase volume or phase issue?
-               // AudioNodes can be connected multiple times safely usually.
-               source.connect(ctx.destination);
+              source.connect(analyser);
+              // Also connect to destination for playback if not already connected?
+              // The singleton helper doesn't connect to destination.
+              // We should check if we need to. Usually yes.
+              // But connecting twice might increase volume or phase issue?
+              // AudioNodes can be connected multiple times safely usually.
+              source.connect(ctx.destination);
             } catch (err) {
-               // Ignore if already connected to this specific destination (unlikely with new analyser)
-               console.warn("Connection error", err);
+              // Ignore if already connected to this specific destination (unlikely with new analyser)
+              console.warn('Connection error', err);
             }
           }
         }
       } catch (err) {
-        console.error("Error initializing audio source:", err);
+        console.error('Error initializing audio source:', err);
         return;
       }
 
@@ -94,7 +94,7 @@ export const useAudioAnalysis = (sourceType = 'none', audioRef = null) => {
 
         // Simple beat detection (bass kick)
         const now = performance.now();
-        const isBeat = bass > beatThreshold && (now - lastBeatTime > 250); // debounce 250ms
+        const isBeat = bass > beatThreshold && now - lastBeatTime > 250; // debounce 250ms
         if (isBeat) lastBeatTime = now;
 
         setAnalysis({
@@ -103,7 +103,7 @@ export const useAudioAnalysis = (sourceType = 'none', audioRef = null) => {
           mid,
           treble,
           beat: isBeat,
-          frequencyData
+          frequencyData,
         });
 
         rafIdRef.current = requestAnimationFrame(analyze);
@@ -121,9 +121,11 @@ export const useAudioAnalysis = (sourceType = 'none', audioRef = null) => {
       // But we should disconnect from *our* local analyser to save processing?
       // source.disconnect(analyser) is specific.
       if (sourceNodeRef.current && analyserRef.current) {
-         try {
-           sourceNodeRef.current.disconnect(analyserRef.current);
-         } catch(e) { /* ignore */ }
+        try {
+          sourceNodeRef.current.disconnect(analyserRef.current);
+        } catch (e) {
+          /* ignore */
+        }
       }
     };
   }, [sourceType, audioRef]);

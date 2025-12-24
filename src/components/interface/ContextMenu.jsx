@@ -14,7 +14,7 @@ import { Focus, Eye, Copy, Trash2 } from 'lucide-react';
 export const ContextMenu = ({ position, onClose, onFocus, onDelete, nodeLabel }) => {
   if (!position) return null;
 
-  const handleAction = (action) => {
+  const handleAction = action => {
     action();
     onClose();
   };
@@ -25,7 +25,7 @@ export const ContextMenu = ({ position, onClose, onFocus, onDelete, nodeLabel })
       <div
         className="fixed inset-0 z-[1000]"
         onClick={onClose}
-        onContextMenu={(e) => {
+        onContextMenu={e => {
           e.preventDefault();
           onClose();
         }}
@@ -37,16 +37,14 @@ export const ContextMenu = ({ position, onClose, onFocus, onDelete, nodeLabel })
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
-          minWidth: '200px'
+          minWidth: '200px',
         }}
-        onContextMenu={(e) => e.preventDefault()}
+        onContextMenu={e => e.preventDefault()}
       >
         {/* Header */}
         {nodeLabel && (
           <div className="px-4 py-2 border-b border-white/10">
-            <p className="text-xs text-white/60 font-mono truncate">
-              {nodeLabel}
-            </p>
+            <p className="text-xs text-white/60 font-mono truncate">{nodeLabel}</p>
           </div>
         )}
 
@@ -92,11 +90,12 @@ const MenuItem = ({ icon, label, shortcut, onClick, disabled, danger }) => {
         w-full px-4 py-2 flex items-center gap-3
         text-sm font-mono text-left
         transition-colors duration-150
-        ${disabled
-          ? 'text-white/30 cursor-not-allowed'
-          : danger
-          ? 'text-red-400 hover:bg-red-500/20'
-          : 'text-white/90 hover:bg-white/10'
+        ${
+          disabled
+            ? 'text-white/30 cursor-not-allowed'
+            : danger
+              ? 'text-red-400 hover:bg-red-500/20'
+              : 'text-white/90 hover:bg-white/10'
         }
       `}
       onClick={onClick}
@@ -104,9 +103,7 @@ const MenuItem = ({ icon, label, shortcut, onClick, disabled, danger }) => {
     >
       <span className="flex-shrink-0">{icon}</span>
       <span className="flex-1">{label}</span>
-      {shortcut && (
-        <span className="text-xs text-white/40">{shortcut}</span>
-      )}
+      {shortcut && <span className="text-xs text-white/40">{shortcut}</span>}
     </button>
   );
 };

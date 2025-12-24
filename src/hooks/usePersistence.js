@@ -17,9 +17,9 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
       if (saved) {
         try {
           const { nodes: savedNodes, edges: savedEdges } = JSON.parse(saved);
-          
+
           // Only restore positions for nodes that were manually moved (not at default layout positions)
-          setNodes((currentNodes) => {
+          setNodes(currentNodes => {
             return currentNodes.map(node => {
               const savedNode = savedNodes.find(n => n.id === node.id);
               if (savedNode) {
@@ -27,8 +27,8 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
                 // This prevents persistence from overriding initial layout positions
                 const isDefaultPos = savedNode.position.x < 120 && savedNode.position.y < 120;
                 if (!isDefaultPos) {
-                  return { 
-                    ...node, 
+                  return {
+                    ...node,
                     position: savedNode.position,
                   };
                 }
@@ -38,11 +38,11 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
           });
 
           // Edges logic could go here
-          
+
           loadedRef.current = true;
-          console.log("SpatialOS: State restored from persistence (v9).");
+          console.log('SpatialOS: State restored from persistence (v9).');
         } catch (e) {
-          console.error("Failed to load state", e);
+          console.error('Failed to load state', e);
           loadedRef.current = true;
         }
       } else {
@@ -60,7 +60,7 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
 
     const state = {
       nodes: nodes.map(n => ({ id: n.id, position: n.position })),
-      edges: edges
+      edges: edges,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [nodes, edges]);

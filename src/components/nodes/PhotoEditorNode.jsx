@@ -23,7 +23,7 @@ export const PhotoEditorNode = ({ data }) => {
     contrast: 0,
     saturation: 0,
     blur: 0,
-    hue: 0
+    hue: 0,
   });
 
   const [activeFilter, setActiveFilter] = useState(null);
@@ -35,7 +35,7 @@ export const PhotoEditorNode = ({ data }) => {
     { id: 'sepia', label: 'Sepia', description: 'Vintage warm tone' },
     { id: 'invert', label: 'Invert', description: 'Negative colors' },
     { id: 'cool', label: 'Cool', description: 'Blue tint' },
-    { id: 'warm', label: 'Warm', description: 'Orange tint' }
+    { id: 'warm', label: 'Warm', description: 'Orange tint' },
   ];
 
   // Load source image
@@ -122,13 +122,14 @@ export const PhotoEditorNode = ({ data }) => {
       b = Math.max(0, Math.min(255, b + brightnessFactor));
 
       // Contrast
-      const contrastFactor = (259 * (adjustments.contrast + 255)) / (255 * (259 - adjustments.contrast));
+      const contrastFactor =
+        (259 * (adjustments.contrast + 255)) / (255 * (259 - adjustments.contrast));
       r = Math.max(0, Math.min(255, contrastFactor * (r - 128) + 128));
       g = Math.max(0, Math.min(255, contrastFactor * (g - 128) + 128));
       b = Math.max(0, Math.min(255, contrastFactor * (b - 128) + 128));
 
       // Saturation
-      const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+      const gray = 0.2989 * r + 0.587 * g + 0.114 * b;
       const satFactor = adjustments.saturation / 100 + 1;
       r = Math.max(0, Math.min(255, gray + satFactor * (r - gray)));
       g = Math.max(0, Math.min(255, gray + satFactor * (g - gray)));
@@ -136,18 +137,21 @@ export const PhotoEditorNode = ({ data }) => {
 
       // Hue rotation (simplified)
       if (adjustments.hue !== 0) {
-        const angle = adjustments.hue * Math.PI / 180;
+        const angle = (adjustments.hue * Math.PI) / 180;
         const cosA = Math.cos(angle);
         const sinA = Math.sin(angle);
-        const newR = r * (0.299 + 0.701 * cosA + 0.168 * sinA) +
-                     g * (0.587 - 0.587 * cosA + 0.330 * sinA) +
-                     b * (0.114 - 0.114 * cosA - 0.497 * sinA);
-        const newG = r * (0.299 - 0.299 * cosA - 0.328 * sinA) +
-                     g * (0.587 + 0.413 * cosA + 0.035 * sinA) +
-                     b * (0.114 - 0.114 * cosA + 0.292 * sinA);
-        const newB = r * (0.299 - 0.300 * cosA + 1.250 * sinA) +
-                     g * (0.587 - 0.588 * cosA - 1.050 * sinA) +
-                     b * (0.114 + 0.886 * cosA - 0.203 * sinA);
+        const newR =
+          r * (0.299 + 0.701 * cosA + 0.168 * sinA) +
+          g * (0.587 - 0.587 * cosA + 0.33 * sinA) +
+          b * (0.114 - 0.114 * cosA - 0.497 * sinA);
+        const newG =
+          r * (0.299 - 0.299 * cosA - 0.328 * sinA) +
+          g * (0.587 + 0.413 * cosA + 0.035 * sinA) +
+          b * (0.114 - 0.114 * cosA + 0.292 * sinA);
+        const newB =
+          r * (0.299 - 0.3 * cosA + 1.25 * sinA) +
+          g * (0.587 - 0.588 * cosA - 1.05 * sinA) +
+          b * (0.114 + 0.886 * cosA - 0.203 * sinA);
         r = Math.max(0, Math.min(255, newR));
         g = Math.max(0, Math.min(255, newG));
         b = Math.max(0, Math.min(255, newB));
@@ -190,7 +194,7 @@ export const PhotoEditorNode = ({ data }) => {
       contrast: 0,
       saturation: 0,
       blur: 0,
-      hue: 0
+      hue: 0,
     });
     setActiveFilter(null);
   };
@@ -212,27 +216,32 @@ export const PhotoEditorNode = ({ data }) => {
   if (!sourceImageId) {
     return (
       <SwayWrapper style={{ width: 560, height: 440 }}>
-        <div style={{
-          width: '100%',
-          height: '100%',
-          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-          borderRadius: 16,
-          border: '2px solid rgba(236, 72, 153, 0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 40,
-          textAlign: 'center'
-        }}>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+            borderRadius: 16,
+            border: '2px solid rgba(236, 72, 153, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 40,
+            textAlign: 'center',
+          }}
+        >
           <div>
             <ImageIcon size={48} color="#ec4899" style={{ margin: '0 auto 16px' }} />
-            <p style={{
-              fontSize: 14,
-              color: '#878580',
-              fontFamily: 'system-ui',
-              margin: 0
-            }}>
-              No source image selected.<br />
+            <p
+              style={{
+                fontSize: 14,
+                color: '#878580',
+                fontFamily: 'system-ui',
+                margin: 0,
+              }}
+            >
+              No source image selected.
+              <br />
               Set sourceImageId in node data to an image node ID.
             </p>
           </div>
@@ -243,35 +252,41 @@ export const PhotoEditorNode = ({ data }) => {
 
   return (
     <SwayWrapper style={{ width: 560, height: 440 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-        borderRadius: 16,
-        border: '2px solid rgba(236, 72, 153, 0.3)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        {/* Header */}
-        <div style={{
-          padding: 12,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.2)',
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+          borderRadius: 16,
+          border: '2px solid rgba(236, 72, 153, 0.3)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: 12,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ImageIcon size={18} color={color} />
-            <h3 style={{
-              margin: 0,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui'
-            }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+              }}
+            >
               {label}
             </h3>
           </div>
@@ -292,7 +307,7 @@ export const PhotoEditorNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <RotateCcw size={12} />
@@ -313,7 +328,7 @@ export const PhotoEditorNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <Download size={12} />
@@ -323,11 +338,13 @@ export const PhotoEditorNode = ({ data }) => {
         </div>
 
         {/* Tabs */}
-        <div style={{
-          display: 'flex',
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.1)'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.1)',
+          }}
+        >
           <Tab
             icon={Sliders}
             label="Adjust"
@@ -343,14 +360,16 @@ export const PhotoEditorNode = ({ data }) => {
         </div>
 
         {/* Canvas */}
-        <div style={{
-          flex: 1,
-          padding: 16,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'rgba(0, 0, 0, 0.2)'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0, 0, 0, 0.2)',
+          }}
+        >
           <canvas
             ref={canvasRef}
             width={500}
@@ -359,19 +378,21 @@ export const PhotoEditorNode = ({ data }) => {
               borderRadius: 8,
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
               maxWidth: '100%',
-              maxHeight: '100%'
+              maxHeight: '100%',
             }}
           />
         </div>
 
         {/* Controls */}
-        <div style={{
-          padding: 16,
-          borderTop: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.2)',
-          maxHeight: 160,
-          overflowY: 'auto'
-        }}>
+        <div
+          style={{
+            padding: 16,
+            borderTop: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.2)',
+            maxHeight: 160,
+            overflowY: 'auto',
+          }}
+        >
           {tab === 'adjust' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Slider
@@ -379,28 +400,28 @@ export const PhotoEditorNode = ({ data }) => {
                 value={adjustments.brightness}
                 min={-100}
                 max={100}
-                onChange={(v) => handleSliderChange('brightness', v)}
+                onChange={v => handleSliderChange('brightness', v)}
               />
               <Slider
                 label="Contrast"
                 value={adjustments.contrast}
                 min={-100}
                 max={100}
-                onChange={(v) => handleSliderChange('contrast', v)}
+                onChange={v => handleSliderChange('contrast', v)}
               />
               <Slider
                 label="Saturation"
                 value={adjustments.saturation}
                 min={-100}
                 max={100}
-                onChange={(v) => handleSliderChange('saturation', v)}
+                onChange={v => handleSliderChange('saturation', v)}
               />
               <Slider
                 label="Hue"
                 value={adjustments.hue}
                 min={-180}
                 max={180}
-                onChange={(v) => handleSliderChange('hue', v)}
+                onChange={v => handleSliderChange('hue', v)}
               />
               <Slider
                 label="Blur"
@@ -408,7 +429,7 @@ export const PhotoEditorNode = ({ data }) => {
                 min={0}
                 max={10}
                 step={0.5}
-                onChange={(v) => handleSliderChange('blur', v)}
+                onChange={v => handleSliderChange('blur', v)}
               />
             </div>
           )}
@@ -421,28 +442,38 @@ export const PhotoEditorNode = ({ data }) => {
                   onClick={() => setActiveFilter(filter.id)}
                   style={{
                     padding: 12,
-                    background: activeFilter === filter.id ? 'rgba(236, 72, 153, 0.2)' : 'rgba(135, 133, 128, 0.15)',
-                    border: activeFilter === filter.id ? '2px solid rgba(236, 72, 153, 0.5)' : '1px solid rgba(135, 133, 128, 0.2)',
+                    background:
+                      activeFilter === filter.id
+                        ? 'rgba(236, 72, 153, 0.2)'
+                        : 'rgba(135, 133, 128, 0.15)',
+                    border:
+                      activeFilter === filter.id
+                        ? '2px solid rgba(236, 72, 153, 0.5)'
+                        : '1px solid rgba(135, 133, 128, 0.2)',
                     borderRadius: 8,
                     color: '#CECDC3',
                     cursor: 'pointer',
                     textAlign: 'center',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
                   }}
                 >
-                  <div style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    fontFamily: 'system-ui',
-                    marginBottom: 4
-                  }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      fontFamily: 'system-ui',
+                      marginBottom: 4,
+                    }}
+                  >
                     {filter.label}
                   </div>
-                  <div style={{
-                    fontSize: 9,
-                    color: '#878580',
-                    fontFamily: 'system-ui'
-                  }}>
+                  <div
+                    style={{
+                      fontSize: 9,
+                      color: '#878580',
+                      fontFamily: 'system-ui',
+                    }}
+                  >
                     {filter.description}
                   </div>
                 </button>
@@ -474,7 +505,7 @@ const Tab = ({ icon: Icon, label, active, onClick }) => (
       fontSize: 12,
       fontWeight: 600,
       fontFamily: 'system-ui',
-      transition: 'all 0.2s'
+      transition: 'all 0.2s',
     }}
   >
     <Icon size={14} />
@@ -485,13 +516,15 @@ const Tab = ({ icon: Icon, label, active, onClick }) => (
 // Slider component
 const Slider = ({ label, value, min, max, step = 1, onChange }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-    <span style={{
-      fontSize: 11,
-      fontWeight: 500,
-      color: '#878580',
-      fontFamily: 'system-ui',
-      minWidth: 80
-    }}>
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: 500,
+        color: '#878580',
+        fontFamily: 'system-ui',
+        minWidth: 80,
+      }}
+    >
       {label}:
     </span>
     <input
@@ -500,20 +533,22 @@ const Slider = ({ label, value, min, max, step = 1, onChange }) => (
       max={max}
       step={step}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       style={{
         flex: 1,
-        accentColor: '#ec4899'
+        accentColor: '#ec4899',
       }}
     />
-    <span style={{
-      fontSize: 11,
-      fontWeight: 600,
-      color: '#CECDC3',
-      fontFamily: 'system-ui',
-      minWidth: 36,
-      textAlign: 'right'
-    }}>
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: 600,
+        color: '#CECDC3',
+        fontFamily: 'system-ui',
+        minWidth: 36,
+        textAlign: 'right',
+      }}
+    >
       {value}
     </span>
   </div>

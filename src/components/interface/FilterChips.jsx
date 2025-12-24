@@ -9,22 +9,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFilterStore } from '../../stores/filterStore';
 
 export const FilterChips = () => {
-  const { activeFilters, removeFilter, clearFilters, combineMode, toggleCombineMode } = useFilterStore();
+  const { activeFilters, removeFilter, clearFilters, combineMode, toggleCombineMode } =
+    useFilterStore();
 
   if (activeFilters.length === 0) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 16,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 1000,
-      display: 'flex',
-      gap: 8,
-      alignItems: 'center',
-      pointerEvents: 'none'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: 16,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 1000,
+        display: 'flex',
+        gap: 8,
+        alignItems: 'center',
+        pointerEvents: 'none',
+      }}
+    >
       <AnimatePresence mode="popLayout">
         {/* Filter icon indicator */}
         <motion.div
@@ -42,16 +45,18 @@ export const FilterChips = () => {
             gap: 6,
             border: '1px solid rgba(16, 185, 129, 0.3)',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
           }}
         >
           <Filter size={14} color="#fff" />
-          <span style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: '#fff',
-            fontFamily: 'system-ui'
-          }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: '#fff',
+              fontFamily: 'system-ui',
+            }}
+          >
             {activeFilters.length} Filter{activeFilters.length > 1 ? 's' : ''}
           </span>
         </motion.div>
@@ -77,12 +82,12 @@ export const FilterChips = () => {
               color: '#fff',
               fontFamily: 'system-ui',
               pointerEvents: 'auto',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={e => {
               e.target.style.background = 'rgba(59, 130, 246, 1)';
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={e => {
               e.target.style.background = 'rgba(59, 130, 246, 0.95)';
             }}
           >
@@ -108,15 +113,17 @@ export const FilterChips = () => {
               gap: 8,
               border: '1px solid rgba(255, 255, 255, 0.1)',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-              pointerEvents: 'auto'
+              pointerEvents: 'auto',
             }}
           >
-            <span style={{
-              fontSize: 11,
-              fontWeight: 500,
-              color: '#fff',
-              fontFamily: 'system-ui'
-            }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                color: '#fff',
+                fontFamily: 'system-ui',
+              }}
+            >
               {getFilterLabel(filter)}
             </span>
             <button
@@ -130,12 +137,12 @@ export const FilterChips = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 4,
-                transition: 'background 0.2s ease'
+                transition: 'background 0.2s ease',
               }}
-              onMouseEnter={(e) => {
+              onMouseEnter={e => {
                 e.target.style.background = 'rgba(255, 255, 255, 0.1)';
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={e => {
                 e.target.style.background = 'transparent';
               }}
             >
@@ -164,12 +171,12 @@ export const FilterChips = () => {
             color: '#fff',
             fontFamily: 'system-ui',
             pointerEvents: 'auto',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
           }}
-          onMouseEnter={(e) => {
+          onMouseEnter={e => {
             e.target.style.background = 'rgba(239, 68, 68, 1)';
           }}
-          onMouseLeave={(e) => {
+          onMouseLeave={e => {
             e.target.style.background = 'rgba(239, 68, 68, 0.95)';
           }}
         >
@@ -195,14 +202,16 @@ function getFilterLabel(filter) {
     case 'temporal':
       label = value.charAt(0).toUpperCase() + value.slice(1).replace('-', ' ');
       break;
-    case 'node-type':
+    case 'node-type': {
       const types = Array.isArray(value) ? value : [value];
       label = types.join(', ');
       break;
-    case 'district':
+    }
+    case 'district': {
       const districts = Array.isArray(value) ? value : [value];
       label = districts.map(d => d.replace('d-', '')).join(', ');
       break;
+    }
     default:
       label = `${type}: ${value}`;
   }

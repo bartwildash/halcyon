@@ -16,7 +16,7 @@ export const ButterchurnVisualizerNode = ({ data }) => {
   const analyserRef = useRef(null);
   const sourceNodeRef = useRef(null);
   const rafIdRef = useRef(null);
-  
+
   const [presetName, setPresetName] = useState(data.presetName || 'Default');
   const [webglError, setWebglError] = useState(null);
   const { universe, setUniverse, audioRef } = useMaterialStore();
@@ -33,10 +33,10 @@ export const ButterchurnVisualizerNode = ({ data }) => {
       try {
         const ctx = await getGlobalAudioContext();
         audioContextRef.current = ctx;
-        
+
         const canvas = canvasRef.current;
         if (!canvas) return;
-        
+
         // Set canvas size
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width || 400;
@@ -55,9 +55,9 @@ export const ButterchurnVisualizerNode = ({ data }) => {
         });
 
         visualizerRef.current = visualizer;
-        
+
         // Handle WebGL context loss (common on mobile)
-        canvas.addEventListener('webglcontextlost', (e) => {
+        canvas.addEventListener('webglcontextlost', e => {
           e.preventDefault();
           console.warn('WebGL context lost - Butterchurn will pause');
           setWebglError('WebGL context lost. Refresh to restore.');
@@ -82,7 +82,7 @@ export const ButterchurnVisualizerNode = ({ data }) => {
       const presets = butterchurnPresets;
       const presetNames = Object.keys(presets);
       const preset = presets[presetName] || presets[presetNames[0]];
-      
+
       if (preset) {
         visualizer.loadPreset(preset, 0.0); // 0.0 = instant transition
       }
@@ -102,10 +102,10 @@ export const ButterchurnVisualizerNode = ({ data }) => {
         if (source) {
           sourceNodeRef.current = source;
           try {
-             source.connect(analyser);
-             source.connect(ctx.destination);
-          } catch(e) {
-             console.warn("Visualizer connection warning:", e);
+            source.connect(analyser);
+            source.connect(ctx.destination);
+          } catch (e) {
+            console.warn('Visualizer connection warning:', e);
           }
         }
       } else if (audioSource === 'microphone') {
@@ -146,12 +146,14 @@ export const ButterchurnVisualizerNode = ({ data }) => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       // Clean up analyser connection if needed
       if (sourceNodeRef.current && analyserRef.current) {
-         try {
-           sourceNodeRef.current.disconnect(analyserRef.current);
-         } catch(e) {/* ignore */}
+        try {
+          sourceNodeRef.current.disconnect(analyserRef.current);
+        } catch (e) {
+          /* ignore */
+        }
       }
       window.removeEventListener('resize', handleResize);
-      // Don't destroy visualizer immediately if unmounting? 
+      // Don't destroy visualizer immediately if unmounting?
       // Actually yes destroy it, but careful with context.
     };
   }, [presetName, audioSource, audioRef]);
@@ -166,7 +168,7 @@ export const ButterchurnVisualizerNode = ({ data }) => {
     });
   };
 
-  const handlePresetChange = (newPreset) => {
+  const handlePresetChange = newPreset => {
     setPresetName(newPreset);
     if (visualizerRef.current) {
       const presets = butterchurnPresets;
@@ -182,14 +184,16 @@ export const ButterchurnVisualizerNode = ({ data }) => {
   if (isUniverse) {
     // Render as universe background - fullscreen
     return (
-      <div style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: 'none',
-        width: '100vw',
-        height: '100vh',
-      }}>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          width: '100vw',
+          height: '100vh',
+        }}
+      >
         <canvas
           ref={canvasRef}
           style={{
@@ -205,30 +209,34 @@ export const ButterchurnVisualizerNode = ({ data }) => {
   // Render as card
   return (
     <SwayWrapper>
-      <div style={{
-        width: data.width || 400,
-        height: data.height || 300,
-        background: '#000',
-        borderRadius: 12,
-        overflow: 'hidden',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}>
+      <div
+        style={{
+          width: data.width || 400,
+          height: data.height || 300,
+          background: '#000',
+          borderRadius: 12,
+          overflow: 'hidden',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Visualizer Canvas */}
         <div style={{ flex: 1, position: 'relative', background: '#000' }}>
           {webglError ? (
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              color: '#fff',
-              padding: 20,
-              textAlign: 'center',
-            }}>
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                color: '#fff',
+                padding: 20,
+                textAlign: 'center',
+              }}
+            >
               <div style={{ fontSize: 14, marginBottom: 8 }}>⚠️ WebGL Error</div>
               <div style={{ fontSize: 12, opacity: 0.7 }}>{webglError}</div>
               <div style={{ fontSize: 11, opacity: 0.5, marginTop: 8 }}>
@@ -248,18 +256,20 @@ export const ButterchurnVisualizerNode = ({ data }) => {
         </div>
 
         {/* Controls */}
-        <div style={{
-          padding: 12,
-          background: 'rgba(0,0,0,0.8)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-        }}>
+        <div
+          style={{
+            padding: 12,
+            background: 'rgba(0,0,0,0.8)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <select
               className="nodrag"
               value={presetName}
-              onChange={(e) => handlePresetChange(e.target.value)}
+              onChange={e => handlePresetChange(e.target.value)}
               style={{
                 flex: 1,
                 padding: '4px 8px',
@@ -268,11 +278,13 @@ export const ButterchurnVisualizerNode = ({ data }) => {
                 color: '#fff',
                 border: '1px solid #333',
                 fontSize: 12,
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
-              {presets.slice(0, 20).map((name) => (
-                <option key={name} value={name}>{name}</option>
+              {presets.slice(0, 20).map(name => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
               ))}
             </select>
             <button

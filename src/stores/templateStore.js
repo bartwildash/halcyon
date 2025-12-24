@@ -18,16 +18,16 @@ export const useTemplateStore = create(
       /**
        * Save current workspace as a template
        */
-      saveTemplate: (template) => {
+      saveTemplate: template => {
         const newTemplate = {
           ...template,
           id: template.id || `template-${Date.now()}`,
           createdAt: template.createdAt || new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
-        set((state) => ({
-          templates: [...state.templates.filter(t => t.id !== newTemplate.id), newTemplate]
+        set(state => ({
+          templates: [...state.templates.filter(t => t.id !== newTemplate.id), newTemplate],
         }));
 
         return newTemplate.id;
@@ -37,29 +37,27 @@ export const useTemplateStore = create(
        * Update an existing template
        */
       updateTemplate: (templateId, updates) => {
-        set((state) => ({
+        set(state => ({
           templates: state.templates.map(t =>
-            t.id === templateId
-              ? { ...t, ...updates, updatedAt: new Date().toISOString() }
-              : t
-          )
+            t.id === templateId ? { ...t, ...updates, updatedAt: new Date().toISOString() } : t
+          ),
         }));
       },
 
       /**
        * Delete a template
        */
-      deleteTemplate: (templateId) => {
-        set((state) => ({
+      deleteTemplate: templateId => {
+        set(state => ({
           templates: state.templates.filter(t => t.id !== templateId),
-          activeTemplateId: state.activeTemplateId === templateId ? null : state.activeTemplateId
+          activeTemplateId: state.activeTemplateId === templateId ? null : state.activeTemplateId,
         }));
       },
 
       /**
        * Get a template by ID
        */
-      getTemplate: (templateId) => {
+      getTemplate: templateId => {
         return get().templates.find(t => t.id === templateId);
       },
 
@@ -73,7 +71,7 @@ export const useTemplateStore = create(
       /**
        * Set active template ID
        */
-      setActiveTemplate: (templateId) => {
+      setActiveTemplate: templateId => {
         set({ activeTemplateId: templateId });
       },
 
@@ -87,7 +85,7 @@ export const useTemplateStore = create(
       /**
        * Duplicate a template
        */
-      duplicateTemplate: (templateId) => {
+      duplicateTemplate: templateId => {
         const template = get().getTemplate(templateId);
         if (!template) return null;
 
@@ -96,11 +94,11 @@ export const useTemplateStore = create(
           id: `template-${Date.now()}`,
           name: `${template.name} (Copy)`,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
-        set((state) => ({
-          templates: [...state.templates, newTemplate]
+        set(state => ({
+          templates: [...state.templates, newTemplate],
         }));
 
         return newTemplate.id;
@@ -110,32 +108,33 @@ export const useTemplateStore = create(
        * Get templates sorted by last updated
        */
       getTemplatesSorted: () => {
-        return get().templates.sort((a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        return get().templates.sort(
+          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
       },
 
       /**
        * Get templates by tag
        */
-      getTemplatesByTag: (tag) => {
+      getTemplatesByTag: tag => {
         return get().templates.filter(t => t.tags?.includes(tag));
       },
 
       /**
        * Search templates by name
        */
-      searchTemplates: (query) => {
+      searchTemplates: query => {
         const lowerQuery = query.toLowerCase();
-        return get().templates.filter(t =>
-          t.name.toLowerCase().includes(lowerQuery) ||
-          t.description?.toLowerCase().includes(lowerQuery)
+        return get().templates.filter(
+          t =>
+            t.name.toLowerCase().includes(lowerQuery) ||
+            t.description?.toLowerCase().includes(lowerQuery)
         );
-      }
+      },
     }),
     {
       name: 'spatial-os-templates',
-      version: 1
+      version: 1,
     }
   )
 );

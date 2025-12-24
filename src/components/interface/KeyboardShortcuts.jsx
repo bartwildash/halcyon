@@ -19,16 +19,18 @@ export const KeyboardShortcuts = () => {
   ];
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 20,
-      right: 20,
-      zIndex: 50,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-      fontFamily: 'system-ui, sans-serif',
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 20,
+        right: 20,
+        zIndex: 50,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        fontFamily: 'system-ui, sans-serif',
+      }}
+    >
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -46,31 +48,44 @@ export const KeyboardShortcuts = () => {
               minWidth: 180,
             }}
           >
-            <div style={{ 
-              fontSize: 11, 
-              fontWeight: 600, 
-              color: '#94a3b8', 
-              marginBottom: 8, 
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em' 
-            }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#94a3b8',
+                marginBottom: 8,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
               Shortcuts
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {shortcuts.map((s, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#475569' }}>
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: 12,
+                    color: '#475569',
+                  }}
+                >
                   <span>{s.label}</span>
-                  <span style={{ 
-                    background: '#f1f5f9', 
-                    border: '1px solid #e2e8f0', 
-                    borderRadius: 4, 
-                    padding: '2px 6px', 
-                    fontSize: 11, 
-                    fontFamily: 'monospace',
-                    fontWeight: 600,
-                    minWidth: 24,
-                    textAlign: 'center'
-                  }}>
+                  <span
+                    style={{
+                      background: '#f1f5f9',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: 4,
+                      padding: '2px 6px',
+                      fontSize: 11,
+                      fontFamily: 'monospace',
+                      fontWeight: 600,
+                      minWidth: 24,
+                      textAlign: 'center',
+                    }}
+                  >
                     {s.key}
                   </span>
                 </div>
@@ -104,4 +119,3 @@ export const KeyboardShortcuts = () => {
     </div>
   );
 };
-

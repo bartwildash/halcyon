@@ -31,7 +31,7 @@ export function getSkinByHash(skinHash) {
  * Popular/curated skin URLs for quick access
  */
 export const POPULAR_SKINS = {
-  classic: "https://cdn.webampskins.org/skins/5e4f10275dcb1fb211d4a8b4f1bda236.wsz",
+  classic: 'https://cdn.webampskins.org/skins/5e4f10275dcb1fb211d4a8b4f1bda236.wsz',
   // Add more popular skins as needed
   // You can find skin hashes at https://skins.webamp.org
 };
@@ -54,4 +54,3 @@ export async function searchSkins(query) {
     return [];
   }
 }
-

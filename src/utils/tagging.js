@@ -16,8 +16,8 @@ export const addTagToNode = (node, tag) => {
     ...node,
     data: {
       ...node.data,
-      tags: [...currentTags, tag]
-    }
+      tags: [...currentTags, tag],
+    },
   };
 };
 
@@ -31,8 +31,8 @@ export const removeTagFromNode = (node, tag) => {
     ...node,
     data: {
       ...node.data,
-      tags: currentTags.filter(t => t !== tag)
-    }
+      tags: currentTags.filter(t => t !== tag),
+    },
   };
 };
 
@@ -49,7 +49,7 @@ export const getNodesByTag = (nodes, tag) => {
 /**
  * Get all unique tags from a set of nodes
  */
-export const getAllTags = (nodes) => {
+export const getAllTags = nodes => {
   const tagSet = new Set();
 
   nodes.forEach(node => {
@@ -88,7 +88,7 @@ export const getProjectStats = (nodes, projectTag) => {
   const contacts = projectNodes.filter(n => n.type === 'contact');
   const teamMembers = contacts.map(c => ({
     id: c.id,
-    name: c.data?.name || 'Unknown'
+    name: c.data?.name || 'Unknown',
   }));
 
   // Count notes
@@ -113,18 +113,18 @@ export const getProjectStats = (nodes, projectTag) => {
       total: totalTasks,
       completed: completedTasks,
       remaining: totalTasks - completedTasks,
-      progress: totalTasks > 0 ? (completedTasks / totalTasks) : 0
+      progress: totalTasks > 0 ? completedTasks / totalTasks : 0,
     },
     teamMembers,
     noteCount,
-    deadline: earliestDeadline ? earliestDeadline.toISOString() : null
+    deadline: earliestDeadline ? earliestDeadline.toISOString() : null,
   };
 };
 
 /**
  * Generate a color for a project tag (deterministic hash)
  */
-export const getTagColor = (tag) => {
+export const getTagColor = tag => {
   const colors = [
     '#10b981', // green
     '#3b82f6', // blue
@@ -148,7 +148,7 @@ export const getTagColor = (tag) => {
 /**
  * Validate tag name
  */
-export const isValidTagName = (tag) => {
+export const isValidTagName = tag => {
   // Tags should be alphanumeric with hyphens/underscores, 2-50 chars
   return /^[a-zA-Z0-9_-]{2,50}$/.test(tag);
 };
@@ -156,7 +156,7 @@ export const isValidTagName = (tag) => {
 /**
  * Normalize tag name (lowercase, replace spaces with hyphens)
  */
-export const normalizeTagName = (tag) => {
+export const normalizeTagName = tag => {
   return tag
     .toLowerCase()
     .trim()

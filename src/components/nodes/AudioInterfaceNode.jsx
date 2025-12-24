@@ -38,8 +38,8 @@ export const AudioInterfaceNode = ({ data }) => {
         audio: {
           echoCancellation: false,
           noiseSuppression: false,
-          autoGainControl: false
-        }
+          autoGainControl: false,
+        },
       });
       micStreamRef.current = stream;
 
@@ -122,40 +122,46 @@ export const AudioInterfaceNode = ({ data }) => {
   return (
     <SwayWrapper style={{ width: 360, height: 220 }}>
       {/* Interface Body */}
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%)',
-        borderRadius: 12,
-        border: '3px solid #0a0a0a',
-        boxShadow: '0 12px 40px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.05)',
-        position: 'relative',
-        padding: 16,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%)',
+          borderRadius: 12,
+          border: '3px solid #0a0a0a',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.05)',
+          position: 'relative',
+          padding: 16,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
         {/* Brand Label */}
-        <div style={{
-          position: 'absolute',
-          top: 8,
-          left: 16,
-          fontSize: 9,
-          fontFamily: 'monospace',
-          fontWeight: 'bold',
-          letterSpacing: '0.15em',
-          color: '#666',
-          textTransform: 'uppercase'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 8,
+            left: 16,
+            fontSize: 9,
+            fontFamily: 'monospace',
+            fontWeight: 'bold',
+            letterSpacing: '0.15em',
+            color: '#666',
+            textTransform: 'uppercase',
+          }}
+        >
           AUDIENT
         </div>
 
         {/* VU Meters */}
-        <div style={{
-          display: 'flex',
-          gap: 16,
-          marginTop: 20
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 16,
+            marginTop: 20,
+          }}
+        >
           {/* Input 1 Meter */}
           <VUMeter level={input1Level} label="1" active={isListening} />
           {/* Input 2 Meter */}
@@ -163,44 +169,52 @@ export const AudioInterfaceNode = ({ data }) => {
         </div>
 
         {/* Controls Row */}
-        <div style={{
-          display: 'flex',
-          gap: 12,
-          alignItems: 'center',
-          marginTop: 8
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'center',
+            marginTop: 8,
+          }}
+        >
           {/* Input 1 Controls */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-            <Knob
-              value={input1Gain}
-              onChange={setInput1Gain}
-              label="GAIN 1"
-              size={48}
-            />
-            <PhantomButton
-              active={phantom1}
-              onClick={() => setPhantom1(!phantom1)}
-              label="48V"
-            />
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              alignItems: 'center',
+            }}
+          >
+            <Knob value={input1Gain} onChange={setInput1Gain} label="GAIN 1" size={48} />
+            <PhantomButton active={phantom1} onClick={() => setPhantom1(!phantom1)} label="48V" />
           </div>
 
           {/* Input 2 Controls */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
-            <Knob
-              value={input2Gain}
-              onChange={setInput2Gain}
-              label="GAIN 2"
-              size={48}
-            />
-            <PhantomButton
-              active={phantom2}
-              onClick={() => setPhantom2(!phantom2)}
-              label="48V"
-            />
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              alignItems: 'center',
+            }}
+          >
+            <Knob value={input2Gain} onChange={setInput2Gain} label="GAIN 2" size={48} />
+            <PhantomButton active={phantom2} onClick={() => setPhantom2(!phantom2)} label="48V" />
           </div>
 
           {/* Monitor Volume */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}>
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              alignItems: 'center',
+            }}
+          >
             <Knob
               value={monitorVolume}
               onChange={setMonitorVolume}
@@ -229,20 +243,22 @@ export const AudioInterfaceNode = ({ data }) => {
             cursor: 'pointer',
             color: '#fff',
             transition: 'all 0.2s ease',
-            boxShadow: isListening ? '0 0 12px rgba(16, 185, 129, 0.5)' : 'none'
+            boxShadow: isListening ? '0 0 12px rgba(16, 185, 129, 0.5)' : 'none',
           }}
         >
           {isListening ? <Mic size={16} /> : <Speaker size={16} />}
         </button>
 
         {/* Status Lights */}
-        <div style={{
-          position: 'absolute',
-          top: 12,
-          right: 16,
-          display: 'flex',
-          gap: 4
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 16,
+            display: 'flex',
+            gap: 4,
+          }}
+        >
           <StatusLight active={isListening} color="#10b981" />
           <StatusLight active={phantom1 || phantom2} color="#ef4444" />
         </div>
@@ -257,31 +273,38 @@ const VUMeter = ({ level, label, active }) => {
   const filledSegments = Math.floor((level / 100) * segments);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 6
-    }}>
-      <div style={{
-        fontSize: 8,
-        fontFamily: 'monospace',
-        color: '#666',
-        fontWeight: 'bold'
-      }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 8,
+          fontFamily: 'monospace',
+          color: '#666',
+          fontWeight: 'bold',
+        }}
+      >
         CH {label}
       </div>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column-reverse',
-        gap: 2,
-        height: 60,
-        justifyContent: 'flex-start'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column-reverse',
+          gap: 2,
+          height: 60,
+          justifyContent: 'flex-start',
+        }}
+      >
         {Array.from({ length: segments }).map((_, i) => {
           const isLit = i < filledSegments && active;
           let color = '#10b981'; // Green
-          if (i >= segments * 0.8) color = '#ef4444'; // Red
+          if (i >= segments * 0.8)
+            color = '#ef4444'; // Red
           else if (i >= segments * 0.6) color = '#f59e0b'; // Yellow
 
           return (
@@ -294,7 +317,7 @@ const VUMeter = ({ level, label, active }) => {
                 borderRadius: 1,
                 border: '1px solid #0a0a0a',
                 boxShadow: isLit ? `0 0 4px ${color}` : 'none',
-                transition: 'all 0.05s ease'
+                transition: 'all 0.05s ease',
               }}
             />
           );
@@ -310,7 +333,7 @@ const Knob = ({ value, onChange, label, size = 48, color = '#555' }) => {
   const startYRef = useRef(0);
   const startValueRef = useRef(0);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = e => {
     setIsDragging(true);
     startYRef.current = e.clientY;
     startValueRef.current = value;
@@ -320,7 +343,7 @@ const Knob = ({ value, onChange, label, size = 48, color = '#555' }) => {
   useEffect(() => {
     if (!isDragging) return;
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = e => {
       const deltaY = startYRef.current - e.clientY;
       const newValue = Math.max(0, Math.min(100, startValueRef.current + deltaY));
       onChange(newValue);
@@ -342,12 +365,14 @@ const Knob = ({ value, onChange, label, size = 48, color = '#555' }) => {
   const rotation = (value / 100) * 270 - 135; // -135° to +135°
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 4
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 4,
+      }}
+    >
       <div
         onMouseDown={handleMouseDown}
         style={{
@@ -359,31 +384,35 @@ const Knob = ({ value, onChange, label, size = 48, color = '#555' }) => {
           boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3)',
           position: 'relative',
           cursor: isDragging ? 'grabbing' : 'grab',
-          transition: isDragging ? 'none' : 'transform 0.1s ease'
+          transition: isDragging ? 'none' : 'transform 0.1s ease',
         }}
       >
         {/* Indicator Line */}
-        <div style={{
-          position: 'absolute',
-          top: '15%',
-          left: '50%',
-          width: 3,
-          height: '35%',
-          background: '#fff',
-          borderRadius: 2,
-          transformOrigin: 'bottom center',
-          transform: `translateX(-50%) rotate(${rotation}deg)`,
-          boxShadow: '0 0 4px rgba(255,255,255,0.5)',
-          transition: isDragging ? 'none' : 'transform 0.1s ease'
-        }} />
+        <div
+          style={{
+            position: 'absolute',
+            top: '15%',
+            left: '50%',
+            width: 3,
+            height: '35%',
+            background: '#fff',
+            borderRadius: 2,
+            transformOrigin: 'bottom center',
+            transform: `translateX(-50%) rotate(${rotation}deg)`,
+            boxShadow: '0 0 4px rgba(255,255,255,0.5)',
+            transition: isDragging ? 'none' : 'transform 0.1s ease',
+          }}
+        />
       </div>
-      <div style={{
-        fontSize: 7,
-        fontFamily: 'monospace',
-        color: '#666',
-        fontWeight: 'bold',
-        letterSpacing: '0.05em'
-      }}>
+      <div
+        style={{
+          fontSize: 7,
+          fontFamily: 'monospace',
+          color: '#666',
+          fontWeight: 'bold',
+          letterSpacing: '0.05em',
+        }}
+      >
         {label}
       </div>
     </div>
@@ -411,7 +440,7 @@ const PhantomButton = ({ active, onClick, label }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 2
+        gap: 2,
       }}
     >
       {active ? <Zap size={8} /> : <ZapOff size={8} />}
@@ -423,14 +452,16 @@ const PhantomButton = ({ active, onClick, label }) => {
 // Status Light
 const StatusLight = ({ active, color }) => {
   return (
-    <div style={{
-      width: 6,
-      height: 6,
-      borderRadius: '50%',
-      background: active ? color : '#1a1a1a',
-      border: '1px solid #0a0a0a',
-      boxShadow: active ? `0 0 8px ${color}` : 'none',
-      transition: 'all 0.2s ease'
-    }} />
+    <div
+      style={{
+        width: 6,
+        height: 6,
+        borderRadius: '50%',
+        background: active ? color : '#1a1a1a',
+        border: '1px solid #0a0a0a',
+        boxShadow: active ? `0 0 8px ${color}` : 'none',
+        transition: 'all 0.2s ease',
+      }}
+    />
   );
 };

@@ -13,7 +13,7 @@ import {
   Download,
   RotateCcw,
   FastForward,
-  Rewind
+  Rewind,
 } from 'lucide-react';
 
 export const AudioEditorNode = ({ data }) => {
@@ -73,7 +73,7 @@ export const AudioEditorNode = ({ data }) => {
     }
   }, [playbackRate]);
 
-  const generateWaveform = async (audio) => {
+  const generateWaveform = async audio => {
     try {
       const response = await fetch(audio.src);
       const arrayBuffer = await response.arrayBuffer();
@@ -101,69 +101,69 @@ export const AudioEditorNode = ({ data }) => {
     }
   };
 
-  const drawWaveform = useCallback((data = waveformData) => {
-    const canvas = canvasRef.current;
-    if (!canvas || data.length === 0) return;
+  const drawWaveform = useCallback(
+    (data = waveformData) => {
+      const canvas = canvasRef.current;
+      if (!canvas || data.length === 0) return;
 
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
 
-    ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
-    // Draw waveform bars
-    const barWidth = width / data.length;
-    const maxAmplitude = Math.max(...data);
+      // Draw waveform bars
+      const barWidth = width / data.length;
+      const maxAmplitude = Math.max(...data);
 
-    data.forEach((amplitude, index) => {
-      const barHeight = (amplitude / maxAmplitude) * (height * 0.8);
-      const x = index * barWidth;
-      const y = (height - barHeight) / 2;
+      data.forEach((amplitude, index) => {
+        const barHeight = (amplitude / maxAmplitude) * (height * 0.8);
+        const x = index * barWidth;
+        const y = (height - barHeight) / 2;
 
-      // Check if bar is in selection
-      const timePosition = (index / data.length) * duration;
-      const inSelection = selection &&
-        timePosition >= selection.start &&
-        timePosition <= selection.end;
+        // Check if bar is in selection
+        const timePosition = (index / data.length) * duration;
+        const inSelection =
+          selection && timePosition >= selection.start && timePosition <= selection.end;
 
-      ctx.fillStyle = inSelection
-        ? 'rgba(6, 182, 212, 0.8)'
-        : 'rgba(100, 116, 139, 0.6)';
+        ctx.fillStyle = inSelection ? 'rgba(6, 182, 212, 0.8)' : 'rgba(100, 116, 139, 0.6)';
 
-      ctx.fillRect(x, y, barWidth - 1, barHeight);
-    });
+        ctx.fillRect(x, y, barWidth - 1, barHeight);
+      });
 
-    // Draw playhead
-    if (duration > 0) {
-      const playheadX = (currentTime / duration) * width;
-      ctx.strokeStyle = '#06b6d4';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(playheadX, 0);
-      ctx.lineTo(playheadX, height);
-      ctx.stroke();
-    }
+      // Draw playhead
+      if (duration > 0) {
+        const playheadX = (currentTime / duration) * width;
+        ctx.strokeStyle = '#06b6d4';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(playheadX, 0);
+        ctx.lineTo(playheadX, height);
+        ctx.stroke();
+      }
 
-    // Draw selection markers
-    if (selection) {
-      const startX = (selection.start / duration) * width;
-      const endX = (selection.end / duration) * width;
+      // Draw selection markers
+      if (selection) {
+        const startX = (selection.start / duration) * width;
+        const endX = (selection.end / duration) * width;
 
-      ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
-      ctx.fillRect(startX, 0, endX - startX, height);
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
+        ctx.fillRect(startX, 0, endX - startX, height);
 
-      ctx.strokeStyle = '#06b6d4';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(startX, 0);
-      ctx.lineTo(startX, height);
-      ctx.moveTo(endX, 0);
-      ctx.lineTo(endX, height);
-      ctx.stroke();
-    }
+        ctx.strokeStyle = '#06b6d4';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(startX, 0);
+        ctx.lineTo(startX, height);
+        ctx.moveTo(endX, 0);
+        ctx.lineTo(endX, height);
+        ctx.stroke();
+      }
 
-    animationFrameRef.current = requestAnimationFrame(() => drawWaveform(data));
-  }, [waveformData, currentTime, duration, selection]);
+      animationFrameRef.current = requestAnimationFrame(() => drawWaveform(data));
+    },
+    [waveformData, currentTime, duration, selection]
+  );
 
   useEffect(() => {
     if (waveformData.length > 0) {
@@ -186,7 +186,7 @@ export const AudioEditorNode = ({ data }) => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleSeek = (e) => {
+  const handleSeek = e => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -197,7 +197,7 @@ export const AudioEditorNode = ({ data }) => {
     setCurrentTime(time);
   };
 
-  const handleSelectionStart = (e) => {
+  const handleSelectionStart = e => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -206,7 +206,7 @@ export const AudioEditorNode = ({ data }) => {
     setSelection({ start: time, end: time });
   };
 
-  const handleSelectionMove = (e) => {
+  const handleSelectionMove = e => {
     if (!selection || e.buttons !== 1) return;
 
     const canvas = canvasRef.current;
@@ -236,7 +236,7 @@ export const AudioEditorNode = ({ data }) => {
     console.log('Export audio with effects:', { volume, playbackRate, selection });
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = seconds => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -245,27 +245,32 @@ export const AudioEditorNode = ({ data }) => {
   if (!audioUrl) {
     return (
       <SwayWrapper style={{ width: 600, height: 380 }}>
-        <div style={{
-          width: '100%',
-          height: '100%',
-          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-          borderRadius: 16,
-          border: '2px solid rgba(6, 182, 212, 0.3)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 40,
-          textAlign: 'center'
-        }}>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+            borderRadius: 16,
+            border: '2px solid rgba(6, 182, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 40,
+            textAlign: 'center',
+          }}
+        >
           <div>
             <Volume2 size={48} color="#06b6d4" style={{ margin: '0 auto 16px' }} />
-            <p style={{
-              fontSize: 14,
-              color: '#878580',
-              fontFamily: 'system-ui',
-              margin: 0
-            }}>
-              No audio source selected.<br />
+            <p
+              style={{
+                fontSize: 14,
+                color: '#878580',
+                fontFamily: 'system-ui',
+                margin: 0,
+              }}
+            >
+              No audio source selected.
+              <br />
               Set audioUrl in node data.
             </p>
           </div>
@@ -276,37 +281,43 @@ export const AudioEditorNode = ({ data }) => {
 
   return (
     <SwayWrapper style={{ width: 600, height: 380 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-        borderRadius: 16,
-        border: '2px solid rgba(6, 182, 212, 0.3)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+          borderRadius: 16,
+          border: '2px solid rgba(6, 182, 212, 0.3)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
         <audio ref={audioRef} />
 
         {/* Header */}
-        <div style={{
-          padding: 12,
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          background: 'rgba(0, 0, 0, 0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
+        <div
+          style={{
+            padding: 12,
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            background: 'rgba(0, 0, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Volume2 size={18} color={color} />
-            <h3 style={{
-              margin: 0,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui'
-            }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+              }}
+            >
               {label}
             </h3>
           </div>
@@ -327,7 +338,7 @@ export const AudioEditorNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <RotateCcw size={12} />
@@ -348,7 +359,7 @@ export const AudioEditorNode = ({ data }) => {
                 gap: 4,
                 fontSize: 11,
                 fontWeight: 500,
-                fontFamily: 'system-ui'
+                fontFamily: 'system-ui',
               }}
             >
               <Download size={12} />
@@ -358,13 +369,15 @@ export const AudioEditorNode = ({ data }) => {
         </div>
 
         {/* Waveform */}
-        <div style={{
-          flex: 1,
-          padding: 16,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: 16,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
+        >
           <canvas
             ref={canvasRef}
             width={560}
@@ -377,20 +390,22 @@ export const AudioEditorNode = ({ data }) => {
               background: 'rgba(0, 0, 0, 0.3)',
               borderRadius: 8,
               cursor: 'crosshair',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
             }}
           />
 
           {/* Timeline */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: 11,
-            fontWeight: 500,
-            color: '#878580',
-            fontFamily: 'system-ui'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: 11,
+              fontWeight: 500,
+              color: '#878580',
+              fontFamily: 'system-ui',
+            }}
+          >
             <span>{formatTime(currentTime)}</span>
             {selection && (
               <span style={{ color: '#06b6d4' }}>
@@ -401,11 +416,13 @@ export const AudioEditorNode = ({ data }) => {
           </div>
 
           {/* Controls */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+            }}
+          >
             <button
               onClick={togglePlayPause}
               style={{
@@ -416,7 +433,7 @@ export const AudioEditorNode = ({ data }) => {
                 color: '#67e8f9',
                 cursor: 'pointer',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} />}
@@ -437,7 +454,7 @@ export const AudioEditorNode = ({ data }) => {
                   gap: 6,
                   fontSize: 11,
                   fontWeight: 500,
-                  fontFamily: 'system-ui'
+                  fontFamily: 'system-ui',
                 }}
               >
                 <Scissors size={12} />
@@ -455,20 +472,22 @@ export const AudioEditorNode = ({ data }) => {
               max="1"
               step="0.01"
               value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
+              onChange={e => setVolume(parseFloat(e.target.value))}
               style={{
                 width: 80,
-                accentColor: color
+                accentColor: color,
               }}
             />
 
             {/* Speed */}
-            <div style={{
-              fontSize: 11,
-              fontWeight: 500,
-              color: '#878580',
-              fontFamily: 'system-ui'
-            }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                color: '#878580',
+                fontFamily: 'system-ui',
+              }}
+            >
               Speed:
             </div>
             <input
@@ -477,19 +496,21 @@ export const AudioEditorNode = ({ data }) => {
               max="2"
               step="0.1"
               value={playbackRate}
-              onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+              onChange={e => setPlaybackRate(parseFloat(e.target.value))}
               style={{
                 width: 80,
-                accentColor: color
+                accentColor: color,
               }}
             />
-            <span style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui',
-              minWidth: 30
-            }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+                minWidth: 30,
+              }}
+            >
               {playbackRate.toFixed(1)}x
             </span>
           </div>

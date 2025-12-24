@@ -11,11 +11,11 @@ export const getGlobalAudioContext = async () => {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
-  
+
   if (audioContext.state === 'suspended') {
     await audioContext.resume();
   }
-  
+
   return audioContext;
 };
 
@@ -24,8 +24,8 @@ const elementSourceMap = new WeakMap();
 
 /**
  * Get or create a MediaElementSource for an audio element
- * @param {HTMLMediaElement} audioElement 
- * @param {AudioContext} ctx 
+ * @param {HTMLMediaElement} audioElement
+ * @param {AudioContext} ctx
  * @returns {MediaElementAudioSourceNode|null}
  */
 export const getSourceForElement = (audioElement, ctx) => {
@@ -38,20 +38,19 @@ export const getSourceForElement = (audioElement, ctx) => {
     if (source.context === ctx) {
       return source;
     } else {
-      console.warn("Existing source belongs to a different AudioContext. Cannot reuse.");
+      console.warn('Existing source belongs to a different AudioContext. Cannot reuse.');
       // We cannot reuse it if contexts differ, and we cannot create a new one.
       // Ideally, the app should strictly use ONE global AudioContext.
       return null;
     }
   }
-  
+
   try {
     const source = ctx.createMediaElementSource(audioElement);
     elementSourceMap.set(audioElement, source);
     return source;
   } catch (error) {
-    console.warn("Failed to create MediaElementSource:", error);
+    console.warn('Failed to create MediaElementSource:', error);
     return null;
   }
 };
-

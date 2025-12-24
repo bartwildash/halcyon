@@ -13,7 +13,9 @@ import { motion } from 'framer-motion';
 // CHESS NODE - Browser Chess with Stockfish
 // ==========================================
 export const ChessNode = ({ data }) => {
-  const [fen, setFen] = useState(data.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  const [fen, setFen] = useState(
+    data.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+  );
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [playerColor] = useState(data.playerColor || 'white');
 
@@ -39,25 +41,39 @@ export const ChessNode = ({ data }) => {
             style={{
               width: 40,
               height: 40,
-              background: selectedSquare === square
-                ? 'radial-gradient(circle, rgba(255,255,0,0.4) 0%, rgba(255,255,0,0) 70%), ' + (isLight ? '#f0d9b5' : '#b58863')
-                : isLight ? '#f3e5ce' : '#a67c52',
+              background:
+                selectedSquare === square
+                  ? 'radial-gradient(circle, rgba(255,255,0,0.4) 0%, rgba(255,255,0,0) 70%), ' +
+                    (isLight ? '#f0d9b5' : '#b58863')
+                  : isLight
+                    ? '#f3e5ce'
+                    : '#a67c52',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               fontSize: 28,
               userSelect: 'none',
-              boxShadow: selectedSquare === square 
-                ? 'inset 0 0 10px rgba(255,215,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3)' 
-                : 'inset 0 1px 3px rgba(0,0,0,0.2)',
+              boxShadow:
+                selectedSquare === square
+                  ? 'inset 0 0 10px rgba(255,215,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3)'
+                  : 'inset 0 1px 3px rgba(0,0,0,0.2)',
               textShadow: '0 2px 4px rgba(0,0,0,0.4)',
               position: 'relative',
             }}
           >
             {/* Wood grain texture overlay */}
-            <div style={{ position: 'absolute', inset: 0, opacity: 0.1, backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Cg fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\'%3E%3Cpath opacity=\'.5\' d=\'M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z\'/%3E%3Cpath d=\'M6 5V0H5v5H0v1h5v94h1V6h94V5H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")', pointerEvents: 'none' }} />
-            
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: 0.1,
+                backgroundImage:
+                  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                pointerEvents: 'none',
+              }}
+            />
+
             <div style={{ zIndex: 1, transform: 'translateY(-2px)' }}>
               {piece && getPieceUnicode(piece)}
             </div>
@@ -69,7 +85,7 @@ export const ChessNode = ({ data }) => {
     return squares;
   };
 
-  const handleSquareClick = (square) => {
+  const handleSquareClick = square => {
     if (selectedSquare) {
       // Attempt move (simplified - real implementation would use chess.js)
       console.log(`Move from ${selectedSquare} to ${square}`);
@@ -81,64 +97,76 @@ export const ChessNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        width: 360,
-        background: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)', // Mahogany Wood
-        borderRadius: 16,
-        padding: 12,
-        boxShadow: `
+      <div
+        style={{
+          width: 360,
+          background: 'linear-gradient(135deg, #5D4037 0%, #3E2723 100%)', // Mahogany Wood
+          borderRadius: 16,
+          padding: 12,
+          boxShadow: `
           0 20px 50px rgba(0,0,0,0.5), 
           inset 0 2px 3px rgba(255,255,255,0.2),
           inset 0 -2px 3px rgba(0,0,0,0.5),
           0 5px 15px rgba(0,0,0,0.3)
         `,
-        border: '1px solid #2D1B18',
-        position: 'relative',
-        boxSizing: 'border-box'
-      }}>
+          border: '1px solid #2D1B18',
+          position: 'relative',
+          boxSizing: 'border-box',
+        }}
+      >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Physical Board Frame - Beveled Edge */}
-        <div style={{
-          background: '#4E342E',
-          borderRadius: 8,
-          padding: 8,
-          boxShadow: `
+        <div
+          style={{
+            background: '#4E342E',
+            borderRadius: 8,
+            padding: 8,
+            boxShadow: `
             inset 0 10px 20px rgba(0,0,0,0.6), 
             0 1px 2px rgba(255,255,255,0.1),
             inset 0 -2px 5px rgba(255,255,255,0.05)
           `,
-          borderBottom: '2px solid rgba(255,255,255,0.05)',
-          boxSizing: 'border-box'
-        }}>
+            borderBottom: '2px solid rgba(255,255,255,0.05)',
+            boxSizing: 'border-box',
+          }}
+        >
           {/* Header */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 16,
-            color: '#D7CCC8',
-            padding: '0 4px'
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 16,
+              color: '#D7CCC8',
+              padding: '0 4px',
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ 
-                background: 'linear-gradient(180deg, #8D6E63 0%, #5D4037 100%)',
-                borderRadius: 6,
-                padding: 4,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2)'
-              }}>
+              <div
+                style={{
+                  background: 'linear-gradient(180deg, #8D6E63 0%, #5D4037 100%)',
+                  borderRadius: 6,
+                  padding: 4,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2)',
+                }}
+              >
                 <Cpu size={16} color="#fff" />
               </div>
-              <span style={{ 
-                fontWeight: 700, 
-                fontSize: 14, 
-                letterSpacing: '0.05em',
-                textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-                fontFamily: 'system-ui, sans-serif'
-              }}>CHESS</span>
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: 14,
+                  letterSpacing: '0.05em',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                  fontFamily: 'system-ui, sans-serif',
+                }}
+              >
+                CHESS
+              </span>
             </div>
-            
+
             <button
               className="nodrag"
               onClick={() => setFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')}
@@ -155,7 +183,7 @@ export const ChessNode = ({ data }) => {
                 alignItems: 'center',
                 gap: 6,
                 boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5)',
-                textTransform: 'uppercase'
+                textTransform: 'uppercase',
               }}
             >
               <RotateCcw size={12} /> Reset
@@ -163,31 +191,35 @@ export const ChessNode = ({ data }) => {
           </div>
 
           {/* Chessboard Area */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(8, 1fr)',
-            gridTemplateRows: 'repeat(8, 1fr)',
-            border: '10px solid #3E2723',
-            borderRadius: 4,
-            boxShadow: '0 8px 16px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4)',
-            background: '#3E2723',
-            aspectRatio: '1',
-            overflow: 'hidden'
-          }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(8, 1fr)',
+              gridTemplateRows: 'repeat(8, 1fr)',
+              border: '10px solid #3E2723',
+              borderRadius: 4,
+              boxShadow: '0 8px 16px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4)',
+              background: '#3E2723',
+              aspectRatio: '1',
+              overflow: 'hidden',
+            }}
+          >
             {renderBoard()}
           </div>
         </div>
 
         {/* Info / Bezel */}
-        <div style={{
-          marginTop: 12,
-          fontSize: 11,
-          color: '#A1887F',
-          textAlign: 'center',
-          fontFamily: 'monospace',
-          textShadow: '0 1px 1px rgba(0,0,0,0.5)',
-          opacity: 0.8
-        }}>
+        <div
+          style={{
+            marginTop: 12,
+            fontSize: 11,
+            color: '#A1887F',
+            textAlign: 'center',
+            fontFamily: 'monospace',
+            textShadow: '0 1px 1px rgba(0,0,0,0.5)',
+            opacity: 0.8,
+          }}
+        >
           ENGINE: STOCKFISH 14 • {playerColor.toUpperCase()} TO MOVE
         </div>
       </div>
@@ -248,34 +280,40 @@ export const SynthNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: 16,
-        padding: 20,
-        width: 280,
-        boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
-        color: '#fff',
-        position: 'relative',
-        boxSizing: 'border-box'
-      }}>
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: 16,
+          padding: 20,
+          width: 280,
+          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+          color: '#fff',
+          position: 'relative',
+          boxSizing: 'border-box',
+        }}
+      >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Header */}
-        <div style={{
-          fontWeight: 700,
-          fontSize: 16,
-          marginBottom: 16,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
-          <div style={{
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            background: isPlaying ? '#4ade80' : '#64748b'
-          }} />
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 16,
+            marginBottom: 16,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: isPlaying ? '#4ade80' : '#64748b',
+            }}
+          />
           Mini Synth
         </div>
 
@@ -298,7 +336,7 @@ export const SynthNode = ({ data }) => {
                   fontSize: 10,
                   fontWeight: 600,
                   cursor: 'pointer',
-                  textTransform: 'uppercase'
+                  textTransform: 'uppercase',
                 }}
               >
                 {wave[0]}
@@ -309,7 +347,15 @@ export const SynthNode = ({ data }) => {
 
         {/* Frequency Slider */}
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, marginBottom: 8, opacity: 0.8, display: 'flex', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              fontSize: 11,
+              marginBottom: 8,
+              opacity: 0.8,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <span>FREQUENCY</span>
             <span>{frequency} Hz</span>
           </div>
@@ -319,14 +365,14 @@ export const SynthNode = ({ data }) => {
             min="110"
             max="880"
             value={frequency}
-            onChange={(e) => setFrequency(Number(e.target.value))}
+            onChange={e => setFrequency(Number(e.target.value))}
             style={{
               width: '100%',
               height: 4,
               borderRadius: 2,
               background: 'rgba(255,255,255,0.3)',
               outline: 'none',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           />
         </div>
@@ -351,7 +397,7 @@ export const SynthNode = ({ data }) => {
             alignItems: 'center',
             justifyContent: 'center',
             gap: 8,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           }}
         >
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
@@ -373,16 +419,19 @@ export const DrumMachineNode = ({ data }) => {
     data.pattern || {
       kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
       snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-      hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+      hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
     }
   );
 
   useEffect(() => {
     if (!isPlaying) return;
 
-    const interval = setInterval(() => {
-      setCurrentStep((prev) => (prev + 1) % 16);
-    }, (60 / bpm) * 250); // 16th notes
+    const interval = setInterval(
+      () => {
+        setCurrentStep(prev => (prev + 1) % 16);
+      },
+      (60 / bpm) * 250
+    ); // 16th notes
 
     return () => clearInterval(interval);
   }, [isPlaying, bpm]);
@@ -390,33 +439,37 @@ export const DrumMachineNode = ({ data }) => {
   const toggleStep = (track, step) => {
     setPattern(prev => ({
       ...prev,
-      [track]: prev[track].map((v, i) => i === step ? (v ? 0 : 1) : v)
+      [track]: prev[track].map((v, i) => (i === step ? (v ? 0 : 1) : v)),
     }));
   };
 
   return (
     <SwayWrapper>
-      <div style={{
-        background: '#1a1a1a',
-        borderRadius: 16,
-        padding: 20,
-        width: 400,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-        border: '2px solid #2c2c2c',
-        color: '#fff',
-        position: 'relative',
-        boxSizing: 'border-box'
-      }}>
+      <div
+        style={{
+          background: '#1a1a1a',
+          borderRadius: 16,
+          padding: 20,
+          width: 400,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          border: '2px solid #2c2c2c',
+          color: '#fff',
+          position: 'relative',
+          boxSizing: 'border-box',
+        }}
+      >
         <SmartHandle type="target" position={Position.Top} />
         <SmartHandle type="source" position={Position.Bottom} />
-        
+
         {/* Header */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 16
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 16,
+          }}
+        >
           <div style={{ fontWeight: 700, fontSize: 16 }}>TR-808 Style</div>
           <div style={{ fontSize: 12, color: '#9ca3af' }}>{bpm} BPM</div>
         </div>
@@ -425,13 +478,15 @@ export const DrumMachineNode = ({ data }) => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {Object.entries(pattern).map(([track, steps]) => (
             <div key={track} style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-              <div style={{
-                width: 60,
-                fontSize: 11,
-                textTransform: 'uppercase',
-                color: '#9ca3af',
-                fontWeight: 600
-              }}>
+              <div
+                style={{
+                  width: 60,
+                  fontSize: 11,
+                  textTransform: 'uppercase',
+                  color: '#9ca3af',
+                  fontWeight: 600,
+                }}
+              >
                 {track}
               </div>
               <div style={{ display: 'flex', gap: 4 }}>
@@ -446,11 +501,15 @@ export const DrumMachineNode = ({ data }) => {
                       border: currentStep === i ? '2px solid #fbbf24' : 'none',
                       borderRadius: 2,
                       background: active
-                        ? (track === 'kick' ? '#ef4444' : track === 'snare' ? '#3b82f6' : '#22c55e')
+                        ? track === 'kick'
+                          ? '#ef4444'
+                          : track === 'snare'
+                            ? '#3b82f6'
+                            : '#22c55e'
                         : '#2c2c2c',
                       cursor: 'pointer',
                       padding: 0,
-                      transition: 'all 0.1s'
+                      transition: 'all 0.1s',
                     }}
                   />
                 ))}
@@ -460,13 +519,15 @@ export const DrumMachineNode = ({ data }) => {
         </div>
 
         {/* Controls */}
-        <div style={{
-          display: 'flex',
-          gap: 8,
-          marginTop: 16,
-          paddingTop: 16,
-          borderTop: '1px solid #2c2c2c'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            marginTop: 16,
+            paddingTop: 16,
+            borderTop: '1px solid #2c2c2c',
+          }}
+        >
           <motion.button
             whileTap={{ scale: 0.95 }}
             className="nodrag"
@@ -484,10 +545,18 @@ export const DrumMachineNode = ({ data }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 6
+              gap: 6,
             }}
           >
-            {isPlaying ? <><Pause size={14} /> Stop</> : <><Play size={14} /> Play</>}
+            {isPlaying ? (
+              <>
+                <Pause size={14} /> Stop
+              </>
+            ) : (
+              <>
+                <Play size={14} /> Play
+              </>
+            )}
           </motion.button>
           <button
             className="nodrag"
@@ -501,7 +570,7 @@ export const DrumMachineNode = ({ data }) => {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
           >
             <RotateCcw size={14} />
@@ -515,7 +584,7 @@ export const DrumMachineNode = ({ data }) => {
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
-const parseFen = (fen) => {
+const parseFen = fen => {
   // Simplified FEN parser for display only
   const position = {};
   const ranks = fen.split(' ')[0].split('/');
@@ -537,10 +606,20 @@ const parseFen = (fen) => {
   return position;
 };
 
-const getPieceUnicode = (piece) => {
+const getPieceUnicode = piece => {
   const pieces = {
-    'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-    'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+    K: '♔',
+    Q: '♕',
+    R: '♖',
+    B: '♗',
+    N: '♘',
+    P: '♙',
+    k: '♚',
+    q: '♛',
+    r: '♜',
+    b: '♝',
+    n: '♞',
+    p: '♟',
   };
   return pieces[piece] || '';
 };

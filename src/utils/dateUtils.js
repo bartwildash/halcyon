@@ -24,7 +24,7 @@ export const getStartOfTomorrow = () => {
 /**
  * Get date N days from now
  */
-export const getDaysFromNow = (days) => {
+export const getDaysFromNow = days => {
   const today = getStartOfToday();
   const future = new Date(today);
   future.setDate(future.getDate() + days);
@@ -34,7 +34,7 @@ export const getDaysFromNow = (days) => {
 /**
  * Check if a date is today
  */
-export const isToday = (dateString) => {
+export const isToday = dateString => {
   if (!dateString) return false;
   const date = new Date(dateString);
   const today = getStartOfToday();
@@ -45,7 +45,7 @@ export const isToday = (dateString) => {
 /**
  * Check if a date is this week (next 7 days)
  */
-export const isThisWeek = (dateString) => {
+export const isThisWeek = dateString => {
   if (!dateString) return false;
   const date = new Date(dateString);
   const today = getStartOfToday();
@@ -56,7 +56,7 @@ export const isThisWeek = (dateString) => {
 /**
  * Check if a date is this month (next 30 days)
  */
-export const isThisMonth = (dateString) => {
+export const isThisMonth = dateString => {
   if (!dateString) return false;
   const date = new Date(dateString);
   const today = getStartOfToday();
@@ -67,7 +67,7 @@ export const isThisMonth = (dateString) => {
 /**
  * Check if a date is overdue
  */
-export const isOverdue = (dateString) => {
+export const isOverdue = dateString => {
   if (!dateString) return false;
   const date = new Date(dateString);
   const today = getStartOfToday();
@@ -78,7 +78,7 @@ export const isOverdue = (dateString) => {
  * Get number of days until a date
  * Returns negative if overdue
  */
-export const getDaysUntil = (dateString) => {
+export const getDaysUntil = dateString => {
   if (!dateString) return null;
   const date = new Date(dateString);
   const today = getStartOfToday();
@@ -102,7 +102,7 @@ export const formatDate = (dateString, format = 'short') => {
       return date.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
       });
 
     case 'relative':
@@ -116,7 +116,7 @@ export const formatDate = (dateString, format = 'short') => {
 /**
  * Get relative time string (e.g., "2 days ago", "in 3 days")
  */
-export const getRelativeTimeString = (dateString) => {
+export const getRelativeTimeString = dateString => {
   if (!dateString) return 'No date';
 
   const days = getDaysUntil(dateString);
@@ -132,7 +132,7 @@ export const getRelativeTimeString = (dateString) => {
 /**
  * Get deadline urgency level
  */
-export const getDeadlineUrgency = (dateString) => {
+export const getDeadlineUrgency = dateString => {
   if (!dateString) return 'none';
 
   const days = getDaysUntil(dateString);
@@ -148,14 +148,14 @@ export const getDeadlineUrgency = (dateString) => {
 /**
  * Get color for deadline urgency
  */
-export const getUrgencyColor = (urgency) => {
+export const getUrgencyColor = urgency => {
   const colors = {
     none: '#64748b',
     normal: '#3b82f6',
     soon: '#f59e0b',
     urgent: '#f97316',
     critical: '#ef4444',
-    overdue: '#dc2626'
+    overdue: '#dc2626',
   };
   return colors[urgency] || colors.normal;
 };
@@ -163,7 +163,7 @@ export const getUrgencyColor = (urgency) => {
 /**
  * Parse recurrence pattern (for future use)
  */
-export const parseRecurrence = (pattern) => {
+export const parseRecurrence = pattern => {
   // Simple recurrence patterns
   // Could be expanded for complex rules
   const patterns = {
@@ -171,7 +171,7 @@ export const parseRecurrence = (pattern) => {
     weekly: { interval: 7, unit: 'day' },
     biweekly: { interval: 14, unit: 'day' },
     monthly: { interval: 1, unit: 'month' },
-    yearly: { interval: 1, unit: 'year' }
+    yearly: { interval: 1, unit: 'year' },
   };
 
   return patterns[pattern] || null;
@@ -219,7 +219,7 @@ export const isInDateRange = (dateString, startDate, endDate) => {
 /**
  * Get calendar week number
  */
-export const getWeekNumber = (dateString) => {
+export const getWeekNumber = dateString => {
   const date = dateString ? new Date(dateString) : new Date();
   const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
   const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
@@ -229,14 +229,14 @@ export const getWeekNumber = (dateString) => {
 /**
  * Group dates by timeframe
  */
-export const groupByTimeframe = (dates) => {
+export const groupByTimeframe = dates => {
   const groups = {
     overdue: [],
     today: [],
     tomorrow: [],
     thisWeek: [],
     later: [],
-    someday: []
+    someday: [],
   };
 
   dates.forEach(item => {

@@ -97,11 +97,13 @@ void main() {
 `;
 
 // Map shader types to fragment code
-const getFragmentShader = (type) => {
+const getFragmentShader = type => {
   switch (type) {
-    case 'void': return voidFragment;
-    case 'noise-flow': 
-    default: return noiseFlowFragment;
+    case 'void':
+      return voidFragment;
+    case 'noise-flow':
+    default:
+      return noiseFlowFragment;
   }
 };
 
@@ -115,25 +117,28 @@ export const AudioReactiveBackground = ({
   audioRef = null, // Ref to HTMLAudioElement
   intensity = 0.5,
   colorScheme = ['#1a1a2e', '#16213e', '#0f3460'],
-  beatResponse = 'pulse'
+  beatResponse = 'pulse',
 }) => {
   const meshRef = useRef();
-  
+
   // Use the hook to get analysis data
   const audio = useAudioAnalysis(audioSource, audioRef);
-  
+
   // Uniforms ref to avoid recreation
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uBass: { value: 0 },
-    uMid: { value: 0 },
-    uTreble: { value: 0 },
-    uBeat: { value: 0 },
-    uIntensity: { value: intensity },
-    uColor1: { value: new THREE.Color(colorScheme[0]) },
-    uColor2: { value: new THREE.Color(colorScheme[1]) },
-    uColor3: { value: new THREE.Color(colorScheme[2]) },
-  }), []); // Re-create if colors change? Ideally update value.
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uBass: { value: 0 },
+      uMid: { value: 0 },
+      uTreble: { value: 0 },
+      uBeat: { value: 0 },
+      uIntensity: { value: intensity },
+      uColor1: { value: new THREE.Color(colorScheme[0]) },
+      uColor2: { value: new THREE.Color(colorScheme[1]) },
+      uColor3: { value: new THREE.Color(colorScheme[2]) },
+    }),
+    []
+  ); // Re-create if colors change? Ideally update value.
 
   // Update uniform values on prop change
   useEffect(() => {
@@ -146,26 +151,26 @@ export const AudioReactiveBackground = ({
   // Frame Loop
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    
+
     // Smooth the audio values manually or assume hook is fast enough
     // For R3F, we want to update every frame.
-    // The useAudioAnalysis hook updates state via RAF, which triggers re-render of this component? 
-    // Actually, useAudioAnalysis sets state, causing re-render. 
+    // The useAudioAnalysis hook updates state via RAF, which triggers re-render of this component?
+    // Actually, useAudioAnalysis sets state, causing re-render.
     // This is fine for React logic, but for shaders we might want refs for performance.
-    // However, the hook returns values. 
-    
-    // Optimization: The hook causes re-renders. 
+    // However, the hook returns values.
+
+    // Optimization: The hook causes re-renders.
     // For now, we update uniforms in the re-render cycle or useFrame.
     // Since 'audio' changes every frame (from the hook), this component re-renders every frame.
     // We can just set uniforms here.
-    
+
     uniforms.uTime.value = clock.elapsedTime;
-    
+
     // Use the values from the hook state
     uniforms.uBass.value = THREE.MathUtils.lerp(uniforms.uBass.value, audio.bass, 0.1);
     uniforms.uMid.value = THREE.MathUtils.lerp(uniforms.uMid.value, audio.mid, 0.1);
     uniforms.uTreble.value = THREE.MathUtils.lerp(uniforms.uTreble.value, audio.treble, 0.1);
-    
+
     // Beat flash logic
     const targetBeat = audio.beat ? 1.0 : 0.0;
     uniforms.uBeat.value = THREE.MathUtils.lerp(uniforms.uBeat.value, targetBeat, 0.15);

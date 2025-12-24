@@ -1,16 +1,24 @@
 import React from 'react';
 import { BaseEdge, getSmoothStepPath } from '@xyflow/react';
 
-export const PeripheralCable = ({ 
-  id, 
-  sourceX, sourceY, targetX, targetY, 
-  sourcePosition, targetPosition, 
+export const PeripheralCable = ({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
   data = {},
-  style = {}
+  style = {},
 }) => {
   const [edgePath] = getSmoothStepPath({
-    sourceX, sourceY, sourcePosition,
-    targetX, targetY, targetPosition,
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
     borderRadius: 16,
   });
 
@@ -21,26 +29,26 @@ export const PeripheralCable = ({
   return (
     <>
       {/* Glow / Highlight Layer */}
-      <BaseEdge 
-        path={edgePath} 
-        style={{ 
-          stroke: peripheralColor, 
-          strokeWidth: 8, 
+      <BaseEdge
+        path={edgePath}
+        style={{
+          stroke: peripheralColor,
+          strokeWidth: 8,
           strokeOpacity: 0.15,
-          fill: 'none'
-        }} 
+          fill: 'none',
+        }}
       />
-      
+
       {/* Main Cable */}
-      <BaseEdge 
-        path={edgePath} 
-        style={{ 
-          stroke: peripheralColor, 
-          strokeWidth: 3, 
+      <BaseEdge
+        path={edgePath}
+        style={{
+          stroke: peripheralColor,
+          strokeWidth: 3,
           strokeDasharray: isConnecting ? '8 4' : 'none',
           animation: isConnecting ? 'cable-dash 0.5s linear infinite' : 'none',
-          ...style
-        }} 
+          ...style,
+        }}
       />
 
       {/* Pulse Animation (Data Flow) */}
@@ -49,7 +57,7 @@ export const PeripheralCable = ({
           <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} />
         </circle>
       )}
-      
+
       {/* Inline Styles for Animation (if not in global css) */}
       <style>{`
         @keyframes cable-dash {
@@ -59,4 +67,3 @@ export const PeripheralCable = ({
     </>
   );
 };
-

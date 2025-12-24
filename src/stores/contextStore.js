@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 /**
  * CONTEXT STORE - The Single Source of Truth
- * 
+ *
  * A Context is a recallable "state-of-being" bundle:
  * - Camera: Where you are
  * - Focus: What matters (ids of nodes to highlight)
@@ -21,9 +21,9 @@ const DEFAULT_CONTEXTS = {
       shader: 'focus-rain',
       brightness: 0.7,
       blur: 2,
-      uiOpacity: 0.6
+      uiOpacity: 0.6,
     },
-    rules: { allowNewNodes: false, allowSocial: false }
+    rules: { allowNewNodes: false, allowSocial: false },
   },
   'studio-jam': {
     id: 'studio-jam',
@@ -35,9 +35,9 @@ const DEFAULT_CONTEXTS = {
       shader: 'synthwave-pulse',
       brightness: 1.1,
       blur: 0,
-      uiOpacity: 1
+      uiOpacity: 1,
     },
-    rules: { allowNewNodes: true }
+    rules: { allowNewNodes: true },
   },
   'admin-sweep': {
     id: 'admin-sweep',
@@ -49,9 +49,9 @@ const DEFAULT_CONTEXTS = {
       shader: 'void',
       brightness: 1.0,
       blur: 0,
-      uiOpacity: 1
+      uiOpacity: 1,
     },
-    rules: { allowNewNodes: true }
+    rules: { allowNewNodes: true },
   },
   'social-sync': {
     id: 'social-sync',
@@ -63,11 +63,11 @@ const DEFAULT_CONTEXTS = {
       shader: 'organic-flow',
       brightness: 1.0,
       blur: 0,
-      uiOpacity: 1
+      uiOpacity: 1,
     },
-    rules: { allowNewNodes: true }
+    rules: { allowNewNodes: true },
   },
-  'overview': {
+  overview: {
     id: 'overview',
     label: 'Overview',
     description: 'God view of the entire system',
@@ -77,9 +77,9 @@ const DEFAULT_CONTEXTS = {
       shader: 'void',
       brightness: 1.0,
       blur: 0,
-      uiOpacity: 1
+      uiOpacity: 1,
     },
-    rules: { allowNewNodes: true }
+    rules: { allowNewNodes: true },
   },
   'deep-focus': {
     id: 'deep-focus',
@@ -91,27 +91,28 @@ const DEFAULT_CONTEXTS = {
       shader: 'void',
       brightness: 0.5,
       blur: 3,
-      uiOpacity: 0.3
+      uiOpacity: 0.3,
     },
-    rules: { allowNewNodes: false, hideUI: true }
-  }
+    rules: { allowNewNodes: false, hideUI: true },
+  },
 };
 
 export const useContextStore = create((set, get) => ({
   // Data
   contexts: DEFAULT_CONTEXTS,
   activeContextId: 'overview',
-  
+
   // Active State (Derived from Context)
   activeVisuals: DEFAULT_CONTEXTS['overview'].atmosphere,
   activeRules: DEFAULT_CONTEXTS['overview'].rules,
-  
-  // Actions
-  registerContext: (context) => set((state) => ({
-    contexts: { ...state.contexts, [context.id]: context }
-  })),
 
-  activateContext: (contextId) => {
+  // Actions
+  registerContext: context =>
+    set(state => ({
+      contexts: { ...state.contexts, [context.id]: context },
+    })),
+
+  activateContext: contextId => {
     const context = get().contexts[contextId];
     if (!context) {
       console.warn(`Context ${contextId} not found`);
@@ -121,7 +122,7 @@ export const useContextStore = create((set, get) => ({
     set({
       activeContextId: contextId,
       activeVisuals: context.atmosphere,
-      activeRules: context.rules
+      activeRules: context.rules,
     });
 
     console.log(`> Context Activated: ${context.label}`);
@@ -130,16 +131,16 @@ export const useContextStore = create((set, get) => ({
   },
 
   // Activate deep focus on a specific node
-  focusOnNode: (nodeId) => {
-    set((state) => ({
+  focusOnNode: nodeId => {
+    set(state => ({
       contexts: {
         ...state.contexts,
         'deep-focus': {
           ...state.contexts['deep-focus'],
           camera: { target: nodeId, zoom: 1.5 },
-          focus: [nodeId] // Focus on this specific node
-        }
-      }
+          focus: [nodeId], // Focus on this specific node
+        },
+      },
     }));
 
     // Then activate the deep-focus context
@@ -151,6 +152,5 @@ export const useContextStore = create((set, get) => ({
   exitFocus: () => {
     get().activateContext('overview');
     console.log(`> Exited Focus Mode`);
-  }
+  },
 }));
-

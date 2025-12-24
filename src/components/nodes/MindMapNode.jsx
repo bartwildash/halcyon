@@ -5,13 +5,7 @@
 
 import React, { useState } from 'react';
 import { SwayWrapper } from '../SpatialCommon';
-import {
-  Brain,
-  Plus,
-  X,
-  Circle,
-  Edit2
-} from 'lucide-react';
+import { Brain, Plus, X, Circle, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const MindMapNode = ({ data }) => {
@@ -47,56 +41,63 @@ export const MindMapNode = ({ data }) => {
     const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
     return {
       x: centerX + Math.cos(angle) * branchRadius,
-      y: centerY + Math.sin(angle) * branchRadius
+      y: centerY + Math.sin(angle) * branchRadius,
     };
   };
 
   const getChildPosition = (branchPos, childIndex, childTotal) => {
     const baseAngle = Math.atan2(branchPos.y - centerY, branchPos.x - centerX);
     const spread = Math.PI / 3; // 60 degree spread
-    const angle = baseAngle + (childIndex - (childTotal - 1) / 2) * (spread / Math.max(childTotal - 1, 1));
+    const angle =
+      baseAngle + (childIndex - (childTotal - 1) / 2) * (spread / Math.max(childTotal - 1, 1));
 
     return {
       x: branchPos.x + Math.cos(angle) * childRadius,
-      y: branchPos.y + Math.sin(angle) * childRadius
+      y: branchPos.y + Math.sin(angle) * childRadius,
     };
   };
 
   return (
     <SwayWrapper style={{ width: 600, height: 400 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
-        borderRadius: 16,
-        border: '2px solid rgba(135, 133, 128, 0.2)',
-        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
-        overflow: 'hidden',
-        position: 'relative'
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'linear-gradient(135deg, #100F0F 0%, #1C1B1A 100%)',
+          borderRadius: 16,
+          border: '2px solid rgba(135, 133, 128, 0.2)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
         {/* Header */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: 12,
-          background: 'rgba(0, 0, 0, 0.6)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          zIndex: 10
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            padding: 12,
+            background: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(8px)',
+            borderBottom: '1px solid rgba(135, 133, 128, 0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            zIndex: 10,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Brain size={18} color={color} />
-            <span style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui'
-            }}>
+            <span
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+              }}
+            >
               {label}
             </span>
           </div>
@@ -113,7 +114,7 @@ export const MindMapNode = ({ data }) => {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: 4
+              gap: 4,
             }}
           >
             <Plus size={12} />
@@ -128,7 +129,7 @@ export const MindMapNode = ({ data }) => {
           style={{
             position: 'absolute',
             top: 0,
-            left: 0
+            left: 0,
           }}
         >
           {/* Connections from center to branches */}
@@ -218,38 +219,44 @@ export const MindMapNode = ({ data }) => {
 
         {/* Add Branch Dialog */}
         {showAddDialog && (
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 20
-          }}>
-            <div style={{
-              width: '80%',
-              maxWidth: 300,
-              padding: 16,
-              background: '#1e293b',
-              borderRadius: 12,
-              border: '1px solid rgba(135, 133, 128, 0.2)'
-            }}>
-              <h4 style={{
-                margin: '0 0 12px 0',
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#CECDC3'
-              }}>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 20,
+            }}
+          >
+            <div
+              style={{
+                width: '80%',
+                maxWidth: 300,
+                padding: 16,
+                background: '#1e293b',
+                borderRadius: 12,
+                border: '1px solid rgba(135, 133, 128, 0.2)',
+              }}
+            >
+              <h4
+                style={{
+                  margin: '0 0 12px 0',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#CECDC3',
+                }}
+              >
                 New Branch
               </h4>
               <input
                 type="text"
                 placeholder="Branch name..."
                 value={newBranchText}
-                onChange={(e) => setNewBranchText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddBranch()}
+                onChange={e => setNewBranchText(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddBranch()}
                 style={{
                   width: '100%',
                   padding: 8,
@@ -261,7 +268,7 @@ export const MindMapNode = ({ data }) => {
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
                 }}
                 autoFocus
               />
@@ -276,7 +283,7 @@ export const MindMapNode = ({ data }) => {
                     color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   Cancel
@@ -292,7 +299,7 @@ export const MindMapNode = ({ data }) => {
                     color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
-                    cursor: newBranchText.trim() ? 'pointer' : 'not-allowed'
+                    cursor: newBranchText.trim() ? 'pointer' : 'not-allowed',
                   }}
                 >
                   Add
@@ -342,23 +349,25 @@ const MindMapBubble = ({ text, x, y, size, color, isCenter, isChild, isSelected,
         cursor: onClick ? 'pointer' : 'default',
         opacity,
         transition: 'all 0.2s ease',
-        zIndex: isCenter ? 5 : isChild ? 1 : 3
+        zIndex: isCenter ? 5 : isChild ? 1 : 3,
       }}
     >
-      <span style={{
-        fontSize: isCenter ? 11 : isChild ? 8 : 10,
-        fontWeight: isCenter ? 700 : 600,
-        color: '#CECDC3',
-        textAlign: 'center',
-        fontFamily: 'system-ui',
-        padding: 8,
-        lineHeight: 1.2,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        display: '-webkit-box',
-        WebkitLineClamp: isChild ? 2 : 3,
-        WebkitBoxOrient: 'vertical'
-      }}>
+      <span
+        style={{
+          fontSize: isCenter ? 11 : isChild ? 8 : 10,
+          fontWeight: isCenter ? 700 : 600,
+          color: '#CECDC3',
+          textAlign: 'center',
+          fontFamily: 'system-ui',
+          padding: 8,
+          lineHeight: 1.2,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: isChild ? 2 : 3,
+          WebkitBoxOrient: 'vertical',
+        }}
+      >
         {text}
       </span>
     </motion.div>

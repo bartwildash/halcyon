@@ -41,12 +41,16 @@ const SHADER_PRESETS = [
 
 export const ShaderNode = ({ data }) => {
   const preset = SHADER_PRESETS.find(p => p.id === data.presetId) || SHADER_PRESETS[0];
-  const universe = useMaterialStore((state) => state.universe);
-  const setUniverse = useMaterialStore((state) => state.setUniverse);
+  const universe = useMaterialStore(state => state.universe);
+  const setUniverse = useMaterialStore(state => state.setUniverse);
   const isCurrentUniverse = universe?.id === preset.id;
-  
-  const audioRef = useMaterialStore((state) => state.audioRef);
-  const audioSource = preset.audio?.reactive ? (preset.audio.source === 'playing-audio' ? 'element' : 'none') : 'none';
+
+  const audioRef = useMaterialStore(state => state.audioRef);
+  const audioSource = preset.audio?.reactive
+    ? preset.audio.source === 'playing-audio'
+      ? 'element'
+      : 'none'
+    : 'none';
 
   const handleSetUniverse = () => {
     setUniverse({
@@ -60,27 +64,34 @@ export const ShaderNode = ({ data }) => {
 
   return (
     <SwayWrapper>
-      <div style={{
-        width: 280,
-        background: '#fff',
-        borderRadius: 12,
-        padding: 16,
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        border: isCurrentUniverse ? '2px solid #3b82f6' : '1px solid #e5e7eb',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12
-      }}>
+      <div
+        style={{
+          width: 280,
+          background: '#fff',
+          borderRadius: 12,
+          padding: 16,
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          border: isCurrentUniverse ? '2px solid #3b82f6' : '1px solid #e5e7eb',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
         {/* Preview Canvas */}
-        <div style={{
-          width: '100%',
-          height: 120,
-          borderRadius: 8,
-          overflow: 'hidden',
-          background: '#000',
-          position: 'relative'
-        }}>
-          <Canvas camera={{ position: [0, 0, 1], fov: 50 }} style={{ width: '100%', height: '100%' }}>
+        <div
+          style={{
+            width: '100%',
+            height: 120,
+            borderRadius: 8,
+            overflow: 'hidden',
+            background: '#000',
+            position: 'relative',
+          }}
+        >
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{ width: '100%', height: '100%' }}
+          >
             <AudioReactiveBackground
               shaderType={preset.type}
               audioSource={audioSource}
@@ -97,9 +108,7 @@ export const ShaderNode = ({ data }) => {
           <div style={{ fontWeight: 600, fontSize: 14, color: '#111827', marginBottom: 4 }}>
             {preset.name}
           </div>
-          <div style={{ fontSize: 11, color: '#64748b' }}>
-            {preset.description}
-          </div>
+          <div style={{ fontSize: 11, color: '#64748b' }}>{preset.description}</div>
         </div>
 
         {/* Universe Toggle */}
@@ -114,7 +123,7 @@ export const ShaderNode = ({ data }) => {
             fontSize: 12,
             fontWeight: 600,
             cursor: 'pointer',
-            transition: 'all 0.2s'
+            transition: 'all 0.2s',
           }}
         >
           {isCurrentUniverse ? '🌌 Universe Active' : '🌑 Set as Universe'}

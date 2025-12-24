@@ -18,7 +18,7 @@ import {
   Filter,
   X,
   Plus,
-  Tag as TagIcon
+  Tag as TagIcon,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -49,9 +49,7 @@ export const ProjectHubNode = ({ data }) => {
   const handleToggleFilter = () => {
     if (isFilterActive) {
       // Remove the filter
-      const filterIndex = activeFilters.findIndex(
-        f => f.type === 'tag' && f.value === projectTag
-      );
+      const filterIndex = activeFilters.findIndex(f => f.type === 'tag' && f.value === projectTag);
       if (filterIndex !== -1) {
         removeFilter(filterIndex);
       }
@@ -77,60 +75,75 @@ export const ProjectHubNode = ({ data }) => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
-      case 'planning': return '#878580';
-      case 'active': return '#10b981';
-      case 'on-hold': return '#f59e0b';
-      case 'complete': return '#3b82f6';
-      default: return '#878580';
+      case 'planning':
+        return '#878580';
+      case 'active':
+        return '#10b981';
+      case 'on-hold':
+        return '#f59e0b';
+      case 'complete':
+        return '#3b82f6';
+      default:
+        return '#878580';
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = status => {
     switch (status) {
-      case 'complete': return <CheckCircle2 size={14} />;
-      default: return <Circle size={14} />;
+      case 'complete':
+        return <CheckCircle2 size={14} />;
+      default:
+        return <Circle size={14} />;
     }
   };
 
   return (
     <SwayWrapper style={{ width: 320, height: 280 }}>
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
-        borderRadius: 16,
-        border: `2px solid ${isFilterActive ? color : `${color}40`}`,
-        boxShadow: isFilterActive
-          ? `0 0 20px ${color}40, 0 12px 40px rgba(0, 0, 0, 0.4)`
-          : '0 12px 40px rgba(0, 0, 0, 0.4)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease'
-      }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
+          borderRadius: 16,
+          border: `2px solid ${isFilterActive ? color : `${color}40`}`,
+          boxShadow: isFilterActive
+            ? `0 0 20px ${color}40, 0 12px 40px rgba(0, 0, 0, 0.4)`
+            : '0 12px 40px rgba(0, 0, 0, 0.4)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          transition: 'all 0.3s ease',
+        }}
+      >
         {/* Header */}
-        <div style={{
-          padding: 16,
-          borderBottom: `1px solid ${color}20`,
-          background: `linear-gradient(to bottom, ${color}10, transparent)`
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            marginBottom: 8
-          }}>
+        <div
+          style={{
+            padding: 16,
+            borderBottom: `1px solid ${color}20`,
+            background: `linear-gradient(to bottom, ${color}10, transparent)`,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 8,
+            }}
+          >
             <Folder size={20} color={color} />
-            <h3 style={{
-              margin: 0,
-              fontSize: 16,
-              fontWeight: 600,
-              color: '#CECDC3',
-              fontFamily: 'system-ui',
-              flex: 1
-            }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: 16,
+                fontWeight: 600,
+                color: '#CECDC3',
+                fontFamily: 'system-ui',
+                flex: 1,
+              }}
+            >
               {projectName}
             </h3>
             <button
@@ -147,7 +160,7 @@ export const ProjectHubNode = ({ data }) => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
               }}
               title={isFilterActive ? 'Clear filter' : 'Filter to project'}
             >
@@ -157,41 +170,46 @@ export const ProjectHubNode = ({ data }) => {
           </div>
 
           {/* Status badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 10px',
-            background: `${getStatusColor(status)}20`,
-            border: `1px solid ${getStatusColor(status)}40`,
-            borderRadius: 12,
-            fontSize: 11,
-            fontWeight: 600,
-            color: getStatusColor(status)
-          }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '4px 10px',
+              background: `${getStatusColor(status)}20`,
+              border: `1px solid ${getStatusColor(status)}40`,
+              borderRadius: 12,
+              fontSize: 11,
+              fontWeight: 600,
+              color: getStatusColor(status),
+            }}
+          >
             {getStatusIcon(status)}
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div style={{
-          flex: 1,
-          padding: 16,
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 12,
-          alignContent: 'start'
-        }}>
+        <div
+          style={{
+            flex: 1,
+            padding: 16,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 12,
+            alignContent: 'start',
+          }}
+        >
           {/* Tasks */}
           <StatCard
             icon={<CheckCircle2 size={16} />}
             label="Tasks"
             value={`${stats.tasks.completed}/${stats.tasks.total}`}
             color={color}
-            subtitle={stats.tasks.total > 0
-              ? `${Math.round(stats.tasks.progress * 100)}% complete`
-              : 'No tasks'
+            subtitle={
+              stats.tasks.total > 0
+                ? `${Math.round(stats.tasks.progress * 100)}% complete`
+                : 'No tasks'
             }
           />
 
@@ -201,9 +219,13 @@ export const ProjectHubNode = ({ data }) => {
             label="Team"
             value={stats.teamMembers.length}
             color={color}
-            subtitle={stats.teamMembers.length > 0
-              ? stats.teamMembers.slice(0, 2).map(m => m.name).join(', ')
-              : 'No members'
+            subtitle={
+              stats.teamMembers.length > 0
+                ? stats.teamMembers
+                    .slice(0, 2)
+                    .map(m => m.name)
+                    .join(', ')
+                : 'No members'
             }
           />
 
@@ -220,78 +242,91 @@ export const ProjectHubNode = ({ data }) => {
           <StatCard
             icon={<Calendar size={16} />}
             label="Deadline"
-            value={stats.deadline
-              ? new Date(stats.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-              : 'None'
+            value={
+              stats.deadline
+                ? new Date(stats.deadline).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  })
+                : 'None'
             }
             color={color}
-            subtitle={stats.deadline
-              ? getDaysUntil(stats.deadline)
-              : 'No deadline'
-            }
+            subtitle={stats.deadline ? getDaysUntil(stats.deadline) : 'No deadline'}
           />
         </div>
 
         {/* Project Tag */}
-        <div style={{
-          padding: 12,
-          borderTop: `1px solid ${color}20`,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
+        <div
+          style={{
+            padding: 12,
+            borderTop: `1px solid ${color}20`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
           <TagIcon size={12} color={color} />
-          <code style={{
-            fontSize: 11,
-            fontFamily: 'monospace',
-            color: color,
-            fontWeight: 600
-          }}>
+          <code
+            style={{
+              fontSize: 11,
+              fontFamily: 'monospace',
+              color: color,
+              fontWeight: 600,
+            }}
+          >
             {projectTag}
           </code>
           <div style={{ flex: 1 }} />
-          <span style={{
-            fontSize: 10,
-            color: '#878580',
-            fontFamily: 'system-ui'
-          }}>
+          <span
+            style={{
+              fontSize: 10,
+              color: '#878580',
+              fontFamily: 'system-ui',
+            }}
+          >
             Tag nodes with this to add to project
           </span>
         </div>
 
         {/* Tag Dialog */}
         {showTagDialog && (
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10
-          }}>
-            <div style={{
-              width: '90%',
-              padding: 16,
-              background: '#1e293b',
-              borderRadius: 12,
-              border: '1px solid rgba(135, 133, 128, 0.2)'
-            }}>
-              <h4 style={{
-                margin: '0 0 12px 0',
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#CECDC3'
-              }}>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10,
+            }}
+          >
+            <div
+              style={{
+                width: '90%',
+                padding: 16,
+                background: '#1e293b',
+                borderRadius: 12,
+                border: '1px solid rgba(135, 133, 128, 0.2)',
+              }}
+            >
+              <h4
+                style={{
+                  margin: '0 0 12px 0',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#CECDC3',
+                }}
+              >
                 Add Related Tag
               </h4>
               <input
                 type="text"
                 placeholder="tag-name"
                 value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
+                onChange={e => setNewTag(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAddTag()}
                 style={{
                   width: '100%',
                   padding: 8,
@@ -303,7 +338,7 @@ export const ProjectHubNode = ({ data }) => {
                   fontSize: 12,
                   fontFamily: 'system-ui',
                   outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
                 }}
                 autoFocus
               />
@@ -318,7 +353,7 @@ export const ProjectHubNode = ({ data }) => {
                     color: '#878580',
                     fontSize: 11,
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
                   Cancel
@@ -334,7 +369,7 @@ export const ProjectHubNode = ({ data }) => {
                     color: '#CECDC3',
                     fontSize: 11,
                     fontWeight: 600,
-                    cursor: newTag.trim() ? 'pointer' : 'not-allowed'
+                    cursor: newTag.trim() ? 'pointer' : 'not-allowed',
                   }}
                 >
                   Add Tag
@@ -350,55 +385,65 @@ export const ProjectHubNode = ({ data }) => {
 
 // Helper component for stat cards
 const StatCard = ({ icon, label, value, color, subtitle }) => (
-  <div style={{
-    padding: 10,
-    background: 'rgba(0, 0, 0, 0.3)',
-    border: '1px solid rgba(135, 133, 128, 0.15)',
-    borderRadius: 8,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6
-  }}>
-    <div style={{
+  <div
+    style={{
+      padding: 10,
+      background: 'rgba(0, 0, 0, 0.3)',
+      border: '1px solid rgba(135, 133, 128, 0.15)',
+      borderRadius: 8,
       display: 'flex',
-      alignItems: 'center',
+      flexDirection: 'column',
       gap: 6,
-      color: color
-    }}>
+    }}
+  >
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+        color: color,
+      }}
+    >
       {icon}
-      <span style={{
-        fontSize: 10,
-        fontWeight: 600,
-        color: '#878580',
-        textTransform: 'uppercase',
-        fontFamily: 'system-ui'
-      }}>
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 600,
+          color: '#878580',
+          textTransform: 'uppercase',
+          fontFamily: 'system-ui',
+        }}
+      >
         {label}
       </span>
     </div>
-    <div style={{
-      fontSize: 18,
-      fontWeight: 700,
-      color: '#CECDC3',
-      fontFamily: 'system-ui'
-    }}>
+    <div
+      style={{
+        fontSize: 18,
+        fontWeight: 700,
+        color: '#CECDC3',
+        fontFamily: 'system-ui',
+      }}
+    >
       {value}
     </div>
-    <div style={{
-      fontSize: 9,
-      color: '#878580',
-      fontFamily: 'system-ui',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    }}>
+    <div
+      style={{
+        fontSize: 9,
+        color: '#878580',
+        fontFamily: 'system-ui',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+    >
       {subtitle}
     </div>
   </div>
 );
 
 // Helper function
-const getDaysUntil = (dateString) => {
+const getDaysUntil = dateString => {
   const deadline = new Date(dateString);
   const now = new Date();
   const diff = deadline - now;

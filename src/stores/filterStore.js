@@ -16,34 +16,34 @@ export const useFilterStore = create(
       combineMode: 'AND',
 
       // Add a filter
-      addFilter: (filter) => {
-        set((state) => {
+      addFilter: filter => {
+        set(state => {
           // Check if filter already exists
           const exists = state.activeFilters.some(
-            (f) => f.type === filter.type && JSON.stringify(f.value) === JSON.stringify(filter.value)
+            f => f.type === filter.type && JSON.stringify(f.value) === JSON.stringify(filter.value)
           );
 
           if (exists) return state;
 
           return {
-            activeFilters: [...state.activeFilters, filter]
+            activeFilters: [...state.activeFilters, filter],
           };
         });
       },
 
       // Remove a filter by index
-      removeFilter: (index) => {
-        set((state) => ({
-          activeFilters: state.activeFilters.filter((_, i) => i !== index)
+      removeFilter: index => {
+        set(state => ({
+          activeFilters: state.activeFilters.filter((_, i) => i !== index),
         }));
       },
 
       // Remove filter by type and value
       removeFilterByValue: (type, value) => {
-        set((state) => ({
+        set(state => ({
           activeFilters: state.activeFilters.filter(
-            (f) => !(f.type === type && JSON.stringify(f.value) === JSON.stringify(value))
-          )
+            f => !(f.type === type && JSON.stringify(f.value) === JSON.stringify(value))
+          ),
         }));
       },
 
@@ -54,13 +54,13 @@ export const useFilterStore = create(
 
       // Toggle combine mode
       toggleCombineMode: () => {
-        set((state) => ({
-          combineMode: state.combineMode === 'AND' ? 'OR' : 'AND'
+        set(state => ({
+          combineMode: state.combineMode === 'AND' ? 'OR' : 'AND',
         }));
       },
 
       // Set specific combine mode
-      setCombineMode: (mode) => {
+      setCombineMode: mode => {
         set({ combineMode: mode });
       },
 
@@ -74,11 +74,19 @@ export const useFilterStore = create(
       },
 
       addNodeTypeFilter: (types, behavior = 'show-only') => {
-        get().addFilter({ type: 'node-type', value: Array.isArray(types) ? types : [types], behavior });
+        get().addFilter({
+          type: 'node-type',
+          value: Array.isArray(types) ? types : [types],
+          behavior,
+        });
       },
 
       addDistrictFilter: (districts, behavior = 'show-only') => {
-        get().addFilter({ type: 'district', value: Array.isArray(districts) ? districts : [districts], behavior });
+        get().addFilter({
+          type: 'district',
+          value: Array.isArray(districts) ? districts : [districts],
+          behavior,
+        });
       },
 
       // Check if filters are active
@@ -89,7 +97,7 @@ export const useFilterStore = create(
       // Get filter summary for UI
       getFilterSummary: () => {
         const { activeFilters } = get();
-        return activeFilters.map((f) => {
+        return activeFilters.map(f => {
           switch (f.type) {
             case 'tag':
               return `Tag: ${f.value}`;
@@ -103,11 +111,11 @@ export const useFilterStore = create(
               return `${f.type}: ${f.value}`;
           }
         });
-      }
+      },
     }),
     {
       name: 'spatial-os-filters',
-      version: 1
+      version: 1,
     }
   )
 );
