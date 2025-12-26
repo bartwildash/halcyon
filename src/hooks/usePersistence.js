@@ -65,6 +65,34 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
       nodes: nodes.map(n => ({ id: n.id, position: n.position })),
       edges: edges,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+      // Handle QuotaExceededError (storage full)
+      if (
+        error.name === 'QuotaExceededError' ||
+        error.code === 22 ||
+        error.code === 1014 ||
+        error.number === -2147024882
+      ) {
+        console.error('localStorage quota exceeded. Clearing old data and retrying...');
+
+        // Try to clear old storage versions
+        try {
+          for (let i = 1; i < 10; i++) {
+            localStorage.removeItem(`spatialos-state-v${i}`);
+          }
+          // Retry save after cleanup
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          console.log('Successfully saved after clearing old data');
+        } catch (retryError) {
+          console.error('Failed to save workspace state - storage quota exceeded:', retryError);
+          // Could emit an event here to show user notification
+        }
+      } else {
+        console.error('Failed to save workspace state:', error);
+      }
+    }
   }, [nodes, edges]);
 };

@@ -128,7 +128,10 @@ export const useAudioAnalysis = (sourceType = 'none', audioRef = null) => {
         }
       }
     };
-  }, [sourceType, audioRef]);
+    // Note: audioRef is intentionally NOT in dependencies to avoid recreation
+    // when ref object changes. We only check audioRef?.current inside the effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceType]);
 
   return analysis;
 };
