@@ -41,20 +41,31 @@ export const AudioEditorNode = ({ data }) => {
     audio.src = audioUrl;
     audio.volume = volume;
 
-    audio.addEventListener('loadedmetadata', () => {
+    // Define event handlers so we can remove them on cleanup
+    const handleLoadedMetadata = () => {
       setDuration(audio.duration);
       generateWaveform(audio);
-    });
+    };
 
-    audio.addEventListener('timeupdate', () => {
+    const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
-    });
+    };
 
-    audio.addEventListener('ended', () => {
+    const handleEnded = () => {
       setIsPlaying(false);
-    });
+    };
 
+    // Add event listeners
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    // Cleanup: remove event listeners and cancel animations
     return () => {
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

@@ -18,6 +18,7 @@ export const PomodoroNode = () => {
   const timerStartTime = useRef(0);
   const timerStartRemaining = useRef(0);
   const pausedFromMode = useRef('work');
+  const playChirpRef = useRef(null); // Store playChirp in ref to avoid interval recreation
 
   const playChirp = useCallback(() => {
     if (!soundEnabled) return;
@@ -46,6 +47,11 @@ export const PomodoroNode = () => {
     }
   }, [soundEnabled]);
 
+  // Store latest playChirp in ref
+  useEffect(() => {
+    playChirpRef.current = playChirp;
+  }, [playChirp]);
+
   useEffect(() => {
     if (mode === 'stopped' || mode === 'paused') {
       if (timerRef.current !== undefined) {
@@ -65,7 +71,10 @@ export const PomodoroNode = () => {
           clearInterval(timerRef.current);
           timerRef.current = undefined;
         }
-        playChirp();
+        // Use ref to call latest playChirp without triggering effect re-run
+        if (playChirpRef.current) {
+          playChirpRef.current();
+        }
         setTimeout(() => {
           if (mode === 'work') {
             setMode('break');
@@ -85,7 +94,7 @@ export const PomodoroNode = () => {
         timerRef.current = undefined;
       }
     };
-  }, [mode, playChirp]);
+  }, [mode]); // Removed playChirp from deps - using ref instead
 
   const getThemeColors = () => {
     if (visualTheme === 'dark') {

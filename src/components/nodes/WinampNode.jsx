@@ -14,6 +14,9 @@ const DEFAULT_TRACKS = [];
 export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
   const containerRef = useRef(null);
   const webampRef = useRef(null);
+  const audioElementRef = useRef(null); // Track audio element for cleanup
+  const audioPlayHandlerRef = useRef(null); // Track play handler for cleanup
+  const mutationObserverRef = useRef(null); // Track MutationObserver for cleanup
   const [isMinimized, setIsMinimized] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [showVisualizer, setShowVisualizer] = useState(false);
@@ -95,27 +98,48 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
           const findAudioElement = () => {
             const audioElement = containerRef.current?.querySelector('audio');
             if (audioElement) {
+              audioElementRef.current = audioElement;
               setAudioRef({ current: audioElement });
-              audioElement.addEventListener('play', () => {
-                setAudioRef({ current: audioElement });
-              });
+
+              // Create and store play handler
+              const handlePlay = () => {
+                if (audioElementRef.current) {
+                  setAudioRef({ current: audioElementRef.current });
+                }
+              };
+              audioPlayHandlerRef.current = handlePlay;
+              audioElement.addEventListener('play', handlePlay);
               return true;
             }
             return false;
           };
 
           if (!findAudioElement()) {
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
               if (!findAudioElement()) {
                 const observer = new MutationObserver(() => {
-                  if (findAudioElement()) observer.disconnect();
+                  if (findAudioElement()) {
+                    observer.disconnect();
+                    mutationObserverRef.current = null;
+                  }
                 });
+                mutationObserverRef.current = observer;
+
                 if (containerRef.current) {
                   observer.observe(containerRef.current, { childList: true, subtree: true });
-                  setTimeout(() => observer.disconnect(), 5000);
+                  // Clean up observer after 5s if not found
+                  setTimeout(() => {
+                    if (mutationObserverRef.current === observer) {
+                      observer.disconnect();
+                      mutationObserverRef.current = null;
+                    }
+                  }, 5000);
                 }
               }
             }, 300);
+
+            // Store timeout ID for cleanup if component unmounts
+            containerRef.current._findAudioTimeout = timeoutId;
           }
         })
         .catch(err => {
@@ -125,6 +149,25 @@ export const WinampNode = forwardRef(({ data, onClose, onMinimize }, ref) => {
     }
 
     return () => {
+      // Clear any pending timeouts
+      if (containerRef.current?._findAudioTimeout) {
+        clearTimeout(containerRef.current._findAudioTimeout);
+      }
+
+      // Disconnect MutationObserver if still running
+      if (mutationObserverRef.current) {
+        mutationObserverRef.current.disconnect();
+        mutationObserverRef.current = null;
+      }
+
+      // Remove audio element event listener
+      if (audioElementRef.current && audioPlayHandlerRef.current) {
+        audioElementRef.current.removeEventListener('play', audioPlayHandlerRef.current);
+        audioElementRef.current = null;
+        audioPlayHandlerRef.current = null;
+      }
+
+      // Dispose Webamp instance
       if (webampRef.current) {
         webampRef.current.dispose();
         webampRef.current = null;

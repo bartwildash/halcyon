@@ -58,7 +58,7 @@ export const ButterchurnVisualizerNode = ({ data }) => {
         visualizerRef.current = visualizer;
 
         // Handle WebGL context loss (common on mobile)
-        canvas.addEventListener('webglcontextlost', e => {
+        const handleContextLost = e => {
           e.preventDefault();
           console.warn('WebGL context lost - Butterchurn will pause');
           setWebglError('WebGL context lost. Refresh to restore.');
@@ -66,13 +66,20 @@ export const ButterchurnVisualizerNode = ({ data }) => {
             cancelAnimationFrame(rafIdRef.current);
             rafIdRef.current = null;
           }
-        });
+        };
 
-        canvas.addEventListener('webglcontextrestored', () => {
+        const handleContextRestored = () => {
           console.log('WebGL context restored - reinitializing Butterchurn');
           setWebglError(null);
           initVisualizer(); // Reinitialize
-        });
+        };
+
+        canvas.addEventListener('webglcontextlost', handleContextLost);
+        canvas.addEventListener('webglcontextrestored', handleContextRestored);
+
+        // Store handlers for cleanup
+        canvasRef.current._handleContextLost = handleContextLost;
+        canvasRef.current._handleContextRestored = handleContextRestored;
       } catch (error) {
         console.error('Butterchurn initialization failed:', error);
         setWebglError(error.message || 'WebGL initialization failed');
@@ -145,7 +152,19 @@ export const ButterchurnVisualizerNode = ({ data }) => {
 
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      // Clean up analyser connection if needed
+
+      // Clean up canvas event listeners
+      const canvas = canvasRef.current;
+      if (canvas) {
+        if (canvas._handleContextLost) {
+          canvas.removeEventListener('webglcontextlost', canvas._handleContextLost);
+        }
+        if (canvas._handleContextRestored) {
+          canvas.removeEventListener('webglcontextrestored', canvas._handleContextRestored);
+        }
+      }
+
+      // Clean up analyser connection
       if (sourceNodeRef.current && analyserRef.current) {
         try {
           sourceNodeRef.current.disconnect(analyserRef.current);
@@ -153,9 +172,15 @@ export const ButterchurnVisualizerNode = ({ data }) => {
           /* ignore */
         }
       }
+
+      // Clean up resize listener
       window.removeEventListener('resize', handleResize);
-      // Don't destroy visualizer immediately if unmounting?
-      // Actually yes destroy it, but careful with context.
+
+      // Destroy visualizer
+      if (visualizerRef.current) {
+        // Butterchurn doesn't have explicit destroy, but we'll null the ref
+        visualizerRef.current = null;
+      }
     };
   }, [presetName, audioSource, audioRef]);
 

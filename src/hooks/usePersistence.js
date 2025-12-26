@@ -2,8 +2,8 @@
 import { useEffect, useRef } from 'react';
 
 export const usePersistence = (nodes, setNodes, edges, setEdges) => {
-  // Bump version to v9 to fix persistence timing and extent property
-  const STORAGE_KEY = 'spatialos-state-v9'; // Fixed district spawning with extent:parent and persistence threshold
+  // Bump version to v10 to fix persistence threshold logic
+  const STORAGE_KEY = 'spatialos-state-v10'; // Fixed threshold check - only restore manually positioned nodes
   const loadedRef = useRef(false);
 
   // Load persistence ONLY after nodes have been initialized with their structure
@@ -23,16 +23,19 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
             return currentNodes.map(node => {
               const savedNode = savedNodes.find(n => n.id === node.id);
               if (savedNode) {
-                // Allow layout-calculated positions (60-120px range) to be treated as defaults
-                // This prevents persistence from overriding initial layout positions
-                const isDefaultPos = savedNode.position.x < 120 && savedNode.position.y < 120;
-                if (!isDefaultPos) {
+                // Treat positions near origin (0,0) as defaults - these haven't been manually positioned
+                // Layout algorithm starts at (40, 40), so anything < 20 is truly at origin
+                const isAtOrigin = savedNode.position.x < 20 && savedNode.position.y < 20;
+
+                // If saved position is NOT at origin, it was manually positioned - restore it
+                if (!isAtOrigin) {
                   return {
                     ...node,
                     position: savedNode.position,
                   };
                 }
               }
+              // Return node with current (layout-calculated) position
               return node;
             });
           });
@@ -40,7 +43,7 @@ export const usePersistence = (nodes, setNodes, edges, setEdges) => {
           // Edges logic could go here
 
           loadedRef.current = true;
-          console.log('SpatialOS: State restored from persistence (v9).');
+          console.log('SpatialOS: State restored from persistence (v10).');
         } catch (e) {
           console.error('Failed to load state', e);
           loadedRef.current = true;
