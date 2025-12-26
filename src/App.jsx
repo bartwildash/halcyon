@@ -69,6 +69,7 @@ import { ShaderNode } from './components/nodes/ShaderNode';
 import { GuitarTunaNode } from './components/nodes/GuitarTunaNode';
 import { AudioInterfaceNode } from './components/nodes/AudioInterfaceNode';
 import { WinampNode } from './components/nodes/WinampNode';
+import { WinampLauncherNode } from './components/nodes/WinampLauncherNode';
 import { ButterchurnVisualizerNode } from './components/nodes/ButterchurnVisualizerNode';
 import { TemplateBrowserNode } from './components/nodes/TemplateBrowserNode';
 import { ProjectHubNode } from './components/nodes/ProjectHubNode';
@@ -139,6 +140,7 @@ const nodeTypes = {
   drummachine: DrumMachineNode,
   shader: ShaderNode,
   winamp: WinampNode,
+  winamplauncher: WinampLauncherNode,
   sticker: StickerNode,
   stickerpack: StickerPackNode,
   butterchurn: ButterchurnVisualizerNode,
@@ -641,6 +643,35 @@ function SpatialWorkspace() {
       addLog(`> System: Deleted ${contextMenu.nodeLabel}`);
     }
   }, [contextMenu, setNodes, addLog]);
+
+  // WINAMP LAUNCHER - Spawn Winamp when launcher is clicked
+  const handleLaunchWinamp = useCallback(
+    launcherId => {
+      const launcher = getNodes().find(n => n.id === launcherId);
+      if (!launcher) return;
+
+      // Create a new Winamp node near the launcher
+      const newWinampNode = {
+        id: `winamp-${Date.now()}`,
+        type: 'winamp',
+        position: {
+          x: launcher.position.x + 140,
+          y: launcher.position.y,
+        },
+        parentNode: launcher.parentNode,
+        extent: 'parent',
+        data: {
+          tracks: [],
+          skinUrl: '/skins/Nucleo-NLog-2G1.wsz',
+          enableButterchurn: true,
+        },
+      };
+
+      setNodes(nds => [...nds, newWinampNode]);
+      addLog('> Winamp: Launched');
+    },
+    [getNodes, setNodes, addLog]
+  );
 
   // Track when dragging starts
   const onNodeDragStart = useCallback((event, node) => {
@@ -1416,12 +1447,16 @@ function SpatialWorkspace() {
           },
         },
         {
-          id: 'winamp1',
-          type: 'winamp',
+          id: 'winamp-launcher',
+          type: 'winamplauncher',
           position: { x: 0, y: 0 },
           parentNode: 'd-toyroom',
           extent: 'parent',
-          data: { tracks: [], skinUrl: '/skins/Nucleo-NLog-2G1.wsz', enableButterchurn: true },
+          data: {
+            label: 'Winamp',
+            size: 120,
+            onLaunch: handleLaunchWinamp,
+          },
         },
         {
           id: 'butterchurn1',

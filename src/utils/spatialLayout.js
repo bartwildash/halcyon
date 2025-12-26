@@ -40,6 +40,7 @@ export const NODE_CATEGORIES = {
     'synth',
     'drummachine',
     'winamp',
+    'winamplauncher',
     'butterchurn',
     'guitartuna',
     'audiointerface',
